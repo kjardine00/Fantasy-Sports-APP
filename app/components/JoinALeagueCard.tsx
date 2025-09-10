@@ -1,4 +1,5 @@
 import React from "react";
+import Link from "next/link";
 
 const Card = () => {
   return (
@@ -25,7 +26,9 @@ const Card = () => {
         You're the league manager here. Set up a league to play with your family and friends!
         </p>
         <div className="card-actions justify-end">
-          <button className="btn btn-secondary rounded">Join</button>
+          <Link className="btn btn-secondary rounded" href="/leagues/join">
+            Create
+          </Link>
         </div>
       </div>
     </div>

@@ -1,4 +1,5 @@
 import React from "react";
+import Link from "next/link";
 
 const Card = () => {
   return (
@@ -13,10 +14,13 @@ const Card = () => {
       <div className="card-body">
         <h2 className="card-title">Create a League</h2>
         <p>
-        You're the league manager here. Set up a league to play with your family and friends!
+          You're the league manager here. Set up a league to play with your
+          family and friends!
         </p>
         <div className="card-actions justify-end">
-          <button className="btn btn-primary rounded">Create</button>
+          <Link className="btn btn-primary rounded" href="/leagues/create">
+            Create
+          </Link>
         </div>
       </div>
     </div>
