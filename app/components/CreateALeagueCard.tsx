@@ -18,7 +18,7 @@ const Card = () => {
           family and friends!
         </p>
         <div className="card-actions justify-end">
-          <Link className="btn btn-primary rounded" href="/leagues/create">
+          <Link className="btn btn-primary rounded" href="/league/create">
             Create
           </Link>
         </div>

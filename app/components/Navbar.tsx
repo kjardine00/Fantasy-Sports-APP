@@ -13,7 +13,7 @@ const Navbar = () => {
         <Link className="btn btn-ghost text-xl" href="/rules">
           Rules
         </Link>
-        <Link className="btn btn-ghost text-xl" href="/leagues">
+        <Link className="btn btn-ghost text-xl" href="/league">
           Leagues
         </Link>
         <Link className="btn btn-ghost text-xl" href="/players">

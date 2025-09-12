@@ -26,7 +26,7 @@ const Card = () => {
         You're the league manager here. Set up a league to play with your family and friends!
         </p>
         <div className="card-actions justify-end">
-          <Link className="btn btn-secondary rounded" href="/leagues/join">
+          <Link className="btn btn-secondary rounded" href="/league/join">
             Join
           </Link>
         </div>
