@@ -1,5 +1,6 @@
 import React from 'react'
 import MyTeamCard from '../components/MyTeamCard';
+import MainLeagueContentCard from '../components/MainLeagueContentCard';
 
 const LeaguesPage = (props: { params: { id: string } }) => {
   const { id } = props.params;
@@ -23,19 +24,14 @@ const LeaguesPage = (props: { params: { id: string } }) => {
 
           {/* Main Content Column */}
           <div className="flex flex-col gap-4">
-            <div className="main-container card w-full lg:w-160 bg-base-100 shadow-lg">
-              <div className="card-body">
-                <h2 className="card-title text-xl font-bold">League Name Goes Here</h2>
-                <p className="text-base-content/70">Main league content area</p>
-              </div>
-            </div>
+            <MainLeagueContentCard />
 
-            <div className="card w-full lg:w-160 bg-base-100 shadow-lg">
+            {/* <div className="card w-full lg:w-160 bg-base-100 shadow-lg">
               <div className="card-body">
                 <h2 className="card-title text-xl font-bold">League Managers Note</h2>
                 <p className="text-base-content/70">Welcome to your Fantasy league. Your League Manager will have the opportunity to post a League Manager Note to the entire league and that will appear in this area.</p>
               </div>
-            </div>
+            </div> */}
 
             <div className="card w-full lg:w-160 bg-base-100 shadow-lg">
               <div className="card-body">
