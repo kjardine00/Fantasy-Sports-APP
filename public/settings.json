@@ -1,0 +1,23 @@
+{
+  "Settings": {
+    "Basic": {
+      "League Name": "League Name",
+      "NumTeams": "Number of Teams",
+      "Public": false
+    },
+    "Draft": {
+        "Draft Type": "Snake",
+        "Draft Date": "2025-09-15",
+        "Draft Time": "12:00:00",
+        "Time per Pick": "90",
+        "Draft Order": "Randomized One Hour Prior to Draft Time"
+    },
+    "Rosters" : {
+        "Roster Size": "15",
+        "Total Starters": "11"
+    },
+    "Scoring" : {
+        "Use Chemistry": true
+    }
+  }
+}

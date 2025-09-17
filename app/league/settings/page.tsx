@@ -8,6 +8,7 @@ const SettingsPage = () => {
   const [activeView, setActiveView] = useState<ViewType>('basic')
 
   const views = [
+    { id: 'summary' as ViewType, label: 'Summary' },
     { id: 'basic' as ViewType, label: 'Basic Settings' },
     { id: 'draft' as ViewType, label: 'Draft' },
     { id: 'rosters' as ViewType, label: 'Rosters' },
@@ -57,7 +58,7 @@ const SettingsPage = () => {
     <div className="settings-page">
       <h1>League Settings</h1>
       <h4>Your League Name</h4>
-      
+
       <div className="view-selector">
         <h3>View:</h3>
         {views.map((view) => (
@@ -77,3 +78,6 @@ const SettingsPage = () => {
 }
 
 export default SettingsPage
+
+
+{/* <button className="btn btn-outline btn-primary rounded-full">Edit</button> */}
