@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import InviteCard from '../../components/InviteCard';
+import NumberOfTeamsSelector from '../../components/NumberOfTeamsSelector';
 
 const CreateLeagueClient = () => {
   const [showInviteModal, setShowInviteModal] = useState(false);
@@ -28,14 +29,7 @@ const CreateLeagueClient = () => {
               <input type="text" className="input input-bordered w-full" placeholder="League Name" />
 
               <h2 className="fieldset-legend">Number of Teams</h2>
-              <select defaultValue="10" className="select select-bordered w-full">
-                <option disabled={true}>Number of Teams</option>
-                <option>4</option>
-                <option>6</option>
-                <option>8</option>
-                <option>10</option>
-                <option>12</option>
-              </select>
+              <NumberOfTeamsSelector defaultValue="10" />
 
               <h2 className="fieldset-legend">Scoring</h2>
               <div className="form-control">

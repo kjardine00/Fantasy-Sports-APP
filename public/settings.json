@@ -14,7 +14,8 @@
     },
     "Rosters" : {
         "Roster Size": "15",
-        "Total Starters": "11"
+        "Total Starters": "11",
+        "Allow Duplicate Players": false
     },
     "Scoring" : {
         "Use Chemistry": true
