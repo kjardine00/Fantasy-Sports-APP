@@ -1,0 +1,160 @@
+{
+  "Rosters": [
+    {
+      "icon": "icon",
+      "teamName": "teamName",
+      "record": "0-0-0",
+      "players": [
+        {
+          "name": "player1",
+          "points": "1",
+          "slot": "ST"
+        },
+        {
+          "name": "player2",
+          "points": "2",
+          "slot": "B"
+        },
+        {
+          "name": "player3",
+          "points": "3",
+          "slot": "P"
+        },
+        {
+          "name": "player4",
+          "points": "4",
+          "slot": "ST"
+        },
+        {
+          "name": "player5",
+          "points": "5",
+          "slot": "B"
+        },
+        {
+          "name": "player6",
+          "points": "6",
+          "slot": "P"
+        },
+        {
+          "name": "player7",
+          "points": "7",
+          "slot": "ST"
+        },
+        {
+          "name": "player8",
+          "points": "8",
+          "slot": "B"
+        },
+        {
+          "name": "player9",
+          "points": "9",
+          "slot": "P"
+        }
+      ]
+    },
+    {
+        "icon": "icon",
+        "teamName": "team2",
+        "record": "1-1-1",
+        "players": [
+          {
+            "name": "player1",
+            "points": "1",
+            "slot": "ST"
+          },
+          {
+            "name": "player2",
+            "points": "2",
+            "slot": "B"
+          },
+          {
+            "name": "player3",
+            "points": "3",
+            "slot": "P"
+          },
+          {
+            "name": "player4",
+            "points": "4",
+            "slot": "ST"
+          },
+          {
+            "name": "player5",
+            "points": "5",
+            "slot": "B"
+          },
+          {
+            "name": "player6",
+            "points": "6",
+            "slot": "P"
+          },
+          {
+            "name": "player7",
+            "points": "7",
+            "slot": "ST"
+          },
+          {
+            "name": "player8",
+            "points": "8",
+            "slot": "B"
+          },
+          {
+            "name": "player9",
+            "points": "9",
+            "slot": "P"
+          }
+        ]
+      },
+      {
+        "icon": "icon",
+        "teamName": "team3",
+        "record": "2-2-2",
+        "players": [
+          {
+            "name": "player1",
+            "points": "1",
+            "slot": "ST"
+          },
+          {
+            "name": "player2",
+            "points": "2",
+            "slot": "B"
+          },
+          {
+            "name": "player3",
+            "points": "3",
+            "slot": "P"
+          },
+          {
+            "name": "player4",
+            "points": "4",
+            "slot": "ST"
+          },
+          {
+            "name": "player5",
+            "points": "5",
+            "slot": "B"
+          },
+          {
+            "name": "player6",
+            "points": "6",
+            "slot": "P"
+          },
+          {
+            "name": "player7",
+            "points": "7",
+            "slot": "ST"
+          },
+          {
+            "name": "player8",
+            "points": "8",
+            "slot": "B"
+          },
+          {
+            "name": "player9",
+            "points": "9",
+            "slot": "P"
+          }
+        ]
+      }
+  ]
+}
