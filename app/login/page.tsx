@@ -1,4 +1,5 @@
 import { login, signup } from "@/lib/auth/actions";
+import Link from "next/link";
 import React from "react";
 
 const LoginPage = () => {
@@ -43,12 +44,6 @@ const LoginPage = () => {
                 className="btn btn-primary"
               >
                 Log In
-              </button>
-              <button 
-                formAction={signup} 
-                className="btn btn-outline"
-              >
-                Sign Up
               </button>
             </div>
           </form>

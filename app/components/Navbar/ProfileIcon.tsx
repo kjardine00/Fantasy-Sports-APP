@@ -23,7 +23,7 @@ const ProfileIcon = ({ profile }: { profile: Profile }) => {
           ) : (
             <div className="bg-success text-success-content w-10 h-10 rounded-full flex items-center justify-center">
               <span className="capitalize font-bold text-sm">
-                {profile.username?.charAt(0) || ""}
+                {profile.username?.charAt(0) || "P"}
               </span>
             </div>
           )}
