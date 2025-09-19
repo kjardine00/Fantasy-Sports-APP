@@ -41,7 +41,7 @@ const LoginPage = () => {
             <div className="card-actions justify-end space-x-2">
               <button 
                 formAction={login} 
-                className="btn btn-primary"
+                className="btn btn-primary" //TODO: add error handling and error messages
               >
                 Log In
               </button>

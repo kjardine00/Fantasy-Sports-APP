@@ -53,7 +53,7 @@ const RegisterPage = () => {
 
             <div className="card-actions justify-end space-x-2">
               <button
-                formAction={signup}
+                formAction={signup} //TODO: add error handling and error messages and validation
                 className="btn btn-secondary rounded"
               >
                 Sign Up
