@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import InviteCard from '../../components/InviteCard';
+import InviteCard from '../components/InviteCard';
 import NumberOfTeamsSelector from '../../components/NumberOfTeamsSelector';
 
 const CreateLeagueClient = () => {

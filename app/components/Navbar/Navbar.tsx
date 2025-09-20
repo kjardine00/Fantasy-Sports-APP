@@ -2,8 +2,8 @@ import Link from "next/link";
 import React from "react";
 import { createClient } from "@/lib/supabase/server";
 import { logout } from "@/lib/auth/actions";
-import DefaultLinks from "./Navbar/DefaultLinks";
-import ProfileIcon from "./Navbar/ProfileIcon";
+import DefaultLinks from "./DefaultLinks";
+import ProfileIcon from "./ProfileIcon";
 import { Profile } from "@/lib/types";
 
 const Navbar = async () => {

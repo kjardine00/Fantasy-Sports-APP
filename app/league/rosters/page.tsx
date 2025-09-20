@@ -1,6 +1,6 @@
 import React from 'react'
 import roster from '../../../public/data/roster.json'
-import RosterCard from '../../components/RosterCard'
+import RosterCard from '../components/RosterCard'
 
 const RostersPage = () => {
     const rosterData = roster.Rosters;

@@ -1,6 +1,6 @@
 import React from 'react'
-import MyTeamCard from '../components/MyTeamCard';
-import MainLeagueContentCard from '../components/MainLeagueContentCard';
+import MyTeamCard from './components/MyTeamCard';
+import MainLeagueContentCard from './components/MainLeagueContentCard';
 
 const LeaguesPage = (props: { params: { id: string } }) => {
   const { id } = props.params;
