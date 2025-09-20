@@ -15,7 +15,8 @@
     "Rosters" : {
         "Roster Size": "15",
         "Total Starters": "11",
-        "Allow Duplicate Players": false
+        "Allow Duplicate Players": false,
+        "Trade Limits": "No Limit"
     },
     "Scoring" : {
         "Use Chemistry": true

@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import InviteCard from '../components/InviteCard';
 import NumberOfTeamsSelector from '../../components/NumberOfTeamsSelector';
+import Link from 'next/link';
 
 const CreateLeagueClient = () => {
   const [showInviteModal, setShowInviteModal] = useState(false);
@@ -58,12 +59,13 @@ const CreateLeagueClient = () => {
             </fieldset>
 
             <div className="card-actions justify-end mt-6">
-              <button 
+              <Link
+                href="/league"
                 className="btn btn-primary btn-lg rounded"
                 onClick={handleCreateLeague}
               >
                 Create League
-              </button>
+              </Link>
             </div>
           </div>
         </div>
