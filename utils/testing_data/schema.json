@@ -1,0 +1,333 @@
+{
+  "tables": [
+    {
+      "columns": [
+        {
+          "data_type": "uuid",
+          "column_name": "id",
+          "is_nullable": "NO",
+          "column_default": "gen_random_uuid()"
+        },
+        {
+          "data_type": "character varying",
+          "column_name": "name",
+          "is_nullable": "NO",
+          "column_default": null
+        },
+        {
+          "data_type": "uuid",
+          "column_name": "owner_id",
+          "is_nullable": "NO",
+          "column_default": null
+        },
+        {
+          "data_type": "boolean",
+          "column_name": "draft_completed",
+          "is_nullable": "YES",
+          "column_default": "false"
+        },
+        {
+          "data_type": "timestamp without time zone",
+          "column_name": "created_at",
+          "is_nullable": "YES",
+          "column_default": "now()"
+        },
+        {
+          "data_type": "jsonb",
+          "column_name": "settings",
+          "is_nullable": "YES",
+          "column_default": "'{}'::jsonb"
+        }
+      ],
+      "table_name": "leagues"
+    },
+    {
+      "columns": [
+        {
+          "data_type": "uuid",
+          "column_name": "league_id",
+          "is_nullable": "NO",
+          "column_default": null
+        },
+        {
+          "data_type": "uuid",
+          "column_name": "user_id",
+          "is_nullable": "NO",
+          "column_default": null
+        },
+        {
+          "data_type": "character varying",
+          "column_name": "role",
+          "is_nullable": "YES",
+          "column_default": "'member'::character varying"
+        },
+        {
+          "data_type": "integer",
+          "column_name": "draft_pick_order",
+          "is_nullable": "YES",
+          "column_default": null
+        },
+        {
+          "data_type": "timestamp without time zone",
+          "column_name": "created_at",
+          "is_nullable": "YES",
+          "column_default": "now()"
+        }
+      ],
+      "table_name": "leagues_members"
+    },
+    {
+      "columns": [
+        {
+          "data_type": "uuid",
+          "column_name": "id",
+          "is_nullable": "NO",
+          "column_default": "gen_random_uuid()"
+        },
+        {
+          "data_type": "character varying",
+          "column_name": "name",
+          "is_nullable": "NO",
+          "column_default": null
+        },
+        {
+          "data_type": "character varying",
+          "column_name": "team",
+          "is_nullable": "YES",
+          "column_default": null
+        },
+        {
+          "data_type": "jsonb",
+          "column_name": "stats",
+          "is_nullable": "YES",
+          "column_default": "'{}'::jsonb"
+        }
+      ],
+      "table_name": "players"
+    },
+    {
+      "columns": [
+        {
+          "data_type": "uuid",
+          "column_name": "id",
+          "is_nullable": "NO",
+          "column_default": "gen_random_uuid()"
+        },
+        {
+          "data_type": "uuid",
+          "column_name": "league_id",
+          "is_nullable": "NO",
+          "column_default": null
+        },
+        {
+          "data_type": "uuid",
+          "column_name": "user_id",
+          "is_nullable": "NO",
+          "column_default": null
+        },
+        {
+          "data_type": "uuid",
+          "column_name": "player_id",
+          "is_nullable": "YES",
+          "column_default": null
+        },
+        {
+          "data_type": "character varying",
+          "column_name": "slot_role",
+          "is_nullable": "NO",
+          "column_default": null
+        },
+        {
+          "data_type": "integer",
+          "column_name": "slot_number",
+          "is_nullable": "NO",
+          "column_default": null
+        },
+        {
+          "data_type": "boolean",
+          "column_name": "locked",
+          "is_nullable": "YES",
+          "column_default": "false"
+        },
+        {
+          "data_type": "timestamp without time zone",
+          "column_name": "created_at",
+          "is_nullable": "YES",
+          "column_default": "now()"
+        },
+        {
+          "data_type": "timestamp without time zone",
+          "column_name": "updated_at",
+          "is_nullable": "YES",
+          "column_default": "now()"
+        }
+      ],
+      "table_name": "roster_slots"
+    },
+    {
+      "columns": [
+        {
+          "data_type": "uuid",
+          "column_name": "id",
+          "is_nullable": "NO",
+          "column_default": "gen_random_uuid()"
+        },
+        {
+          "data_type": "uuid",
+          "column_name": "league_id",
+          "is_nullable": "NO",
+          "column_default": null
+        },
+        {
+          "data_type": "integer",
+          "column_name": "week_number",
+          "is_nullable": "NO",
+          "column_default": null
+        },
+        {
+          "data_type": "uuid",
+          "column_name": "user1_id",
+          "is_nullable": "NO",
+          "column_default": null
+        },
+        {
+          "data_type": "uuid",
+          "column_name": "user2_id",
+          "is_nullable": "NO",
+          "column_default": null
+        },
+        {
+          "data_type": "numeric",
+          "column_name": "user1_score",
+          "is_nullable": "YES",
+          "column_default": null
+        },
+        {
+          "data_type": "numeric",
+          "column_name": "user2_score",
+          "is_nullable": "YES",
+          "column_default": null
+        },
+        {
+          "data_type": "uuid",
+          "column_name": "winner_id",
+          "is_nullable": "YES",
+          "column_default": null
+        },
+        {
+          "data_type": "timestamp without time zone",
+          "column_name": "created_at",
+          "is_nullable": "YES",
+          "column_default": "now()"
+        },
+        {
+          "data_type": "timestamp without time zone",
+          "column_name": "updated_at",
+          "is_nullable": "YES",
+          "column_default": "now()"
+        }
+      ],
+      "table_name": "matchups"
+    },
+    {
+      "columns": [
+        {
+          "data_type": "uuid",
+          "column_name": "id",
+          "is_nullable": "NO",
+          "column_default": "gen_random_uuid()"
+        },
+        {
+          "data_type": "uuid",
+          "column_name": "league_id",
+          "is_nullable": "NO",
+          "column_default": null
+        },
+        {
+          "data_type": "uuid",
+          "column_name": "from_user_id",
+          "is_nullable": "NO",
+          "column_default": null
+        },
+        {
+          "data_type": "uuid",
+          "column_name": "to_user_id",
+          "is_nullable": "NO",
+          "column_default": null
+        },
+        {
+          "data_type": "uuid",
+          "column_name": "player_id",
+          "is_nullable": "NO",
+          "column_default": null
+        },
+        {
+          "data_type": "character varying",
+          "column_name": "status",
+          "is_nullable": "YES",
+          "column_default": "'pending'::character varying"
+        },
+        {
+          "data_type": "timestamp without time zone",
+          "column_name": "created_at",
+          "is_nullable": "YES",
+          "column_default": "now()"
+        },
+        {
+          "data_type": "timestamp without time zone",
+          "column_name": "completed_at",
+          "is_nullable": "YES",
+          "column_default": null
+        }
+      ],
+      "table_name": "trades"
+    },
+    {
+      "columns": [
+        {
+          "data_type": "uuid",
+          "column_name": "id",
+          "is_nullable": "NO",
+          "column_default": "gen_random_uuid()"
+        },
+        {
+          "data_type": "uuid",
+          "column_name": "auth_id",
+          "is_nullable": "NO",
+          "column_default": null
+        },
+        {
+          "data_type": "character varying",
+          "column_name": "username",
+          "is_nullable": "YES",
+          "column_default": null
+        },
+        {
+          "data_type": "character varying",
+          "column_name": "role",
+          "is_nullable": "YES",
+          "column_default": "'user'::character varying"
+        },
+        {
+          "data_type": "character varying",
+          "column_name": "profile_picture",
+          "is_nullable": "YES",
+          "column_default": null
+        },
+        {
+          "data_type": "timestamp without time zone",
+          "column_name": "created_at",
+          "is_nullable": "YES",
+          "column_default": "now()"
+        },
+        {
+          "data_type": "timestamp without time zone",
+          "column_name": "updated_at",
+          "is_nullable": "YES",
+          "column_default": "now()"
+        }
+      ],
+      "table_name": "profiles"
+    }
+  ]
+}

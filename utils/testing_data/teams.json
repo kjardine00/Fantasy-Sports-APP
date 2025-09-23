@@ -1,0 +1,111 @@
+[
+    {
+      "id": "andys-fandys",
+      "name": "Andy's Fandys",
+      "manager": "Andy",
+      "username": "Andu",
+      "stadium": "Donkey Kong Jungle",
+      "twitch": "https://www.twitch.tv/andy",
+      "roster": ["Donkey Kong", "Petey Piranha", "Waluigi", "Toadsworth", "Green Noki", "Shy Guy", "Purple Toad", "Green Toad", "Red Koopa", "Monty Mole"]
+    },
+    {
+      "id": "cjya-monkeys",
+      "name": "CJYA Monkeys",
+      "manager": "cjya",
+      "username": "cjFartya",
+      "stadium": "Bowser Castle",
+      "twitch": "https://www.twitch.tv/cjya",
+      "roster": ["Donkey Kong", "Mario", "Wario", "Toadsworth", "Daisy", "Dixie Kong", "Bowser Jr.", "Goomba", "Paratroopa", "Paragoomba"]
+    },
+    {
+      "id": "dgr-dingers",
+      "name": "DGR Dingers",
+      "manager": "DGR_Dave",
+      "username": "DGR",
+      "stadium": "Yoshi Park",
+      "twitch": "https://www.twitch.tv/dgr_dave",
+      "roster": ["Petey Piranha", "Hammer Bro", "Daisy", "Daisy", "Peach", "Toad", "Yellow Toad", "Yellow Shy Guy", "Baby Mario", "Baby Luigi"]
+    },
+    {
+      "id": "fir-golf-rules",
+      "name": "FIR Golf Rules",
+      "manager": "Fir",
+      "username": "Fir",
+      "stadium": "Peach Garden",
+      "twitch": "https://www.twitch.tv/fir_",
+      "roster": ["Yoshi", "Birdo", "Birdo", "King Boo", "Waluigi", "Blue Pianta", "Yellow Pianta", "Black Shy Guy", "Blue Noki", "Baby Mario"]
+    },
+    {
+      "id": "wishlist-curiousity-bc",
+      "name": "Wishlist Curiousity BC",
+      "manager": "GrandPooBear",
+      "username": "gpb",
+      "stadium": "Wario Palace",
+      "twitch": "https://www.twitch.tv/grandpoobear",
+      "roster": ["Donkey Kong", "Donkey Kong", "Fire Bro", "Yellow Magikoopa", "Waluigi", "Wario", "Daisy", "Dixie Kong", "Green Dry Bones", "Monty Mole"]
+    },
+    {
+      "id": "lightorious-swingers",
+      "name": "Lightorious Swingers",
+      "manager": "Lightorious",
+      "username": "Lig",
+      "stadium": "Yoshi Park",
+      "twitch": "https://www.twitch.tv/lightorias",
+      "roster": ["Boomerang Bro", "Petey Piranha", "Yoshi", "Green Magikoopa", "Green Paratroopa", "Diddy Kong", "Koopa", "Blue Dry Bones", "Dry Bones", "Purple Toad"]
+    },
+    {
+      "id": "moarf-lobsters",
+      "name": "Moarf Lobsters",
+      "manager": "Moarf",
+      "username": "Moarf23",
+      "stadium": "Mario Stadium",
+      "twitch": "https://www.twitch.tv/moarf23",
+      "roster": ["Bowser", "Red Magikoopa", "Mario", "Luigi", "Peach", "Dixie Kong", "Bowser Jr.", "Diddy Kong", "Diddy Kong", "Red Dry Bones"]
+    },
+    {
+      "id": "phillie-cheesesteaks",
+      "name": "Phillie Cheesesteaks",
+      "manager": "Phillie",
+      "username": "Phillie",
+      "stadium": "Donkey Kong Jungle",
+      "twitch": "https://www.twitch.tv/phillie",
+      "roster": ["Boomerang Bro", "King Boo", "Yoshi", "Boo", "Magikoopa", "Wario", "Luigi", "Red Toad", "Toadette", "Baby Luigi"]
+    },
+    {
+      "id": "virgins",
+      "name": "Virgins",
+      "manager": "star0chris",
+      "username": "star0chris",
+      "stadium": "Wario Palace",
+      "twitch": "https://www.twitch.tv/star0chris",
+      "roster": ["King Boo", "Red Magikoopa", "Boo", "Boo", "Wario", "Shy Guy", "Blue Shy Guy", "Green Shy Guy", "Blue Toad", "Blue Noki"]
+    },
+    {
+      "id": "vswed-bombers",
+      "name": "Vswed Bombers",
+      "manager": "Vswed",
+      "username": "Vswed",
+      "stadium": "Bowser Castle",
+      "twitch": "https://www.twitch.tv/vswed",
+      "roster": ["Bowser", "Hammer Bro", "Magikoopa", "Toadsworth", "Yellow Pianta", "Green Paratroopa", "Toadette", "Bowser Jr.", "Green Shy Guy", "Monty Mole"]
+    },
+    {
+      "id": "oogy-gooners",
+      "name": "Oogy Gooners",
+      "manager": "Wavy",
+      "username": "wavyoogy",
+      "stadium": "Peach Garden",
+      "twitch": "https://www.twitch.tv/wavy",
+      "roster": ["Birdo", "Yellow Magikoopa", "Toadsworth", "Green Noki", "Red Pianta", "Red Pianta", "Luigi", "Peach", "Toadette", "Red Noki"]
+    },
+    {
+      "id": "wet-blankets",
+      "name": "Wet Blankets",
+      "manager": "Xwater",
+      "username": "xwater",
+      "stadium": "Mario Stadium",
+      "twitch": "https://www.twitch.tv/xwater",
+      "roster": ["Fire Bro", "Green Magikoopa", "Mario", "Waluigi", "Green Dry Bones", "Green Noki", "Green Noki", "Blue Pianta", "Peach", "Red Noki"]
+    }
+  ]
+  

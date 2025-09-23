@@ -1,0 +1,1 @@
+https://api.projectrio.app/stats/?tag =ASSBLAST&username=Phillie&by_char=1&limit_games =1&exclude_misc=1&exlude_nonfair=1&exclude_fielding=1
