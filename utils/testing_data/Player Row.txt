@@ -1,0 +1,11 @@
+Player Row
+Icon PFP 
+Team Jersey Icon
+
+Name
+Team Name
+
+Batting pts
+Pitching pts
+Total pts
+

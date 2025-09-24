@@ -1,0 +1,498 @@
+{
+  "Series 1": [
+    {
+      "date": 1753390800,
+      "home": "GPB",
+      "away": "CJ",
+      "scores": {
+        "game1_score": "13-3",
+        "game2_score": "4-14",
+        "game3_score": "0-6"
+      }
+    },
+    {
+      "date": 1753290000,
+      "home": "DGR Dave",
+      "away": "Fir",
+      "scores": {
+        "game1_score": "10-0",
+        "game2_score": "0-7",
+        "game3_score": "7-1"
+      }
+    },
+    {
+      "date": 1753660800,
+      "home": "Andy",
+      "away": "Lightorias",
+      "scores": {
+        "game1_score": "3-13",
+        "game2_score": "8-3",
+        "game3_score": "4-2"
+      }
+    },
+    {
+      "date": 1753308000,
+      "home": "Phillie",
+      "away": "star0chris",
+      "scores": {
+        "game1_score": "10-1",
+        "game2_score": "4-5",
+        "game3_score": "7-9"
+      }
+    },
+    {
+      "date": 1753297200,
+      "home": "Moarf",
+      "away": "Xwater",
+      "scores": {
+        "game1_score": "0-2",
+        "game2_score": "3-10",
+        "game3_score": "2-6"
+      }
+    },
+    {
+      "date": 1753477200,
+      "home": "Wavy",
+      "away": "Vswed",
+      "scores": {
+        "game1_score": "0-10",
+        "game2_score": "13-3",
+        "game3_score": "14-4"
+      }
+    }
+  ],
+  "3-Week Interleague": [
+    {
+      "date": 1754175600,
+      "home": "GPB",
+      "away": "Phillie",
+      "scores": {
+        "game1_score": "7-4",
+        "game2_score": "2-4",
+        "game3_score": "4-1"
+      }
+    },
+    {
+      "date": 1753909200,
+      "home": "CJ",
+      "away": "star0chris",
+      "scores": {
+        "game1_score": "7-12",
+        "game2_score": "5-0",
+        "game3_score": "2-3"
+      }
+    },
+    {
+      "date": 1753984800,
+      "home": "DGR Dave",
+      "away": "Moarf",
+      "scores": {
+        "game1_score": "10-0",
+        "game2_score": "10-12",
+        "game3_score": "12-2"
+      }
+    },
+    {
+      "date": 1754598600,
+      "home": "Fir",
+      "away": "Xwater",
+      "scores": {
+        "game1_score": "3-9",
+        "game2_score": "5-3",
+        "game3_score": "0-7"
+      }
+    },
+    {
+      "date": 1753981200,
+      "home": "Andy",
+      "away": "Wavy",
+      "scores": {
+        "game1_score": "11-0",
+        "game2_score": "1-11",
+        "game3_score": "8-2"
+      }
+    },
+    {
+      "date": 1754146800,
+      "home": "Lightorias",
+      "away": "Vswed",
+      "scores": {
+        "game1_score": "0-10",
+        "game2_score": "6-3",
+        "game3_score": "0-7"
+      }
+    }
+  ],
+  "Series 2": [
+    {
+      "date": 1753891200,
+      "home": "GPB",
+      "away": "DGR Dave",
+      "scores": {
+        "game1_score": "4-11",
+        "game2_score": "13-6",
+        "game3_score": "10-4"
+      }
+    },
+    {
+      "date": 1753902000,
+      "home": "CJ",
+      "away": "Andy",
+      "scores": {
+        "game1_score": "10-2",
+        "game2_score": "2-7",
+        "game3_score": "0-2"
+      }
+    },
+    {
+      "date": 1754074800,
+      "home": "Fir",
+      "away": "Lightorias",
+      "scores": {
+        "game1_score": "3-8",
+        "game2_score": "4-5",
+        "game3_score": "7-4"
+      }
+    },
+    {
+      "date": 1754078400,
+      "home": "Phillie",
+      "away": "Moarf",
+      "scores": {
+        "game1_score": "2-12",
+        "game2_score": "10-0",
+        "game3_score": "10-0"
+      }
+    },
+    {
+      "date": 1753916400,
+      "home": "star0chris",
+      "away": "Wavy",
+      "scores": {
+        "game1_score": "10-0",
+        "game2_score": "0-10",
+        "game3_score": "10-0"
+      }
+    },
+    {
+      "date": 1753992000,
+      "home": "Xwater",
+      "away": "Vswed",
+      "scores": {
+        "game1_score": "6-1",
+        "game2_score": "0-10",
+        "game3_score": "10-3"
+      }
+    }
+  ],
+  "Series 3": [
+    {
+      "date": 1754334000,
+      "home": "GPB",
+      "away": "Fir",
+      "scores": {
+        "game1_score": "11-1",
+        "game2_score": "8-10",
+        "game3_score": "14-4"
+      }
+    },
+    {
+      "date": 1754686800,
+      "home": "CJ",
+      "away": "Lightorias",
+      "scores": {
+        "game1_score": "13-4",
+        "game2_score": "1-9",
+        "game3_score": "6-4"
+      }
+    },
+    {
+      "date": 1754672400,
+      "home": "DGR Dave",
+      "away": "Andy",
+      "scores": {
+        "game1_score": "8-3",
+        "game2_score": "7-11",
+        "game3_score": "4-10"
+      }
+    },
+    {
+      "date": 1754424000,
+      "home": "Phillie",
+      "away": "Xwater",
+      "scores": {
+        "game1_score": "10-0",
+        "game2_score": "3-7",
+        "game3_score": "0-10"
+      }
+    },
+    {
+      "date": 1754614800,
+      "home": "star0chris",
+      "away": "Vswed",
+      "scores": {
+        "game1_score": "13-3",
+        "game2_score": "7-10",
+        "game3_score": "4-5"
+      }
+    },
+    {
+      "date": 1754589600,
+      "home": "Moarf",
+      "away": "Wavy",
+      "scores": {
+        "game1_score": "3-4",
+        "game2_score": "11-5",
+        "game3_score": "10-0"
+      }
+    }
+  ],
+  "Series 4": [
+    {
+      "date": 1754935200,
+      "home": "GPB",
+      "away": "Andy",
+      "scores": {
+        "game1_score": "1-11",
+        "game2_score": "13-3",
+        "game3_score": "2-12"
+      }
+    },
+    {
+      "date": 1755284400,
+      "home": "CJ",
+      "away": "Fir",
+      "scores": {
+        "game1_score": "6-10",
+        "game2_score": "5-2",
+        "game3_score": "5-4"
+      }
+    },
+    {
+      "date": 1755288000,
+      "home": "DGR Dave",
+      "away": "Lightorias",
+      "scores": {
+        "game1_score": "6-7",
+        "game2_score": "2-11",
+        "game3_score": "7-6"
+      }
+    },
+    {
+      "date": 1754949600,
+      "home": "Phillie",
+      "away": "Wavy",
+      "scores": {
+        "game1_score": "3-13",
+        "game2_score": "14-5",
+        "game3_score": "0-8"
+      }
+    },
+    {
+      "date": 1755288000,
+      "home": "star0chris",
+      "away": "Xwater",
+      "scores": {
+        "game1_score": "2-12",
+        "game2_score": "4-1",
+        "game3_score": "2-12"
+      }
+    },
+    {
+      "date": 1755201600,
+      "home": "Moarf",
+      "away": "Vswed",
+      "scores": {
+        "game1_score": "1-11",
+        "game2_score": "4-2",
+        "game3_score": "3-13"
+      }
+    }
+  ],
+  "2-Week Interleague": [
+    {
+      "date": 1755208800,
+      "home": "GPB",
+      "away": "Vswed",
+      "scores": {
+        "game1_score": "7-4",
+        "game2_score": "5-4",
+        "game3_score": "12-4"
+      }
+    },
+    {
+      "date": 1755194400,
+      "home": "CJ",
+      "away": "Moarf",
+      "scores": {
+        "game1_score": "6-0",
+        "game2_score": "7-4",
+        "game3_score": "2-7"
+      }
+    },
+    {
+      "date": 1755295200,
+      "home": "DGR Dave",
+      "away": "Phillie",
+      "scores": {
+        "game1_score": "8-1",
+        "game2_score": "0-10",
+        "game3_score": "9-3"
+      }
+    },
+    {
+      "date": 1755291600,
+      "home": "Fir",
+      "away": "Wavy",
+      "scores": {
+        "game1_score": "3-4",
+        "game2_score": "6-3",
+        "game3_score": "12-2"
+      }
+    },
+    {
+      "date": 1755640800,
+      "home": "Andy",
+      "away": "star0chris",
+      "scores": {
+        "game1_score": "11-1",
+        "game2_score": "0-10",
+        "game3_score": "6-1"
+      }
+    },
+    {
+      "date": 1755201600,
+      "home": "Lightorias",
+      "away": "Xwater",
+      "scores": {
+        "game1_score": "1-2",
+        "game2_score": "0-1",
+        "game3_score": "9-0"
+      }
+    }
+  ],
+  "Series 5": [
+    {
+      "date": 1755810000,
+      "home": "GPB",
+      "away": "Lightorias",
+      "scores": {
+        "game1_score": "0-6",
+        "game2_score": "8-2",
+        "game3_score": "4-14"
+      }
+    },
+    {
+      "date": 1755541800,
+      "home": "CJ",
+      "away": "DGR Dave",
+      "scores": {
+        "game1_score": "1-7",
+        "game2_score": "8-5",
+        "game3_score": "1-5"
+      }
+    },
+    {
+      "date": 1755889200,
+      "home": "Fir",
+      "away": "Andy",
+      "scores": {
+        "game1_score": "9-8",
+        "game2_score": "5-13",
+        "game3_score": "2-8"
+      }
+    },
+    {
+      "date": 1755637200,
+      "home": "Phillie",
+      "away": "Vswed",
+      "scores": {
+        "game1_score": "15-14",
+        "game2_score": "16-6",
+        "game3_score": "0-3"
+      }
+    },
+    {
+      "date": 1755806400,
+      "home": "star0chris",
+      "away": "Moarf",
+      "scores": {
+        "game1_score": "12-2",
+        "game2_score": "1-3",
+        "game3_score": "10-0"
+      }
+    },
+    {
+      "date": 1756324800,
+      "home": "Xwater",
+      "away": "Wavy",
+      "scores": {
+        "game1_score": "5-6",
+        "game2_score": "10-11",
+        "game3_score": "0-3"
+      }
+    }
+  ],
+  "3rd Interleague/Catch Up": [
+    {
+      "date": 1756245600,
+      "home": "GPB",
+      "away": "star0chris",
+      "scores": {
+        "game1_score": "4-3",
+        "game2_score": "6-7",
+        "game3_score": "3-1"
+      }
+    },
+    {
+      "date": 1755810000,
+      "home": "CJ",
+      "away": "Phillie",
+      "scores": {
+        "game1_score": "0-9",
+        "game2_score": "15-5",
+        "game3_score": "0-6"
+      }
+    },
+    {
+      "date": 1755982800,
+      "home": "DGR Dave",
+      "away": "Vswed",
+      "scores": {
+        "game1_score": "13-5",
+        "game2_score": "16-17",
+        "game3_score": "10-4"
+      }
+    },
+    {
+      "date": 1755896400,
+      "home": "Fir",
+      "away": "Moarf",
+      "scores": {
+        "game1_score": "10-0",
+        "game2_score": "0-10",
+        "game3_score": "11-1"
+      }
+    },
+    {
+      "date": 1756501200,
+      "home": "Andy",
+      "away": "Xwater",
+      "scores": {
+        "game1_score": "2-12",
+        "game2_score": "4-5",
+        "game3_score": "5-8"
+      }
+    },
+    {
+      "date": 1756332000,
+      "home": "Lightorias",
+      "away": "Wavy",
+      "scores": {
+        "game1_score": "12-7",
+        "game2_score": "8-1",
+        "game3_score": "6-10"
+      }
+    }
+  ]
+}
