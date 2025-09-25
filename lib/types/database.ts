@@ -46,8 +46,13 @@ export interface Matchup {
 export interface Player {
   id: string;
   name: string;
-  team: string | null;
-  stats: Record<string, any> | null;
+  team: string;
+  points: {
+    Batting?: number;
+    Pitching?: number;
+    Total?: number;
+    [key: string]: any; // Allow for other properties
+  } | null;
 }
 
 // Roster slot interface

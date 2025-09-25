@@ -9,7 +9,7 @@ const TeamPage = () => {
       <div className="container mx-auto px-4 py-8">
         <div className="flex flex-col gap-4 py-2">
           <TeamInfoCard
-            teamName="John Sports' Dingers"
+            teamName="Dingers"
             teamLogo="/icons/baseball-bat.svg"
             teamManager="John Sports"
             leagueName="My 2025 League"
