@@ -1,12 +1,15 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import InviteCard from '../components/InviteCard';
-import NumberOfTeamsSelector from '../../components/NumberOfTeamsSelector';
-import Link from 'next/link';
+import React, { useState } from "react";
+import InviteCard from "../components/InviteCard";
+import NumberOfTeamsSelector from "../../components/NumberOfTeamsSelector";
+import Link from "next/link";
 
 const CreateLeagueClient = () => {
   const [showInviteModal, setShowInviteModal] = useState(false);
+
+  const leagueId = "temp-league-id";
+  const leagueName = "My League";
 
   const handleCreateLeague = () => {
     // Here you would handle the actual league creation logic
@@ -23,11 +26,17 @@ const CreateLeagueClient = () => {
       <div className="min-h-screen bg-base-200 flex items-center justify-center p-4">
         <div className="card w-full max-w-2xl bg-base-100 shadow-xl">
           <div className="card-body">
-            <h1 className="card-title text-3xl font-bold mb-6">Create League</h1>
-            
+            <h1 className="card-title text-3xl font-bold mb-6">
+              Create League
+            </h1>
+
             <fieldset className="fieldset">
               <h2 className="fieldset-legend">League Name</h2>
-              <input type="text" className="input input-bordered w-full" placeholder="League Name" />
+              <input
+                type="text"
+                className="input input-bordered w-full"
+                placeholder="League Name"
+              />
 
               <h2 className="fieldset-legend">Number of Teams</h2>
               <NumberOfTeamsSelector defaultValue="10" />
@@ -47,33 +56,36 @@ const CreateLeagueClient = () => {
 
               <h2 className="fieldset-legend">Number of Duplicate Players</h2>
               <div className="form-control">
-                  <select defaultValue="10" className="select select-bordered w-full">
+                <select
+                  defaultValue="10"
+                  className="select select-bordered w-full"
+                >
                   <option disabled={true}>Number of Duplicate Players</option>
                   <option>None</option>
                   <option>1</option>
                   <option>2</option>
                   <option>3</option>
-                  </select>
+                </select>
               </div>
-
             </fieldset>
 
             <div className="card-actions justify-end mt-6">
-              <Link
-                href="/league"
+              <button
                 className="btn btn-primary btn-lg rounded"
                 onClick={handleCreateLeague}
               >
                 Create League
-              </Link>
+              </button>
             </div>
           </div>
         </div>
       </div>
 
-      <InviteCard 
-        isVisible={showInviteModal} 
-        onClose={handleCloseInviteModal} 
+      <InviteCard
+        isVisible={showInviteModal}
+        onClose={handleCloseInviteModal}
+        leagueId="880e8400-e29b-41d4-a716-446655440001"
+        leagueName={leagueName || "My League"}
       />
     </>
   );

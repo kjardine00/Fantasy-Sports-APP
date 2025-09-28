@@ -1,0 +1,60 @@
+DRAFT FEATURE IMPLEMENTATION PLAN
+=====================================
+
+REQUIREMENTS GATHERED:
+- Snake draft (primary) + Auction draft (future option)
+- Timer: 60 seconds to 10 minutes configurable
+- 4-12 league members (even numbers only)
+- Variable roster sizes per league (commissioner customizable)
+- Live player list updates
+- Turn notifications with sound
+- No chat feature needed initially
+
+RECOMMENDED APPROACH: Next.js + Supabase Realtime (Serverless)
+==============================================================
+
+WHY THIS WORKS:
+- Stays within current tech stack (Next.js + Supabase)
+- No additional server management needed
+- Handles 4-12 users easily
+- Real-time updates via Supabase subscriptions
+- Cost-effective and beginner-friendly
+
+TECHNICAL IMPLEMENTATION OVERVIEW:
+==================================
+
+Database Schema Needed:
+- drafts (id, league_id, type, status, current_pick, timer_end)
+- draft_picks (id, draft_id, team_id, player_id, pick_number, timestamp)
+- draft_timer (draft_id, time_remaining, is_active)
+
+Real-time Flow:
+1. Draft Start: Server Action creates draft, broadcasts to all league members
+2. Turn Management: Supabase Realtime notifies whose turn it is
+3. Player Selection: Server Action processes pick, updates database
+4. Live Updates: All clients receive real-time updates via Supabase subscriptions
+5. Timer: Server-side timer with client-side countdown display
+
+Key Features:
+- Snake draft logic (1-12, 12-1, 1-12...)
+- Auction draft support (future)
+- Configurable timers (60s - 10min)
+- Real-time player list updates
+- Browser notifications + sound alerts
+- Automatic pick handling when time expires
+
+NEXT STEPS TO CONSIDER:
+1. Design database schema for drafts
+2. Set up Supabase Realtime subscriptions
+3. Create draft interface components
+4. Implement Server Actions for draft logic
+5. Add notification system (browser + sound)
+
+BENEFITS:
+- No hosted backend needed
+- Stays in current ecosystem
+- Easier deployment and maintenance
+- Great learning experience for real-time web development
+- Handles all requirements efficiently
+
+This approach will work perfectly for your fantasy sports draft feature!
