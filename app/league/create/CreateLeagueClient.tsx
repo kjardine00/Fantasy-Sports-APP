@@ -1,25 +1,68 @@
 "use client";
 
-import React, { useState } from "react";
-import InviteCard from "../components/InviteCard";
+import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
 import NumberOfTeamsSelector from "../../components/NumberOfTeamsSelector";
-import Link from "next/link";
+import { createLeague } from "@/lib/api/leagues";
 
 const CreateLeagueClient = () => {
-  const [showInviteModal, setShowInviteModal] = useState(false);
+  const router = useRouter();
+  const supabase = createClient();
 
-  const leagueId = "temp-league-id";
-  const leagueName = "My League";
 
-  const handleCreateLeague = () => {
-    // Here you would handle the actual league creation logic
-    // For now, we'll just show the invite modal
-    setShowInviteModal(true);
-  };
+  const [leagueName, setLeagueName] = useState("");
+  const [numberOfTeams, setNumberOfTeams] = useState("10");
+  const [useChemistry, setUseChemistry] = useState(true);
+  const [duplicatePlayers, setDuplicatePlayers] = useState("None");
 
-  const handleCloseInviteModal = () => {
-    setShowInviteModal(false);
-  };
+  useEffect(() => {
+    const tempLeagueData = sessionStorage.getItem('tempLeagueData');
+    if (tempLeagueData) {
+      const parsedData = JSON.parse(tempLeagueData)
+
+      setLeagueName(parsedData.name);
+      setNumberOfTeams(parsedData.numberOfTeams.toString());
+      setUseChemistry(parsedData.useChemistry);
+      setDuplicatePlayers(parsedData.duplicatePlayers);
+
+      sessionStorage.removeItem('tempLeagueData');
+
+      handleCreateLeague();
+    }
+  })
+
+  const handleCreateLeague = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+
+    const leagueData = {
+      name: leagueName,
+      numberOfTeams: parseInt(numberOfTeams),
+      useChemistry: useChemistry,
+      duplicatePlayers: duplicatePlayers
+    };
+
+    if (!user) {
+      sessionStorage.setItem("tempLeagueData", JSON.stringify(leagueData));
+      router.push("/login");
+      return;
+    } else if (user) {
+      const formData = new FormData();
+      formData.append('name', leagueName);
+      formData.append('numberOfTeams', numberOfTeams);
+      formData.append('useChemistry', useChemistry.toString());
+      formData.append('duplicatePlayers', duplicatePlayers);
+
+      const { data: league, error } = await createLeague(formData);
+      if (error) {
+        console.error('Failed to create League: ', error);
+        //TODO: Send Error Message to the User
+        return;
+      }
+
+      router.push(`/league/${league.id}`);
+    }
+  }
 
   return (
     <>
@@ -30,16 +73,19 @@ const CreateLeagueClient = () => {
               Create League
             </h1>
 
-            <fieldset className="fieldset">
+            <form action={handleCreateLeague} className="fieldset">
               <h2 className="fieldset-legend">League Name</h2>
               <input
                 type="text"
                 className="input input-bordered w-full"
                 placeholder="League Name"
+                value={leagueName}
+                onChange={(e) => setLeagueName(e.target.value)}
+                required
               />
 
               <h2 className="fieldset-legend">Number of Teams</h2>
-              <NumberOfTeamsSelector defaultValue="10" />
+              <NumberOfTeamsSelector defaultValue="10" onChange={setNumberOfTeams} value={numberOfTeams} />
 
               <h2 className="fieldset-legend">Scoring</h2>
               <div className="form-control">
@@ -49,7 +95,12 @@ const CreateLeagueClient = () => {
                     className="tooltip tooltip-right"
                     data-tip="Players with Chemistry will gain bonus points if they are both active when one scores"
                   >
-                    <input type="checkbox" defaultChecked className="toggle" />
+                    <input
+                      type="checkbox"
+                      defaultChecked className="toggle"
+                      checked={useChemistry}
+                      onChange={(e) => setUseChemistry(e.target.checked)}
+                    />
                   </div>
                 </label>
               </div>
@@ -59,6 +110,8 @@ const CreateLeagueClient = () => {
                 <select
                   defaultValue="10"
                   className="select select-bordered w-full"
+                  value={duplicatePlayers}
+                  onChange={(e) => setDuplicatePlayers(e.target.value)}
                 >
                   <option disabled={true}>Number of Duplicate Players</option>
                   <option>None</option>
@@ -67,26 +120,19 @@ const CreateLeagueClient = () => {
                   <option>3</option>
                 </select>
               </div>
-            </fieldset>
 
-            <div className="card-actions justify-end mt-6">
-              <button
-                className="btn btn-primary btn-lg rounded"
-                onClick={handleCreateLeague}
-              >
-                Create League
-              </button>
-            </div>
+              <div className="card-actions justify-end mt-6">
+                <button
+                  className="btn btn-primary btn-lg rounded"
+                  type="submit"
+                >
+                  Create League
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       </div>
-
-      <InviteCard
-        isVisible={showInviteModal}
-        onClose={handleCloseInviteModal}
-        leagueId="880e8400-e29b-41d4-a716-446655440001"
-        leagueName={leagueName || "My League"}
-      />
     </>
   );
 };

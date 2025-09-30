@@ -15,35 +15,48 @@ export async function getUserLeagues(userId: string) {
       )
     `)
     .eq('user_id', userId)
-  
+
   return { data, error }
 }
 
-export async function createLeague(leagueData: {
-  name: string
-  owner_id: string
-  settings?: any
-}) {
+export async function createLeague(formData: FormData) {
   const supabase = await createClient()
-  
-  // Create league
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) {
+    return { error: 'You must be logged in to create a league' };
+  }
+
+  const name = formData.get('name') as string;
+  const numberOfTeams = formData.get('numberOfTeams') as string;
+  const useChemistry = formData.get('useChemistry') as string;
+  const duplicatePlayers = formData.get('duplicatePlayers') as string;
+
+  const settings = {
+    numberOfTeams: numberOfTeams,
+    useChemistry: useChemistry,
+    duplicatePlayers: duplicatePlayers,
+  }
+
   const { data: league, error: leagueError } = await supabase
     .from('leagues')
-    .insert(leagueData)
+    .insert({
+      name: name,
+      owner_id: user.id,
+      settings: settings,
+    })
     .select()
     .single()
-  
+
   if (leagueError) return { data: null, error: leagueError }
-  
+
   // Add owner as member
   const { error: memberError } = await supabase
-    .from('league_members')
+    .from('leagues_members')
     .insert({
       league_id: league.id,
-      user_id: leagueData.owner_id,
-      role: 'owner',
-      draft_pick_order: 1
+      user_id: user.id,
+      role: 'owner'
     })
-  
+
   return { data: league, error: memberError }
 }

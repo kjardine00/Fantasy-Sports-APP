@@ -1,15 +1,54 @@
-import React from 'react'
+'use client';
+
+import React, { useState, useEffect } from "react";
 import { signup } from '@/lib/auth/actions'
+import { useRouter } from 'next/navigation';
+import Link from "next/link";
+
+interface LeagueData {
+  name: string;
+  numberOfTeams: number;
+  useChemistry: boolean;
+  duplicatePlayers: string;
+}
 
 // Email, Username, Password, Confirm Password
+//TODO: Fix layout of page and add the confirm password
 const RegisterPage = () => {
+  const router = useRouter();
+
+  const [draftLeagueData, setDraftLeagueData] = useState<LeagueData | null>(null);
+  
+  useEffect(() => {
+    const tempLeagueData = sessionStorage.getItem('tempLeagueData');
+    if (tempLeagueData) {
+      setDraftLeagueData(JSON.parse(tempLeagueData));
+    }
+  }, []);
+
+  const handleSignup = async (formData: FormData) => {
+    try {
+      await signup(formData);
+
+      const draftLeagueData = sessionStorage.getItem('tempLeagueData');
+      if (draftLeagueData) {
+        router.push('/league/create');
+      } else {
+        router.push('/register');
+      }
+    } catch (error) {
+      console.error('Signup failed: ', error);
+    }
+  }
+  
+  
   return (
     <div className="min-h-screen flex items-center justify-center bg-base-200">
       <div className="card w-96 bg-base-100 shadow-xl">
         <div className="card-body">
           <h2 className="card-title text-2xl mb-4">Sign up to Fantasy Sports</h2>
 
-          <form className="space-y-4">
+          <form className="space-y-4" action={handleSignup}>
             <div className="form-control">
 
               <label className="label" htmlFor="username">
@@ -24,18 +63,18 @@ const RegisterPage = () => {
                 placeholder=""
               />
 
-                <label className="label" htmlFor="email">
-                  <span className="label-text">Email</span>
-                </label>
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  required
-                  className="input input-bordered w-full validator"
-                  placeholder=""
-                />
-                <div className="validator-hint">Enter valid email address</div>
+              <label className="label" htmlFor="email">
+                <span className="label-text">Email</span>
+              </label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                required
+                className="input input-bordered w-full validator"
+                placeholder=""
+              />
+              <div className="validator-hint">Enter valid email address</div>
 
               <label className="label" htmlFor="password">
                 <span className="label-text">Password</span>
@@ -53,12 +92,12 @@ const RegisterPage = () => {
 
             <div className="card-actions justify-end space-x-2">
               <button
-                formAction={signup} //TODO: add error handling and error messages and validation
+                 //TODO: add error handling and error messages and validation
                 className="btn btn-secondary rounded"
               >
                 Sign Up
               </button>
-
+              <Link href="/login" className="btn btn-primary rounded">Already have an account? Log In</Link>
             </div>
           </form>
         </div>

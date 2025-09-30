@@ -1,7 +1,7 @@
 import React from "react";
 import Link from "next/link";
 
-const Card = () => {
+const CreateALeagueCard = () => {
   return (
     <div className="card bg-base-100 w-96 shadow-sm p">
       <figure className="bg-gradient-to-br from-primary to-accent p-8">
@@ -27,4 +27,4 @@ const Card = () => {
   );
 };
 
-export default Card;
+export default CreateALeagueCard;

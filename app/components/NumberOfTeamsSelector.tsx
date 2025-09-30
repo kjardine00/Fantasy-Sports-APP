@@ -6,6 +6,7 @@ interface NumberOfTeamsSelectorProps {
   defaultValue?: string;
   onChange?: (value: string) => void;
   className?: string;
+  value?: string;
   disabled?: boolean;
 }
 
@@ -13,7 +14,8 @@ const NumberOfTeamsSelector: React.FC<NumberOfTeamsSelectorProps> = ({
   defaultValue = "10",
   onChange,
   className = "select select-bordered w-full",
-  disabled = false
+  value,
+  disabled = false,
 }) => {
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     if (onChange) {
@@ -26,6 +28,7 @@ const NumberOfTeamsSelector: React.FC<NumberOfTeamsSelectorProps> = ({
       <select 
         defaultValue={defaultValue} 
         className={className}
+        value={value}
         onChange={handleChange}
         disabled={disabled}
       >
