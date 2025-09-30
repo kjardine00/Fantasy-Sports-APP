@@ -3,7 +3,7 @@ import CreateALeagueCard from "./league/components/CreateALeagueCard";
 
 export default function Home() {
   return (
-    <div className="hero bg-base-200 min-h-screen">
+    <div className="hero min-h-screen">
       <div className="hero-content">
         <div className="max-w-4xl">
           <div className="text-center">
@@ -15,7 +15,7 @@ export default function Home() {
           </div>
           <div className="flex flex-row gap-10 justify-center">
             <CreateALeagueCard />
-            <JoinALeagueCard />
+            {/* <JoinALeagueCard /> */}
           </div>
         </div>
       </div>

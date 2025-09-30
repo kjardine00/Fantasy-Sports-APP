@@ -1,6 +1,6 @@
 import Link from "next/link";
 import React from "react";
-import DraftCard from "@/app/components/draft/DraftCard";
+import DraftCard from "@/app/components/Draft/DraftCard";
 
 interface TeamInfoCardProps {
   teamName: string;

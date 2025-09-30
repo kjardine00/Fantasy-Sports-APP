@@ -1,6 +1,9 @@
 import { Resend } from 'resend';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Only initialize Resend if API key is available, otherwise use a mock for development
+const resend = process.env.RESEND_API_KEY 
+  ? new Resend(process.env.RESEND_API_KEY)
+  : null;
 
 export async function sendLeagueInvite({
   email,
@@ -13,6 +16,16 @@ export async function sendLeagueInvite({
   inviterName: string;
   inviteLink: string;
 }) {
+  // If no Resend API key, just log the email and return success for development
+  if (!resend) {
+    console.log('📧 [DEV MODE] Would send league invite email:', {
+      to: email,
+      subject: `You're invited to join ${leagueName}!`,
+      inviteLink,
+    });
+    return { data: { id: 'dev-mode-email' }, error: null };
+  }
+
   try {
     const { data, error } = await resend.emails.send({
       from: 'Fantasy Sports <onboarding@resend.dev>', // Replace with your verified domain
@@ -84,6 +97,16 @@ export async function sendInviteReminder({
   inviterName: string;
   inviteLink: string;
 }) {
+  // If no Resend API key, just log the email and return success for development
+  if (!resend) {
+    console.log('📧 [DEV MODE] Would send invite reminder email:', {
+      to: email,
+      subject: `Reminder: Join ${leagueName} - Draft Starting Soon!`,
+      inviteLink,
+    });
+    return { data: { id: 'dev-mode-reminder' }, error: null };
+  }
+
   try {
     const { data, error } = await resend.emails.send({
       from: 'Fantasy Sports <noreply@yourdomain.com>',

@@ -20,7 +20,7 @@ const Navbar = async () => {
   const profile = data || null;
 
   return (
-    <div className="navbar bg-base-300 shadow-sm sticky top-0 z-50">
+    <div className="navbar bg-base-300 shadow-sm fixed top-0 left-0 right-0 z-50">
       {/* Logo / Right Side of the navbar*/}
       <div className="flex-1">
         <Link className="text-xl px-5 font-bold" href="/">
