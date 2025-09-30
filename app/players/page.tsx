@@ -1,5 +1,5 @@
 import React from "react";
-import { getPlayers } from "@/lib/api/players";
+import { getPlayers } from "@/lib/database/queries/players";
 import PlayerRow from "./components/PlayerRow";
 
 const PlayersPage = async () => {

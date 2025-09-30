@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server'
+import { createClient } from '@/lib/database/server'
 import { Player } from '@/lib/types/database'
 
 export async function getPlayers(): Promise<{ data: Player[] | null; error: any }> {

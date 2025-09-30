@@ -1,5 +1,5 @@
-import { sendLeagueInvite } from "@/lib/email/resend";
-import { createClient } from "@/lib/supabase/server";
+import { sendLeagueInvite } from "@/lib/services/email/resend";
+import { createClient } from "@/lib/database/server";
 
 export async function createInvitation({
   leagueId,

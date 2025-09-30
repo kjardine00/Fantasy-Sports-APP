@@ -1,6 +1,6 @@
 import React from "react";
 import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { createClient } from "@/lib/database/server";
 
 const ProfilePage = async () => {
   const supabase = await createClient();

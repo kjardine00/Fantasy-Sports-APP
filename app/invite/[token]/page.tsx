@@ -1,6 +1,6 @@
-import { createClient } from "@/lib/supabase/server";
+import { createClient } from "@/lib/database/server";
 import { redirect } from "next/navigation";
-import { acceptInvitation } from "@/lib/api/invitations";
+import { acceptInvitation } from "@/lib/database/invitations";
 
 interface InvitePageProps {
   params: {

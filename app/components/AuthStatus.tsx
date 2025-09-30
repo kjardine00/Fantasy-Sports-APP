@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server'
+import { createClient } from '@/lib/database/server'
 import LogoutButton from './LogoutButton'
 
 export default async function AuthStatus() {

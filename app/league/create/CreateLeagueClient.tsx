@@ -1,68 +1,75 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { createClient } from "@/lib/supabase/client";
+import { createClient } from "@/lib/database/client";
 import NumberOfTeamsSelector from "../../components/NumberOfTeamsSelector";
-import { createLeague } from "@/lib/api/leagues";
+import { createLeagueAction } from "@/lib/server-actions/leagues";
 
 const CreateLeagueClient = () => {
   const router = useRouter();
   const supabase = createClient();
-
-
-  const [leagueName, setLeagueName] = useState("");
-  const [numberOfTeams, setNumberOfTeams] = useState("10");
-  const [useChemistry, setUseChemistry] = useState(true);
-  const [duplicatePlayers, setDuplicatePlayers] = useState("None");
+  const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
+    // Check for temp data from previous unauthenticated attempt
     const tempLeagueData = sessionStorage.getItem('tempLeagueData');
     if (tempLeagueData) {
-      const parsedData = JSON.parse(tempLeagueData)
-
-      setLeagueName(parsedData.name);
-      setNumberOfTeams(parsedData.numberOfTeams.toString());
-      setUseChemistry(parsedData.useChemistry);
-      setDuplicatePlayers(parsedData.duplicatePlayers);
-
+      const parsedData = JSON.parse(tempLeagueData);
+  
+      // Pre-populate form fields directly
+      const nameInput = document.querySelector('input[name="name"]') as HTMLInputElement;
+      const numberOfTeamsSelect = document.querySelector('select[name="numberOfTeams"]') as HTMLSelectElement;
+      const chemistryInput = document.querySelector('input[name="useChemistry"]') as HTMLInputElement;
+      const duplicatePlayersSelect = document.querySelector('select[name="duplicatePlayers"]') as HTMLSelectElement;
+  
+      if (nameInput) nameInput.value = parsedData.name;
+      if (numberOfTeamsSelect) numberOfTeamsSelect.value = parsedData.numberOfTeams.toString();
+      if (chemistryInput) chemistryInput.checked = parsedData.useChemistry;
+      if (duplicatePlayersSelect) duplicatePlayersSelect.value = parsedData.duplicatePlayers;
+  
       sessionStorage.removeItem('tempLeagueData');
-
-      handleCreateLeague();
+  
+      // Auto-submit the form
+      const form = document.querySelector('form[action]') as HTMLFormElement;
+      if (form) form.requestSubmit();
     }
-  })
+  }, []);
 
-  const handleCreateLeague = async () => {
-    const { data: { user } } = await supabase.auth.getUser();
-
-    const leagueData = {
-      name: leagueName,
-      numberOfTeams: parseInt(numberOfTeams),
-      useChemistry: useChemistry,
-      duplicatePlayers: duplicatePlayers
-    };
-
-    if (!user) {
-      sessionStorage.setItem("tempLeagueData", JSON.stringify(leagueData));
-      router.push("/login");
-      return;
-    } else if (user) {
-      const formData = new FormData();
-      formData.append('name', leagueName);
-      formData.append('numberOfTeams', numberOfTeams);
-      formData.append('useChemistry', useChemistry.toString());
-      formData.append('duplicatePlayers', duplicatePlayers);
-
-      const { data: league, error } = await createLeague(formData);
-      if (error) {
-        console.error('Failed to create League: ', error);
-        //TODO: Send Error Message to the User
+  const handleSubmit = async (formData: FormData) => {
+    setIsSubmitting(true);
+    setError(null);
+    
+    try {
+      // Check if user is authenticated
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        // Store form data in sessionStorage for later use
+        const tempData = {
+          name: formData.get('name') as string,
+          numberOfTeams: formData.get('numberOfTeams') as string,
+          useChemistry: formData.get('useChemistry') === 'on',
+          duplicatePlayers: formData.get('duplicatePlayers') as string
+        };
+        sessionStorage.setItem('tempLeagueData', JSON.stringify(tempData));
+        
+        // Redirect to login page
+        router.push('/login');
         return;
       }
-
-      router.push(`/league/${league.id}`);
+      
+      // User is authenticated, proceed with form submission
+      const result = await createLeagueAction(formData);
+      if (result?.error) {
+        setError(result.error);
+      }
+    } catch (err) {
+      setError('An unexpected error occurred');
+    } finally {
+      setIsSubmitting(false);
     }
-  }
+  };
 
   return (
     <>
@@ -73,19 +80,24 @@ const CreateLeagueClient = () => {
               Create League
             </h1>
 
-            <form action={handleCreateLeague} className="fieldset">
+            <form action={handleSubmit} className="fieldset">
+              {error && (
+                <div className="alert alert-error mb-4">
+                  <span>{error}</span>
+                </div>
+              )}
+
               <h2 className="fieldset-legend">League Name</h2>
               <input
                 type="text"
                 className="input input-bordered w-full"
                 placeholder="League Name"
-                value={leagueName}
-                onChange={(e) => setLeagueName(e.target.value)}
+                name="name"
                 required
               />
 
               <h2 className="fieldset-legend">Number of Teams</h2>
-              <NumberOfTeamsSelector defaultValue="10" onChange={setNumberOfTeams} value={numberOfTeams} />
+              <NumberOfTeamsSelector defaultValue="10" name="numberOfTeams" />
 
               <h2 className="fieldset-legend">Scoring</h2>
               <div className="form-control">
@@ -98,8 +110,7 @@ const CreateLeagueClient = () => {
                     <input
                       type="checkbox"
                       defaultChecked className="toggle"
-                      checked={useChemistry}
-                      onChange={(e) => setUseChemistry(e.target.checked)}
+                      name="useChemistry"
                     />
                   </div>
                 </label>
@@ -110,9 +121,8 @@ const CreateLeagueClient = () => {
                 <select
                   defaultValue="10"
                   className="select select-bordered w-full"
-                  value={duplicatePlayers}
-                  onChange={(e) => setDuplicatePlayers(e.target.value)}
-                >
+                  name="duplicatePlayers"
+                > 
                   <option disabled={true}>Number of Duplicate Players</option>
                   <option>None</option>
                   <option>1</option>
@@ -125,8 +135,9 @@ const CreateLeagueClient = () => {
                 <button
                   className="btn btn-primary btn-lg rounded"
                   type="submit"
+                  disabled={isSubmitting}
                 >
-                  Create League
+                  {isSubmitting ? 'Creating...' : 'Create League'}
                 </button>
               </div>
             </form>

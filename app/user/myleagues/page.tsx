@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server';
+import { createClient } from '@/lib/database/server';
 import React from 'react'
 
 const MyLeaguesPage = async () => {

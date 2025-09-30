@@ -1,6 +1,6 @@
 import Link from "next/link";
 import React from "react";
-import { createClient } from "@/lib/supabase/server";
+import { createClient } from "@/lib/database/server";
 import { logout } from "@/lib/auth/actions";
 import DefaultLinks from "./DefaultLinks";
 import ProfileIcon from "./ProfileIcon";

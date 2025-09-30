@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server'
+import { createClient } from '@/lib/database/server'
 
 export async function getUserLeagues(userId: string) {
   const supabase = await createClient()

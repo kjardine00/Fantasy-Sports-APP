@@ -1,5 +1,5 @@
-import { createClient } from '@/lib/supabase/server'
-import { RosterSlot, Player } from '../types'
+import { createClient } from '@/lib/database/server'
+import { RosterSlot, Player } from '../../types'
 
 export async function getTeamRoster(user_id: string, league_id: string) {
     const supabase = await createClient()

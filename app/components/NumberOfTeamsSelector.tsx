@@ -8,6 +8,7 @@ interface NumberOfTeamsSelectorProps {
   className?: string;
   value?: string;
   disabled?: boolean;
+  name?: string;
 }
 
 const NumberOfTeamsSelector: React.FC<NumberOfTeamsSelectorProps> = ({
@@ -16,6 +17,7 @@ const NumberOfTeamsSelector: React.FC<NumberOfTeamsSelectorProps> = ({
   className = "select select-bordered w-full",
   value,
   disabled = false,
+  name,
 }) => {
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     if (onChange) {
@@ -31,6 +33,7 @@ const NumberOfTeamsSelector: React.FC<NumberOfTeamsSelectorProps> = ({
         value={value}
         onChange={handleChange}
         disabled={disabled}
+        name={name}
       >
         <option disabled={true}>Number of Teams</option>
         <option value="4">4</option>

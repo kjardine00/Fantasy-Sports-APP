@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from 'react'
-import { sendLeagueInvite } from '@/lib/actions/invitations';
+import { sendLeagueInvite } from '@/lib/server-actions/invitations';
 
 interface InviteCardProps {
     isVisible: boolean;
