@@ -1,6 +1,10 @@
 import React from 'react'
 
-const MyTeamCard = () => {
+interface MyTeamCardProps {
+  leagueId?: string;
+}
+
+const MyTeamCard = ({ leagueId }: MyTeamCardProps) => {
     return (
         <div className="flex flex-col gap-4">
             <div className="sidebar-container card w-full lg:w-80 bg-base-100 shadow-lg">

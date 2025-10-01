@@ -4,6 +4,8 @@ import { login } from "@/lib/auth/actions";
 import Link from "next/link";
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useAlert } from "@/app/components/Alert/AlertContext";
+import { AlertType } from "@/lib/types/alert";
 
 interface LeagueData {
   name: string;
@@ -14,11 +16,14 @@ interface LeagueData {
 
 const LoginPage = () => {
   const router = useRouter();
+  const { addAlert } = useAlert();
 
-  const [draftLeagueData, setDraftLeagueData] = useState<LeagueData | null>(null);
+  const [draftLeagueData, setDraftLeagueData] = useState<LeagueData | null>(
+    null
+  );
 
   useEffect(() => {
-    const tempLeagueData = sessionStorage.getItem('tempLeagueData');
+    const tempLeagueData = sessionStorage.getItem("tempLeagueData");
     if (tempLeagueData) {
       setDraftLeagueData(JSON.parse(tempLeagueData));
     }
@@ -27,17 +32,23 @@ const LoginPage = () => {
   const handleLogin = async (formData: FormData) => {
     try {
       await login(formData);
-      
-      const draftLeagueData = sessionStorage.getItem('tempLeagueData');
+
+      const draftLeagueData = sessionStorage.getItem("tempLeagueData");
       if (draftLeagueData) {
-        router.push('/league/create');
+        sessionStorage.removeItem("tempLeagueData");
+        router.push("/league/create");
       } else {
-        router.push('/login');
+        router.push("/login");
       }
     } catch (error) {
-      console.error('Login failed: ', error);
+      addAlert({
+        message: "Login failed",
+        type: AlertType.ERROR,
+        duration: 2000,
+      });
+      sessionStorage.removeItem("tempLeagueData");
     }
-  }
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-base-200">
@@ -85,10 +96,14 @@ const LoginPage = () => {
             </div>
 
             <div className="card-actions flex justify-end space-x-2">
-              <button className="btn btn-primary rounded"> {/* TODO: add error handling and error messages */}
+              <button className="btn btn-primary rounded">
+                {" "}
+                {/* TODO: add error handling and error messages */}
                 Log In
               </button>
-              <Link href="/register" className="btn btn-secondary rounded">Don't have an account? Sign Up</Link>
+              <Link href="/register" className="btn btn-secondary rounded">
+                Don't have an account? Sign Up
+              </Link>
             </div>
           </form>
         </div>

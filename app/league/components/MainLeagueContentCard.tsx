@@ -2,12 +2,17 @@ import Link from 'next/link'
 import React from 'react'
 import NotFullPromptCard from './NotFullPromptCard'
 
-const MainLeagueContentCard = () => {
+interface MainLeagueContentCardProps {
+  leagueId?: string;
+  leagueName?: string;
+}
+
+const MainLeagueContentCard = ({ leagueId, leagueName }: MainLeagueContentCardProps) => {
     return (
         <div className="flex flex-col gap-4">
             <div className="main-container card w-full lg:w-160 bg-base-100 shadow-lg">
                 <div className="card-body">
-                    <h2 className="card-title text-xl font-bold">League Name Goes Here</h2>
+                    <h2 className="card-title text-xl font-bold">{leagueName || 'League Name Goes Here'}</h2>
                     <div className="navbar bg-base-100">  {/* TODO: fix the styling for this */}
                         <Link href="/league/settings" className="btn btn-ghost text-sm">Settings</Link>
                         <Link href="/league/members" className="btn btn-ghost text-sm">Members</Link>

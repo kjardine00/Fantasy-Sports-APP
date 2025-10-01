@@ -40,14 +40,18 @@ const ProfileIcon = ({ profile }: { profile: Profile }) => {
           <Link href="/user/myleagues">My Leagues</Link>
         </li>
         <li>
-          <form action={logout}>
-            <button 
-              type="submit" 
-              className="w-full text-left"
-            >
-              Logout
-            </button>
-          </form>
+          <button 
+            onClick={async () => {
+              // Clear tempLeagueData from sessionStorage
+              sessionStorage.removeItem('tempLeagueData');
+              
+              // Call the server logout action
+              await logout();
+            }}
+            className="w-full text-left"
+          >
+            Logout
+          </button>
         </li>
       </ul>
     </div>

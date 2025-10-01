@@ -42,10 +42,9 @@ const CreateLeagueClient = () => {
     setError(null);
     
     try {
-      // Check if user is authenticated
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
-        // Store form data in sessionStorage for later use
+
         const tempData = {
           name: formData.get('name') as string,
           numberOfTeams: formData.get('numberOfTeams') as string,
@@ -54,12 +53,12 @@ const CreateLeagueClient = () => {
         };
         sessionStorage.setItem('tempLeagueData', JSON.stringify(tempData));
         
-        // Redirect to login page
         router.push('/login');
         return;
       }
       
-      // User is authenticated, proceed with form submission
+      sessionStorage.removeItem('tempLeagueData');
+
       const result = await createLeagueAction(formData);
       if (result?.error) {
         setError(result.error);
