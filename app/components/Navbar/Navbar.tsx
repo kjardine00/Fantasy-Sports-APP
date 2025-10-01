@@ -1,9 +1,8 @@
 import Link from "next/link";
 import React from "react";
 import { createClient } from "@/lib/database/server";
-import { logout } from "@/lib/auth/actions";
-import DefaultLinks from "./DefaultLinks";
-import ProfileIcon from "./ProfileIcon";
+import DefaultLinks from "./components/DefaultLinks";
+import ProfileIcon from "./components/ProfileIcon";
 import { Profile } from "@/lib/types";
 
 const Navbar = async () => {
@@ -11,12 +10,13 @@ const Navbar = async () => {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  
-  const {
-    data,
-    error,
-  } = await supabase.from("profiles").select("*").eq("auth_id", user?.id).single();
-  
+
+  const { data, error } = await supabase
+    .from("profiles")
+    .select("*")
+    .eq("auth_id", user?.id)
+    .single();
+
   const profile = data || null;
 
   return (
@@ -33,25 +33,23 @@ const Navbar = async () => {
         {user ? (
           // Signed in mode
           <>
-            {/* TODO: remove after testing */}
-            <span className="badge badge-success">Signed In</span>
-
             <DefaultLinks />
             <ProfileIcon profile={profile as Profile} />
           </>
-
         ) : (
-
           // Not signed in mode
           <>
-            {/* TODO: remove after testing */}
-            <span className="badge badge-error">Signed Out</span>
-
             <DefaultLinks />
-            <Link className="btn btn-primary text-lg rounded px-4" href="/login">
+            <Link
+              className="btn btn-primary text-lg rounded px-4"
+              href="/login"
+            >
               Log In
             </Link>
-            <Link className="btn btn-secondary text-lg rounded px-4" href="/register">
+            <Link
+              className="btn btn-secondary text-lg rounded px-4"
+              href="/register"
+            >
               Sign Up
             </Link>
           </>

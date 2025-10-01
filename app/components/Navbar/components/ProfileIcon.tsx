@@ -1,12 +1,11 @@
 "use client";
 
-import { logout } from "@/lib/auth/actions";
 import { Profile } from "@/lib/types";
-import Link from "next/link";
 import React from "react";
+import Dropdown from "./Dropdown";
 
 const ProfileIcon = ({ profile }: { profile: Profile }) => {
-    return (
+  return (
     <div className="dropdown dropdown-end">
       <div
         tabIndex={0}
@@ -29,31 +28,7 @@ const ProfileIcon = ({ profile }: { profile: Profile }) => {
           )}
         </div>
       </div>
-      <ul
-        tabIndex={0}
-        className="menu menu-md dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow"
-      >
-        <li>
-          <Link href="/user/profile">Profile</Link>
-        </li>
-        <li>
-          <Link href="/user/myleagues">My Leagues</Link>
-        </li>
-        <li>
-          <button 
-            onClick={async () => {
-              // Clear tempLeagueData from sessionStorage
-              sessionStorage.removeItem('tempLeagueData');
-              
-              // Call the server logout action
-              await logout();
-            }}
-            className="w-full text-left"
-          >
-            Logout
-          </button>
-        </li>
-      </ul>
+      <Dropdown />
     </div>
   );
 };
