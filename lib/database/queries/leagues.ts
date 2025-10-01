@@ -3,7 +3,7 @@ import { createClient } from '@/lib/database/server'
 export async function getUserLeagues(userId: string) {
   const supabase = await createClient()
   const { data, error } = await supabase
-    .from('league_members')
+    .from('leagues_members')
     .select(`
       league_id,
       leagues (

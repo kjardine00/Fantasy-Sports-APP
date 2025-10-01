@@ -1,12 +1,10 @@
-"use client";
-
 import { Profile } from "@/lib/types";
 import React from "react";
 import Dropdown from "./Dropdown";
 
-const ProfileIcon = ({ profile }: { profile: Profile }) => {
+const ProfileIcon = ({ profile, userId }: { profile: Profile, userId: string }) => {
   return (
-    <div className="dropdown dropdown-end">
+    <div className="dropdown dropdown-end mr-2">
       <div
         tabIndex={0}
         role="button"
@@ -28,7 +26,7 @@ const ProfileIcon = ({ profile }: { profile: Profile }) => {
           )}
         </div>
       </div>
-      <Dropdown />
+      <Dropdown userId={userId} />
     </div>
   );
 };

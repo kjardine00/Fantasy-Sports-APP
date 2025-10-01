@@ -7,9 +7,18 @@ const MyLeagues = async ({ userId }: { userId: string }) => {
   const { data: userLeagues, error: userLeaguesError } =
     await getUserLeagues(userId);
 
+  if (userLeaguesError) {
+    console.error('Error fetching user leagues:', userLeaguesError);
+    return null;
+  }
+
+  if (!userLeagues || userLeagues.length === 0) {
+    return null;
+  }
+
   return (
     <>
-      {userLeagues?.map((member) => (
+      {userLeagues.map((member) => (
         <li key={member.league_id}>
           <Link href={`/league/${member.league_id}`}>
             {(member.leagues as any)?.name || 'Unnamed League'}
@@ -18,6 +27,6 @@ const MyLeagues = async ({ userId }: { userId: string }) => {
       ))}
     </>
   );
-    };
+};
 
 export default MyLeagues;

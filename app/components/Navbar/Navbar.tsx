@@ -34,7 +34,7 @@ const Navbar = async () => {
           // Signed in mode
           <>
             <DefaultLinks />
-            <ProfileIcon profile={profile as Profile} />
+            <ProfileIcon profile={profile as Profile} userId={user.id} />
           </>
         ) : (
           // Not signed in mode
