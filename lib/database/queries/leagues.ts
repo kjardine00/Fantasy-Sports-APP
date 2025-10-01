@@ -11,7 +11,8 @@ export async function getUserLeagues(userId: string) {
         name,
         owner_id,
         draft_completed,
-        created_at
+        created_at,
+        settings
       )
     `)
     .eq('user_id', userId)

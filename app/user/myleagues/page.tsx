@@ -1,38 +1,39 @@
 import { createClient } from '@/lib/database/server';
 import React from 'react'
+import { LeagueCard } from './LeagueCard';
+import { getUserLeagues } from '@/lib/database/queries/leagues';
+import { League } from '@/lib/types/database';
 
 const MyLeaguesPage = async () => {
-  
+
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  
-  const {
-    data, 
-    error,
-  } = await supabase.from("league_members").select("*").eq("user_id", user?.id);
-  const leagues = data || [];
 
-  console.log(leagues);
-  
+  const { data: userLeagues, error: userLeaguesError } =
+    await getUserLeagues(user?.id || '');
+
+  if (userLeaguesError) {
+    console.error('Error fetching user leagues:', userLeaguesError);
+    return null;
+  }
+
+  if (!userLeagues || userLeagues.length === 0) {
+    return null;
+  }
+
   return (
-
-
-    <div className="card bg-base-100 w-96 shadow-sm">
-      <figure>
-        <img
-          src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
-          alt="Shoes" />
-      </figure>
-      <div className="card-body">
-        <h2 className="card-title">Card Title</h2>
-        <p>A card component has a figure, a body part, and inside body there are title and actions parts</p>
-        <div className="card-actions justify-end">
-          <button className="btn btn-primary">Buy Now</button>
-        </div>
-      </div>
-    </div>
+    <>
+      {userLeagues.map((userLeague) => {
+        // Check if leagues array exists and has at least one element
+        if (!userLeague.leagues || userLeague.leagues.length === 0) {
+          console.warn(`No league data found for league_id: ${userLeague.league_id}`);
+          return null;
+        }
+        return <LeagueCard key={userLeague.league_id} league={userLeague.leagues[0]} />
+      })}
+    </>
   )
 }
 

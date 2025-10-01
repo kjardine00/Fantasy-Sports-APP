@@ -15,9 +15,9 @@ const Dropdown = async ({ userId }: { userId: string }) => {
           <Link href="/user/profile">Profile</Link>
         </li>
 
-        <li>
+        {/* <li>
           <Link href="/user/myleagues">My Leagues</Link>
-        </li>
+        </li> */}
 
         <div className="divider my-0"></div>
 

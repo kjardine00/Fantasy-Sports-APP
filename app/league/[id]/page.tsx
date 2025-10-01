@@ -3,6 +3,7 @@ import MyTeamCard from '../components/MyTeamCard';
 import MainLeagueContentCard from '../components/MainLeagueContentCard';
 import { createClient } from '@/lib/database/server';
 import { redirect } from 'next/navigation';
+import { League } from '@/lib/types/database';
 
 interface LeaguePageProps {
   params: {
@@ -11,7 +12,7 @@ interface LeaguePageProps {
 }
 
 const LeaguePage = async ({ params }: LeaguePageProps) => {
-  const { id } = params;
+  const { id } = await params;
   const supabase = await createClient();
   
   // Get current user
@@ -44,7 +45,14 @@ const LeaguePage = async ({ params }: LeaguePageProps) => {
     redirect('/league');
   }
 
-  const league = membership.leagues;
+  // With .single(), Supabase returns joined relations as objects, not arrays
+  // TypeScript types are incorrect, so we need to cast through unknown first
+  const league = (membership.leagues as unknown) as League;
+  
+  if (!league) {
+    console.error('No league found in membership data');
+    redirect('/');
+  }
 
   return (
     <div className="league-page min-h-screen bg-base-200">
@@ -83,7 +91,7 @@ const LeaguePage = async ({ params }: LeaguePageProps) => {
                 <div className="space-y-2">
                   <p><span className="font-medium">League:</span> {league.name}</p>
                   <p><span className="font-medium">Status:</span> {league.draft_completed ? 'Draft Complete' : 'Draft Pending'}</p>
-                  <p><span className="font-medium">Created:</span> {new Date(league.created_at).toLocaleDateString()}</p>
+                  <p><span className="font-medium">Created:</span> {league.created_at ? new Date(league.created_at).toLocaleDateString() : 'Unknown'}</p>
                 </div>
               </div>
             </div>
