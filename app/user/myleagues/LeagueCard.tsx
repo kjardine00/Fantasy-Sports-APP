@@ -1,4 +1,4 @@
-import { League } from '@/lib/types/database'
+import { League } from '@/lib/types/database_types'
 import React from 'react'
 
 export const LeagueCard = ({ league }: { league: League }) => {

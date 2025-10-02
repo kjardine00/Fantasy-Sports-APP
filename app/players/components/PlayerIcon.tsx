@@ -1,5 +1,5 @@
 import React from "react";
-import { Player } from "@/lib/types/database";
+import { Player } from "@/lib/types/database_types";
 import { getPlayerIcon } from "@/lib/assets";
 
 const PlayerIcon = ({ player }: { player: Player }) => {

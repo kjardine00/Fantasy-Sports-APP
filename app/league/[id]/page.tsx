@@ -3,7 +3,7 @@ import MyTeamCard from '../components/MyTeamCard';
 import MainLeagueContentCard from '../components/MainLeagueContentCard';
 import { createClient } from '@/lib/database/server';
 import { redirect } from 'next/navigation';
-import { League } from '@/lib/types/database';
+import { League } from '@/lib/types/database_types';
 
 interface LeaguePageProps {
   params: {

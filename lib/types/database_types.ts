@@ -11,21 +11,21 @@ export interface Profile {
 
 // League interface
 export interface League {
-  id: string;
+  id?: string;
   name: string;
   owner_id: string;
-  draft_completed: boolean | null;
-  created_at: string | null;
-  settings: Record<string, any> | null;
+  draft_completed: boolean;
+  created_at?: string;
+  settings: Record<string, any>;
 }
 
 // League members interface (many-to-many relationship)
 export interface LeagueMember {
   league_id: string;
   user_id: string;
-  role: string | null;
-  draft_pick_order: number | null;
-  created_at: string | null;
+  role: string;
+  draft_pick_order?: number | null;
+  created_at?: string;
 }
 
 // Matchup interface
@@ -55,8 +55,8 @@ export interface Player {
   } | null;
 }
 
-// Roster slot interface
-export interface RosterSlot {
+// Roster interface
+export interface Roster {
   id: string;
   league_id: string;
   user_id: string;

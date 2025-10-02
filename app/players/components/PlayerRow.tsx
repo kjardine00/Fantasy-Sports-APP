@@ -1,4 +1,4 @@
-import { Player } from "@/lib/types/database";
+import { Player } from "@/lib/types/database_types";
 import PlayerIcon from "./PlayerIcon";
 import PlayerTeamJerseyIcon from "./PlayerTeamJerseyIcon";
 import React from "react";

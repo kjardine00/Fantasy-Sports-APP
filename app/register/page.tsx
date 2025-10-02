@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from "react";
-import { signup } from '@/lib/auth/actions'
+import { signup } from '@/lib/server_actions/auth_actions'
 import { useRouter } from 'next/navigation';
 import Link from "next/link";
 

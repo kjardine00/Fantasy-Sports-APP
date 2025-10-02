@@ -1,7 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useState, ReactNode } from "react";
-import { Alert } from "@/lib/types/alert";
+import { Alert } from "@/lib/types/alert_types";
 
 interface AlertContextType {
     alerts: Alert[]; 

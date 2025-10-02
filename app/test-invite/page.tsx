@@ -2,7 +2,7 @@ import React from "react";
 import TestComponent from "./test-component";
 import { createClient } from '@/lib/database/server';
 
-import { getUserLeagues } from '@/lib/database/queries/leagues';
+import { getUserLeagues } from '@/lib/database/queries/leagues_queries';
 
 const TestInvitePage = async() => {
 

@@ -1,11 +1,11 @@
 "use client";
 
-import { login } from "@/lib/auth/actions";
+import { login } from "@/lib/server_actions/auth_actions";
 import Link from "next/link";
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAlert } from "@/app/components/Alert/AlertContext";
-import { AlertType } from "@/lib/types/alert";
+import { AlertType } from "@/lib/types/alert_types";
 
 interface LeagueData {
   name: string;

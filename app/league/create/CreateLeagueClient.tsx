@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/database/client";
 import NumberOfTeamsSelector from "../../components/NumberOfTeamsSelector";
-import { createLeagueAction } from "@/lib/server-actions/leagues";
+import { createLeagueAction } from "@/lib/server_actions/leagues_actions";
 
 const CreateLeagueClient = () => {
   const router = useRouter();

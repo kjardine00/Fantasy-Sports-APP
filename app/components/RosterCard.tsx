@@ -1,6 +1,6 @@
 import React from 'react'
 import PlayerRow from '../players/components/PlayerRow'
-import { getTeamRoster } from '@/lib/database/queries/teams'
+import { getTeamRoster } from '@/lib/database/queries/roster_queries'
 
 const user_id = '2f8e5809-ee99-4088-bff4-f975191350db'
 const league_id = '880e8400-e29b-41d4-a716-446655440001'

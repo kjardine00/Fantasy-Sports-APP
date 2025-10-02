@@ -1,5 +1,5 @@
 import React from "react";
-import { AlertType } from "@/lib/types/alert";
+import { AlertType } from "@/lib/types/alert_types";
 
 const getAlertIcon = (type: AlertType): string => {
   switch (type) {

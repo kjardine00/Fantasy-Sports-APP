@@ -1,9 +1,9 @@
 "use client";
 
-import { logout } from '@/lib/auth/actions'
+import { logout } from '@/lib/server_actions/auth_actions'
 import { useRouter } from 'next/navigation'
 import { useAlert } from './Alert/AlertContext';
-import { AlertType } from '@/lib/types/alert';
+import { AlertType } from '@/lib/types/alert_types';
 
 export default function LogoutButton() {
   const router = useRouter();

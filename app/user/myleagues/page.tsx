@@ -1,8 +1,8 @@
 import { createClient } from '@/lib/database/server';
 import React from 'react'
 import { LeagueCard } from './LeagueCard';
-import { getUserLeagues } from '@/lib/database/queries/leagues';
-import { League } from '@/lib/types/database';
+import { getUserLeagues } from '@/lib/database/queries/leagues_queries';
+import { League } from '@/lib/types/database_types';
 
 const MyLeaguesPage = async () => {
 

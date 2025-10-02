@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useAlert } from "../components/Alert/AlertContext";
-import { AlertType } from "@/lib/types/alert";
+import { AlertType } from "@/lib/types/alert_types";
 
 const testComponent = () => {
   const { addAlert } = useAlert();

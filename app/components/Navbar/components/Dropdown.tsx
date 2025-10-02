@@ -1,6 +1,6 @@
 import Link from "next/link";
 import React from "react";
-import { logout } from "@/lib/auth/actions";
+import { logout } from "@/lib/server_actions/auth_actions";
 import MyLeagues from "./MyLeagues";
 import LogoutButton from "@/app/components/LogoutButton";
 

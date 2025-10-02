@@ -1,7 +1,7 @@
 import Link from "next/link";
 import React from "react";
-import { getUserLeagues } from "@/lib/database/queries/leagues";
-import { League } from "@/lib/types/database";
+import { getUserLeagues } from "@/lib/database/queries/leagues_queries";
+import { League } from "@/lib/types/database_types";
 
 const MyLeagues = async ({ userId }: { userId: string }) => {
   const { data: userLeagues, error: userLeaguesError } =

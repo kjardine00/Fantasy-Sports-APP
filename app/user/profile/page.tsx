@@ -1,7 +1,7 @@
 import React from "react";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/database/server";
-import { Profile } from "@/lib/types/database";
+import { Profile } from "@/lib/types/database_types";
 
 // Fields to display:
 // Username

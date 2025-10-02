@@ -1,7 +1,7 @@
 'use server';
 
 import { createClient } from '@/lib/database/server';
-import { createInvitation } from '@/lib/database/invitations';
+import { createInvitation } from '@/lib/database/queries/invitations';
 import { redirect } from 'next/navigation';
 
 export async function sendLeagueInvite(formData: FormData) {
