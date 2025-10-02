@@ -12,6 +12,16 @@ export async function createLeague(league: League) {
     return { data, error }
 }
 
+export async function getLeague(leagueId: string) {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('leagues')
+    .select('*')
+    .eq('id', leagueId)
+    .single()
+  return { data, error }
+}
+
 export async function getUserLeagues(userId: string) {
   const supabase = await createClient()
   const { data, error } = await supabase

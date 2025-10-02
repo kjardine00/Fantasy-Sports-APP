@@ -5,7 +5,7 @@ import { createClient } from "@/lib/database/server";
 import { League, LeagueMember } from "@/lib/types/database_types";
 import { createLeague } from "@/lib/database/queries/leagues_queries";
 import { setLeagueComissioner } from "@/lib/database/queries/leagues_members_queries";
-import { AlertType } from "../types/alert_types";
+import { AlertType } from "../../types/alert_types";
 import { useAlert } from "@/app/components/Alert/AlertContext";
 
 export class LeagueService {
@@ -58,5 +58,7 @@ export class LeagueService {
     if (memberError) {
       return { data: league, error: memberError.message };
     }
+
+    return { data: league, error: null };
   }
 }

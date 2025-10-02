@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import NumberOfTeamsSelector from "../../components/NumberOfTeamsSelector";
-import { LeagueService } from "@/lib/server_actions/leagues_actions";
+import { LeagueService } from "@/lib/services/league/leagues_service";
 import { AlertType } from "@/lib/types/alert_types";
 import { useAlert } from "@/app/components/Alert/AlertContext";
 

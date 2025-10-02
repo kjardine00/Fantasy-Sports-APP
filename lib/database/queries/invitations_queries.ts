@@ -1,46 +1,27 @@
-import { sendLeagueInvite } from "@/lib/services/email/resend";
 import { createClient } from "@/lib/database/server";
+import { Invitation } from "@/lib/types/database_types";
 
-export async function createInvitation({
-  leagueId,
-  email,
-  invitedBy,
-}: {
-  leagueId: string;
-  email: string;
-  invitedBy: string;
-}) {
+export async function createInvitation({ invite }: { invite: Invitation }) {
   const supabase = await createClient();
-
   const { data: invitation, error } = await supabase
     .from("invitations")
-    .insert({
-      league_id: leagueId,
-      email: email,
-      invited_by: invitedBy,
-      // DB will create token
-    })
+    .insert(invite)
     .select()
     .single();
 
-  if (error) {
-    return { data: null, error };
-  }
+    if (error) {
+      return { data: null, error };
+    }
 
-  const inviteLink = `${process.env.NEXT_PUBLIC_APP_URL}/invite/${invitation.token}`;
-  const { error: emailError } = await sendLeagueInvite({
-    email: email,
-    leagueName: "Your League", // TODO: Fix with actual dynamic name
-    inviterName: "League Owner", // TODO: Fix with actual dynamic name
-    inviteLink: inviteLink,
-  });
+    return { data: invitation, error: null };
+}
 
-  if (emailError) {
-    await supabase.from("invitations").delete().eq("id", invitation.id);
-    return { data: null, error: emailError };
-  }
-
-  return { data: invitation, error: null };
+export async function deleteInvitation(invitationId: string) {
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("invitations")
+    .delete()
+    .eq("id", invitationId);
 }
 
 export async function acceptInvitation(token: string, userId: string) {
@@ -84,5 +65,3 @@ export async function acceptInvitation(token: string, userId: string) {
 
   return { data: invitation, error: null };  
 }
-
-

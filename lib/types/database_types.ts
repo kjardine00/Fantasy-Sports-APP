@@ -79,3 +79,15 @@ export interface Trade {
   created_at: string | null;
   completed_at: string | null;
 }
+
+//Invitations interface
+export interface Invitation {
+  id?: string;
+  league_id: string;
+  email: string;
+  invited_by: string;
+  token?: string;
+  status: string;
+  expires_at?: string;
+  created_at?: string;
+}

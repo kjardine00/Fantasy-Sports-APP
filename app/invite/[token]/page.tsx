@@ -1,6 +1,6 @@
 import { createClient } from "@/lib/database/server";
 import { redirect } from "next/navigation";
-import { acceptInvitation } from "@/lib/database/queries/invitations";
+import { acceptInvitation } from "@/lib/database/queries/invitations_queries";
 
 interface InvitePageProps {
   params: {

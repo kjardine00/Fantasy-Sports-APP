@@ -38,8 +38,8 @@ export async function setLeagueComissioner(member: LeagueMember) {
   const { data, error } = await supabase
     .from("leagues_members")
     .insert(member)
-    .eq("league_id", member.league_id)
-    .eq("user_id", member.user_id);
+    .select()
+    .single();
 
   return { data, error };
 }
