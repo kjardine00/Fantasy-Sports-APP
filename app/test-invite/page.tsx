@@ -1,13 +1,33 @@
 import React from "react";
 import TestComponent from "./test-component";
+import { createClient } from '@/lib/database/server';
 
-const TestInvitePage = () => {
+import { getUserLeagues } from '@/lib/database/queries/leagues';
+
+const TestInvitePage = async() => {
+
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  const { data: userLeagues, error: userLeaguesError } =
+    await getUserLeagues(user?.id || '');
+
+  if (userLeaguesError) {
+    console.error('Error fetching user leagues:', userLeaguesError);
+    return null;
+  }
+
+  const testData = userLeagues;
+
 
     return (
     <div className="min-h-screen bg-base-200 flex items-center justify-center">
-      <div className="card w-96 bg-base-100 shadow-xl">
+      <div className="card w-full bg-base-100 shadow-xl">
         <div className="card-body text-center">
-          <TestComponent />
+          <h1 className="card-title">Test Page</h1>
+          {testData?.map((league) => (
+            <h2 className="text-m">{JSON.stringify(league)}</h2>
+          ))}
         </div>
       </div>
     </div>
