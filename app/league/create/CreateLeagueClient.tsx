@@ -2,69 +2,90 @@
 
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { createClient } from "@/lib/database/client";
 import NumberOfTeamsSelector from "../../components/NumberOfTeamsSelector";
-import { createLeagueAction } from "@/lib/server_actions/leagues_actions";
+import { LeagueService } from "@/lib/server_actions/leagues_actions";
+import { AlertType } from "@/lib/types/alert_types";
+import { useAlert } from "@/app/components/Alert/AlertContext";
 
 const CreateLeagueClient = () => {
   const router = useRouter();
-  const supabase = createClient();
-  const [error, setError] = useState<string | null>(null);
+  const { addAlert } = useAlert();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     // Check for temp data from previous unauthenticated attempt
-    const tempLeagueData = sessionStorage.getItem('tempLeagueData');
+    const tempLeagueData = sessionStorage.getItem("tempLeagueData");
     if (tempLeagueData) {
       const parsedData = JSON.parse(tempLeagueData);
-  
+
       // Pre-populate form fields directly
-      const nameInput = document.querySelector('input[name="name"]') as HTMLInputElement;
-      const numberOfTeamsSelect = document.querySelector('select[name="numberOfTeams"]') as HTMLSelectElement;
-      const chemistryInput = document.querySelector('input[name="useChemistry"]') as HTMLInputElement;
-      const duplicatePlayersSelect = document.querySelector('select[name="duplicatePlayers"]') as HTMLSelectElement;
-  
+      const nameInput = document.querySelector(
+        'input[name="name"]'
+      ) as HTMLInputElement;
+      const numberOfTeamsSelect = document.querySelector(
+        'select[name="numberOfTeams"]'
+      ) as HTMLSelectElement;
+      const chemistryInput = document.querySelector(
+        'input[name="useChemistry"]'
+      ) as HTMLInputElement;
+      const duplicatePlayersSelect = document.querySelector(
+        'select[name="duplicatePlayers"]'
+      ) as HTMLSelectElement;
+
       if (nameInput) nameInput.value = parsedData.name;
-      if (numberOfTeamsSelect) numberOfTeamsSelect.value = parsedData.numberOfTeams.toString();
+      if (numberOfTeamsSelect)
+        numberOfTeamsSelect.value = parsedData.numberOfTeams.toString();
       if (chemistryInput) chemistryInput.checked = parsedData.useChemistry;
-      if (duplicatePlayersSelect) duplicatePlayersSelect.value = parsedData.duplicatePlayers;
-  
-      sessionStorage.removeItem('tempLeagueData');
-  
+      if (duplicatePlayersSelect)
+        duplicatePlayersSelect.value = parsedData.duplicatePlayers;
+
+      sessionStorage.removeItem("tempLeagueData");
+
       // Auto-submit the form
-      const form = document.querySelector('form[action]') as HTMLFormElement;
+      const form = document.querySelector("form[action]") as HTMLFormElement;
       if (form) form.requestSubmit();
     }
   }, []);
 
   const handleSubmit = async (formData: FormData) => {
     setIsSubmitting(true);
-    setError(null);
-    
+
+    sessionStorage.removeItem("tempLeagueData");
+
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
+      const result = await LeagueService.createLeague(formData);
 
-        const tempData = {
-          name: formData.get('name') as string,
-          numberOfTeams: formData.get('numberOfTeams') as string,
-          useChemistry: formData.get('useChemistry') === 'on',
-          duplicatePlayers: formData.get('duplicatePlayers') as string
-        };
-        sessionStorage.setItem('tempLeagueData', JSON.stringify(tempData));
-        
-        router.push('/login');
-        return;
-      }
-      
-      sessionStorage.removeItem('tempLeagueData');
-
-      const result = await createLeagueAction(formData);
       if (result?.error) {
-        setError(result.error);
+        if (result.error === "You must be logged in to create a league") {
+          const tempData = {
+            name: formData.get("name") as string,
+            numberOfTeams: formData.get("numberOfTeams") as string,
+            useChemistry: formData.get("useChemistry") === "on",
+            duplicatePlayers: formData.get("duplicatePlayers") as string,
+          };
+          sessionStorage.setItem("tempLeagueData", JSON.stringify(tempData));
+          router.push("/login");
+        } else {
+          addAlert({
+            message: result.error,
+            type: AlertType.ERROR,
+            duration: 5000,
+          });
+        }
+      } else if (result?.data) {
+        addAlert({
+          message: "League created successfully",
+          type: AlertType.SUCCESS,
+          duration: 5000,
+        });
+        router.push(`/league/${result.data.id}`);
       }
     } catch (err) {
-      setError('An unexpected error occurred');
+      addAlert({
+        message: "An unexpected error occurred",
+        type: AlertType.ERROR,
+        duration: 5000,
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -80,12 +101,6 @@ const CreateLeagueClient = () => {
             </h1>
 
             <form action={handleSubmit} className="fieldset">
-              {error && (
-                <div className="alert alert-error mb-4">
-                  <span>{error}</span>
-                </div>
-              )}
-
               <h2 className="fieldset-legend">League Name</h2>
               <input
                 type="text"
@@ -108,7 +123,8 @@ const CreateLeagueClient = () => {
                   >
                     <input
                       type="checkbox"
-                      defaultChecked className="toggle"
+                      defaultChecked
+                      className="toggle"
                       name="useChemistry"
                     />
                   </div>
@@ -121,7 +137,7 @@ const CreateLeagueClient = () => {
                   defaultValue="10"
                   className="select select-bordered w-full"
                   name="duplicatePlayers"
-                > 
+                >
                   <option disabled={true}>Number of Duplicate Players</option>
                   <option>None</option>
                   <option>1</option>
@@ -136,7 +152,7 @@ const CreateLeagueClient = () => {
                   type="submit"
                   disabled={isSubmitting}
                 >
-                  {isSubmitting ? 'Creating...' : 'Create League'}
+                  {isSubmitting ? "Creating..." : "Create League"}
                 </button>
               </div>
             </form>
