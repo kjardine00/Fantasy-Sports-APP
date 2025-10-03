@@ -12,7 +12,7 @@ interface LeaguePageProps {
 }
 
 const LeaguePage = async ({ params }: LeaguePageProps) => {
-  const { shortCode } = await params;
+  const { shortCode } = params;
   const supabase = await createClient();
 
   const {
@@ -65,7 +65,7 @@ const LeaguePage = async ({ params }: LeaguePageProps) => {
           {/* Main Content Column */}
           <div className="flex flex-col gap-4">
             <MainLeagueContentCard
-              leagueId={league.id}
+              shortCode={shortCode}
               leagueName={league.name}
               isCommissioner={isCommissioner}
             />
