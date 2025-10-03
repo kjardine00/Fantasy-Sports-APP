@@ -1,22 +1,55 @@
 import React from 'react'
-import members from '../../../public/data/members.json'
 import Link from 'next/link';
+import { LeagueService } from '@/lib/services/league/leagues_service';
+import { createClient } from "@/lib/database/server";
+import { redirect } from "next/navigation";
+import members from '../../../../public/data/members.json'
 
-const MembersPage = () => {
+interface MembersPageProps {
+  params: {
+    shortCode: string;
+  };
+}
+
+const MembersPage = async ({ params }: MembersPageProps) => {
+    const { shortCode } = await params;
+    const supabase = await createClient();
+
+    const {
+        data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) {
+        redirect("/login");
+    }
+
+    const { data: league, error: leagueError } = await LeagueService.getLeagueByShortCode(shortCode);
+    if (leagueError) {
+        redirect("/");
+    }
+
+    const { data: membership, error: membershipError } =
+        await LeagueService.validateLeagueMembership(league.id, user.id);
+
+    if (membershipError || !membership) {
+        redirect("/");
+    }
+
     const membersData = members.Members;
 
     return (
         <div className="members-page p-10">
-            <div className="flex items-center gap-4">
-                <h1 className="text-2xl font-bold">League Members</h1>
-                <h4>Your League Name</h4>
+            <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                    <h1 className="text-2xl font-bold">League Members</h1>
+                    <h4>{league.name}</h4>
+                </div>
 
-                <Link href="/league/settings" className="btn btn-primary rounded-full flex-end">Change Number of Teams</Link>
+                <Link href={`/league/${league.id}/settings`} className="btn btn-primary rounded-full">Change Number of Teams</Link>
             </div>
 
             <div className="invite-link p-10 flex items-center gap-4">
                 <h2>Invite Link</h2>
-                <p>https://www.fantasysports.com/league/1234567890</p>
+                <p>https://www.fantasysports.com/league/invitelink</p>
                 <p>Copy Link</p>
             </div>
 

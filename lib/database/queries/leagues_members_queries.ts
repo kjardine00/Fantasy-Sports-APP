@@ -22,14 +22,14 @@ export async function setLeagueMember(member: LeagueMember) {
   return { data, error };
 }
 
-export async function getLeaguesMembersCommissioner(league_id: string) {
+export async function getMemberRole(league_id: string, user_id: string) {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("leagues_members")
-    .select("*")
-    .eq("role", "commissioner")
-    .eq("league_id", league_id);
-
+    .select("role")
+    .eq("league_id", league_id)
+    .eq("user_id", user_id)
+    .single();
   return { data, error };
 }
 
@@ -52,5 +52,15 @@ export async function getDraftOrder(league_id: string) {
     .eq("league_id", league_id)
     .order("draft_pick_order", { ascending: true });
 
+  return { data, error };
+}
+
+export async function getLeagueByShortCode(shortCode: string) {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("leagues")
+    .select("*")
+    .eq("short_code", shortCode)
+    .single();
   return { data, error };
 }

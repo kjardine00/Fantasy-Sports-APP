@@ -1,27 +1,30 @@
 import Link from "next/link";
 import React from "react";
-import { getUserLeagues } from "@/lib/database/queries/leagues_queries";
+import { LeagueService } from "@/lib/services/league/leagues_service";
 import { League } from "@/lib/types/database_types";
 
 const MyLeagues = async ({ userId }: { userId: string }) => {
-  const { data: userLeagues, error: userLeaguesError } =
-    await getUserLeagues(userId);
+  const { data: leagues, error: leagueError } =
+    await LeagueService.getLeagues(userId);
 
-  if (userLeaguesError) {
-    console.error('Error fetching user leagues:', userLeaguesError);
+  if (leagueError) {
     return null;
   }
 
-  if (!userLeagues || userLeagues.length === 0) {
-    return null;
+  if (!leagues || leagues.length === 0) {
+    return (
+      <Link href="/league/create" className="btn btn-primary">
+        Create League
+      </Link>
+    );
   }
 
   return (
     <>
-      {userLeagues.map((member) => (
-        <li key={member.league_id}>
-          <Link href={`/league/${member.league_id}`}>
-            {((member.leagues as unknown) as League)?.name || 'Unnamed League'}
+      {leagues.map((league: League, index: number) => (
+        <li key={index}>
+          <Link href={`/league/${league.short_code}`}>
+            {league.name || "Unnamed League"}
           </Link>
         </li>
       ))}

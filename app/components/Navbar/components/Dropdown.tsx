@@ -1,6 +1,5 @@
 import Link from "next/link";
 import React from "react";
-import { logout } from "@/lib/server_actions/auth_actions";
 import MyLeagues from "./MyLeagues";
 import LogoutButton from "@/app/components/LogoutButton";
 
@@ -9,7 +8,7 @@ const Dropdown = async ({ userId }: { userId: string }) => {
     <div>
       <ul
         tabIndex={0}
-        className="menu menu-md dropdown-content bg-base-200 rounded-box z-[1] mt-3 w-52 p-2 shadow mr-2 mt-1"
+        className="menu menu-md dropdown-content bg-base-200 rounded-box z-[1] w-52 p-2 shadow mr-2 mt-1"
       >
         <li>
           <Link href="/user/profile">Profile</Link>
@@ -23,10 +22,15 @@ const Dropdown = async ({ userId }: { userId: string }) => {
 
         {userId && <MyLeagues userId={userId} />}
 
+        {/* <li className="text-sm text-gray-400">
+            <Link href="/league/create" className="btn btn-primary">
+              Create League
+            </Link>
+          </li> */}
+
         <li className="py-2">
           <LogoutButton />
         </li>
-
       </ul>
     </div>
   );

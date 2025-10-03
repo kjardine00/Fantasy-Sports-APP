@@ -22,7 +22,27 @@ export async function getLeague(leagueId: string) {
   return { data, error }
 }
 
-export async function getUserLeagues(userId: string) {
+export async function getLeagueByShortCode(shortCode: string) {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('leagues')
+    .select('*')
+    .eq('short_code', shortCode)
+    .single()
+  return { data, error }
+}
+
+export async function checkShortCodeExists(shortCode: string) {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('leagues')
+    .select('id')
+    .eq('short_code', shortCode)
+    .maybeSingle()
+  return { exists: !!data, error }
+}
+
+export async function getUsersLeagues(userId: string) {
   const supabase = await createClient()
   const { data, error } = await supabase
     .from('leagues_members')
@@ -33,6 +53,7 @@ export async function getUserLeagues(userId: string) {
         name,
         owner_id,
         draft_completed,
+        short_code,
         created_at,
         settings
       )

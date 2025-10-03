@@ -15,6 +15,7 @@ export interface League {
   name: string;
   owner_id: string;
   draft_completed: boolean;
+  short_code: string;
   created_at?: string;
   settings: Record<string, any>;
 }
