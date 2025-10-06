@@ -32,6 +32,16 @@ export async function getLeagueByShortCode(shortCode: string) {
   return { data, error }
 }
 
+export async function getLeagueSettings(leagueId: string) {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('leagues')
+    .select('settings')
+    .eq('id', leagueId)
+    .single()
+  return { data, error }
+}
+
 export async function checkShortCodeExists(shortCode: string) {
   const supabase = await createClient()
   const { data, error } = await supabase

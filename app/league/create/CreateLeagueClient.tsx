@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import NumberOfTeamsSelector from "../../components/NumberOfTeamsSelector";
-import { LeagueService } from "@/lib/services/league/leagues_service";
+import { createLeagueAction } from "@/lib/server_actions/leagues_actions";
 import { AlertType } from "@/lib/types/alert_types";
 import { useAlert } from "@/app/components/Alert/AlertContext";
 
@@ -53,7 +53,7 @@ const CreateLeagueClient = () => {
     sessionStorage.removeItem("tempLeagueData");
 
     try {
-      const result = await LeagueService.createLeague(formData);
+      const result = await createLeagueAction(formData);
 
       if (result?.error) {
         if (result.error === "You must be logged in to create a league") {

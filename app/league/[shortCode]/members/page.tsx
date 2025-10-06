@@ -63,15 +63,12 @@ const MembersPage = async ({ params }: MembersPageProps) => {
 
       <div className="members-list p-10">
         <div className="overflow-x-auto">
-
-          <MembersTable leagueId={league.id} userId={user.id} />  
-      
+          <MembersTable leagueId={league.id} userId={user.id} />
         </div>
 
         <div className="invite-options py-10">
+          <h2>Invite Options</h2>
           <table className="table">
-            <h2>Invite Options</h2>
-
             <tbody>
               <tr>
                 <td>Send Invites to</td>
