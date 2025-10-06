@@ -27,6 +27,11 @@ export interface LeagueMember {
   role: string;
   draft_pick_order?: number | null;
   created_at?: string;
+  league_number: number | null;
+  abbreviation: string | null;
+  team_icon?: string | null;
+  team_name: string | null;
+  status?: string | null;
 }
 
 // Matchup interface

@@ -4,6 +4,7 @@ import { LeagueService } from "@/lib/services/league/leagues_service";
 import { createClient } from "@/lib/database/server";
 import { redirect } from "next/navigation";
 import members from "../../../../public/data/members.json";
+import MembersTable from "./MembersTable";
 
 interface MembersPageProps {
   params: {
@@ -61,41 +62,10 @@ const MembersPage = async ({ params }: MembersPageProps) => {
       </div>
 
       <div className="members-list p-10">
-        <h2>Members</h2>
         <div className="overflow-x-auto">
-          <table className="table">
-            {/* head */}
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>ABBRV</th>
-                <th>TEAM NAME</th>
-                <th>MANAGER NAME</th>
-                <th>EMAIL</th>
-                <th>STATUS</th>
-                <th>ACTION</th>
-              </tr>
-            </thead>
-            <tbody>
-              {membersData.map((member, index) => (
-                <tr key={index}>
-                  <th>{index + 1}</th>
-                  <td>{member.Abbrv}</td>
-                  <td>{member.TeamName}</td>{" "}
-                  {/* TODO: Add the team logo to preface the team name */}
-                  <td>{member.ManagerName}</td>
-                  <td>{member.Email}</td>{" "}
-                  {/* TODO: Create a component that if there is no member then allow for an email to be entered */}
-                  <td>{member.Status}</td>
-                  <td>
-                    <button className="btn btn-primary rounded-full">
-                      Invite
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+
+          <MembersTable leagueId={league.id} userId={user.id} />  
+      
         </div>
 
         <div className="invite-options py-10">

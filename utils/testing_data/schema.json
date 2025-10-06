@@ -37,6 +37,12 @@
           "column_name": "settings",
           "is_nullable": "YES",
           "column_default": "'{}'::jsonb"
+        },
+        {
+          "data_type": "character varying",
+          "column_name": "short_code",
+          "is_nullable": "YES",
+          "column_default": null
         }
       ],
       "table_name": "leagues"
@@ -72,6 +78,36 @@
           "column_name": "created_at",
           "is_nullable": "YES",
           "column_default": "now()"
+        },
+        {
+          "data_type": "integer",
+          "column_name": "league_number",
+          "is_nullable": "YES",
+          "column_default": null
+        },
+        {
+          "data_type": "character varying",
+          "column_name": "abbreviation",
+          "is_nullable": "YES",
+          "column_default": null
+        },
+        {
+          "data_type": "character varying",
+          "column_name": "team_icon",
+          "is_nullable": "YES",
+          "column_default": null
+        },
+        {
+          "data_type": "character varying",
+          "column_name": "team_name",
+          "is_nullable": "YES",
+          "column_default": null
+        },
+        {
+          "data_type": "character varying",
+          "column_name": "status",
+          "is_nullable": "YES",
+          "column_default": null
         }
       ],
       "table_name": "leagues_members"
@@ -98,9 +134,9 @@
         },
         {
           "data_type": "jsonb",
-          "column_name": "stats",
+          "column_name": "points",
           "is_nullable": "YES",
-          "column_default": "'{}'::jsonb"
+          "column_default": null
         }
       ],
       "table_name": "players"
@@ -162,7 +198,7 @@
           "column_default": "now()"
         }
       ],
-      "table_name": "roster_slots"
+      "table_name": "roster"
     },
     {
       "columns": [
@@ -281,6 +317,65 @@
         }
       ],
       "table_name": "trades"
+    },
+    {
+      "columns": [
+        {
+          "data_type": "uuid",
+          "column_name": "id",
+          "is_nullable": "NO",
+          "column_default": "gen_random_uuid()"
+        },
+        {
+          "data_type": "uuid",
+          "column_name": "league_id",
+          "is_nullable": "NO",
+          "column_default": null
+        },
+        {
+          "data_type": "text",
+          "column_name": "email",
+          "is_nullable": "NO",
+          "column_default": null
+        },
+        {
+          "data_type": "uuid",
+          "column_name": "invited_by",
+          "is_nullable": "NO",
+          "column_default": null
+        },
+        {
+          "data_type": "text",
+          "column_name": "token",
+          "is_nullable": "NO",
+          "column_default": "\"substring\"(replace((gen_random_uuid())::text, '-'::text, ''::text), 1, 12)"
+        },
+        {
+          "data_type": "text",
+          "column_name": "status",
+          "is_nullable": "YES",
+          "column_default": "'pending'::text"
+        },
+        {
+          "data_type": "timestamp with time zone",
+          "column_name": "expires_at",
+          "is_nullable": "YES",
+          "column_default": "(now() + '7 days'::interval)"
+        },
+        {
+          "data_type": "timestamp with time zone",
+          "column_name": "created_at",
+          "is_nullable": "YES",
+          "column_default": "now()"
+        },
+        {
+          "data_type": "timestamp with time zone",
+          "column_name": "accepted_at",
+          "is_nullable": "YES",
+          "column_default": null
+        }
+      ],
+      "table_name": "invitations"
     },
     {
       "columns": [

@@ -11,6 +11,15 @@ export async function getAllLeaguesMembers(league_id: string) {
   return { data, error };
 }
 
+export async function getAllLeaguesMembersAndUserInfo(league_id: string) {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("leagues_members")
+    .select("*")
+    .eq("league_id", league_id);
+  return { data, error };
+}
+
 export async function setLeagueMember(member: LeagueMember) {
   const supabase = await createClient();
   const { data, error } = await supabase
