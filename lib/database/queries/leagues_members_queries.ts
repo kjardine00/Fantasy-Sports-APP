@@ -13,11 +13,59 @@ export async function getAllLeaguesMembers(league_id: string) {
 
 export async function getAllLeaguesMembersAndUserInfo(league_id: string) {
   const supabase = await createClient();
-  const { data, error } = await supabase
+  
+  // First get league members
+  const { data: membersData, error: membersError } = await supabase
     .from("leagues_members")
-    .select("*")
+    .select(`
+      league_number,
+      abbreviation,
+      team_icon,
+      team_name,
+      status,
+      user_id
+    `)
     .eq("league_id", league_id);
-  return { data, error };
+
+  if (membersError) {
+    return { data: null, error: membersError };
+  }
+
+  if (!membersData || membersData.length === 0) {
+    return { data: [], error: null };
+  }
+
+  // Get user IDs to fetch profiles
+  const userIds = membersData.map(member => member.user_id);
+
+  // Fetch profiles for these users
+  const { data: profilesData, error: profilesError } = await supabase
+    .from("profiles")
+    .select(`
+      id,
+      auth_id,
+      username,
+      role,
+      profile_picture,
+      created_at,
+      updated_at
+    `)
+    .in("auth_id", userIds);
+
+  if (profilesError) {
+    return { data: null, error: profilesError };
+  }
+
+  // Combine the data
+  const combinedData = membersData.map(member => {
+    const profile = profilesData?.find(p => p.auth_id === member.user_id);
+    return {
+      ...member,
+      profiles: profile
+    };
+  });
+
+  return { data: combinedData, error: null };
 }
 
 export async function setLeagueMember(member: LeagueMember) {

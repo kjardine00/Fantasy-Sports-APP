@@ -4,6 +4,5 @@ export interface MemberRow {
   team_icon: string;
   team_name: string;
   manager_name: string;
-  email: string;
   status: string;
 }
