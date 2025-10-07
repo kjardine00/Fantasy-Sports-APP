@@ -18,9 +18,11 @@ const getAlertIcon = (type: AlertType): string => {
 
 const Alert = ( {error, type}: {error: string, type: AlertType} ) => {
 
-  console.log(`${type}: ${error}`)
+  console.log(`Alert type: ${type}, String value: ${String(type)}`)
+  console.log(`Full className: alert alert-${String(type)}`)
+  
   return (
-    <div role="alert" className={`alert alert-${type}`}>
+    <div role="alert" className={`alert alert-${String(type)}`}>
       <svg
         className="h-6 w-6 shrink-0 stroke-current"
         fill="none"
@@ -33,7 +35,7 @@ const Alert = ( {error, type}: {error: string, type: AlertType} ) => {
           d={getAlertIcon(type)}
         />
       </svg>
-      <span>{`${type}: ${error}`}</span>
+      <span>{error}</span>
     </div>
   );
 };

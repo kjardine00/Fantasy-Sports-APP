@@ -1,7 +1,7 @@
 import { createClient } from "@/lib/database/server";
 import { League, LeagueMember } from "@/lib/types/database_types";
 import {
-  createLeague,
+  insertLeague,
   getLeague,
   getUsersLeagues,
 } from "@/lib/database/queries/leagues_queries";
@@ -12,6 +12,7 @@ import {
   getLeagueByShortCode,
 } from "@/lib/database/queries/leagues_members_queries";
 import { generateShortCode } from "@/utils/short-code-gen";
+import { InvitationService } from "../invitation/invitation_service";
 
 export class LeagueService {
   static async getLeague(leagueId: string) {
@@ -23,7 +24,7 @@ export class LeagueService {
   }
 
   static async getLeagues(userId: string) {
-    const {data, error} = await getUsersLeagues(userId);
+    const { data, error } = await getUsersLeagues(userId);
 
     if (error) {
       return { error: error.message };
@@ -43,7 +44,7 @@ export class LeagueService {
         draft_completed: league.draft_completed,
         short_code: league.short_code,
         created_at: league.created_at,
-        settings: league.settings
+        settings: league.settings,
       }));
 
     return { data: leagues, error: null };
@@ -97,7 +98,7 @@ export class LeagueService {
       settings,
     };
 
-    const { data: league, error: leagueError } = await createLeague(newLeague);
+    const { data: league, error: leagueError } = await insertLeague(newLeague);
 
     if (leagueError) {
       return { data: null, error: leagueError.message };
@@ -122,6 +123,13 @@ export class LeagueService {
       return { data: league, error: memberError.message };
     }
 
+    // const { error: inviteError } = await InvitationService.createInviteLink(
+    //   league.id,
+    // );
+    // if (inviteError) {
+    //   return { data: league, error: inviteError.message };
+    // }
+
     return { data: league, error: null };
   }
 
@@ -132,7 +140,7 @@ export class LeagueService {
     }
     return { data: data, error: null };
   }
-  
+
   private static async generateUniqueShortCode(): Promise<string> {
     const maxRetries = 10;
 

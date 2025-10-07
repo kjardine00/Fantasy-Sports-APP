@@ -2,6 +2,9 @@ import { createClient } from "@/lib/database/server";
 import { redirect } from "next/navigation";
 import { acceptInvitation } from "@/lib/database/queries/invitations_queries";
 
+
+//TODO: Add Update invite page to handle generic tokens and show appropriate UI
+//TODO: Add league capacity/max teams tracking to prevent overfilling
 interface InvitePageProps {
   params: {
     token: string;

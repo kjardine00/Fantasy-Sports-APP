@@ -4,6 +4,7 @@ import { LeagueService } from "@/lib/services/league/leagues_service";
 import { createClient } from "@/lib/database/server";
 import { redirect } from "next/navigation";
 import MembersTable from "./MembersTable";
+import InviteLinkCard from "../../components/invite/InviteLinkCard";
 
 interface MembersPageProps {
   params: {
@@ -40,68 +41,31 @@ const MembersPage = async ({ params }: MembersPageProps) => {
   }
 
   return (
-    <div className="members-page p-10">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <h1 className="text-2xl font-bold">League Members</h1>
-          <h4>{league.name}</h4>
-        </div>
+    <div className="league-page min-h-screen bg-base-200">
+      <div className="container mx-auto px-4 py-8">
+        <div className="card w-full bg-base-100 shadow-lg">
+          <div className="flex items-center justify-between mx-6 px-4 py-6">
+            
+            <div className="flex items-center gap-4">
+              <h1 className="text-2xl font-bold">League Members</h1>
+              <h4 className="text-md font-semibold text-base-content/70">{league.name}</h4>
+            </div>
 
-        <Link
-          href={`/league/${league.id}/settings`}
-          className="btn btn-primary rounded-full"
-        >
-          Change Number of Teams
-        </Link>
-      </div>
+            <Link
+              href={`/league/${league.id}/settings`}
+              className="btn btn-primary rounded-full"
+            >
+              Change Number of Teams
+            </Link>
+          </div>
 
-      <div className="invite-link p-10 flex items-center gap-4">
-        <h2>Invite Link</h2>
-        <p>https://www.fantasysports.com/league/invitelink</p>
-        <p>Copy Link</p>
-      </div>
+          <InviteLinkCard leagueId={league.id} />
 
-      <div className="members-list p-10">
-        <div className="overflow-x-auto">
-          <MembersTable leagueId={league.id} userId={user.id} />
-        </div>
-
-        <div className="invite-options py-10">
-          <h2>Invite Options</h2>
-          <table className="table">
-            <tbody>
-              <tr>
-                <td>Send Invites to</td>
-                <td>Copy Link</td>
-              </tr>
-              <tr>
-                <td>Send me a copy of each invite</td>
-                <td>
-                  <input type="checkbox" className="toggle" />
-                </td>
-              </tr>
-              <tr>
-                <td>Add a custom message</td>
-                <td>
-                  <input type="checkbox" className="toggle py-2" />
-                  <textarea
-                    className="textarea textarea-bordered w-full py-2"
-                    placeholder="Custom message"
-                  ></textarea>{" "}
-                  {/* TODO: Make this a component with the toggle that is only visable if the toggle is checked */}
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <div className="submission-buttons justify-end mt-6">
-          <button className="btn btn-primary rounded-full">
-            Submit Manager Info and/or Send Invites
-          </button>
-          <button className="btn btn-outline btn-secondary rounded-full">
-            Cancel
-          </button>
+          <div className="members-list card-body mx-6 px-4 py-6">
+            <div className="overflow-x-auto">
+              <MembersTable leagueId={league.id} userId={user.id} />
+            </div>
+          </div>
         </div>
       </div>
     </div>

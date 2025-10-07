@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/database/server'
 import { League } from '@/lib/types/database_types'
 
-export async function createLeague(league: League) {
+export async function insertLeague(league: League) {
   const supabase = await createClient()
   const { data, error } = await supabase
     .from('leagues')

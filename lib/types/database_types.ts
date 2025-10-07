@@ -3,7 +3,7 @@ export interface Profile {
   id: string;
   auth_id: string;
   username: string | null;
-  role: string;
+  role: 'user' | 'admin';
   profile_picture: string | null;
   created_at: string;
   updated_at: string;
@@ -24,14 +24,14 @@ export interface League {
 export interface LeagueMember {
   league_id: string;
   user_id: string;
-  role: string;
+  role: 'member' | 'commissioner';
   draft_pick_order?: number | null;
   created_at?: string;
   league_number: number | null;
   abbreviation: string | null;
   team_icon?: string | null;
   team_name: string | null;
-  status?: string | null;
+  status?: 'Pending' | 'Joined';
 }
 
 // Matchup interface
@@ -88,12 +88,16 @@ export interface Trade {
 
 //Invitations interface
 export interface Invitation {
-  id?: string;
+  id?: string; // DB generated
   league_id: string;
-  email: string;
+  email?: string;
   invited_by: string;
   token?: string;
-  status: string;
+  status: 'pending' | 'accepted' | 'expired';
   expires_at?: string;
-  created_at?: string;
+  created_at?: string; // DB generated
+  accepted_at?: string;
+  max_uses?: number | null; // null = unlimited uses
+  current_uses?: number; // DB default is 0
+  invite_type?: 'email' | 'general'; // 'email' for specific invites, 'general' for generic links
 }

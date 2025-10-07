@@ -33,7 +33,7 @@ export class MembersService {
       team_icon: member.team_icon || "",
       team_name: member.team_name || "",
       manager_name: member.profiles?.username || "Unknown",
-      status: member.status || "member",
+      status: member.status || "",
       user_id: member.user_id, // Keep user_id for sorting
     }));
 
@@ -57,7 +57,7 @@ export class MembersService {
           team_icon: "",
           team_name: "Team " + i,
           manager_name: "",
-          status: "empty",
+          status: "",
         });
       }
     }
