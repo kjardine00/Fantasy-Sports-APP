@@ -3,7 +3,6 @@ import Link from "next/link";
 import { LeagueService } from "@/lib/services/league/leagues_service";
 import { createClient } from "@/lib/database/server";
 import { redirect } from "next/navigation";
-import members from "../../../../public/data/members.json";
 import MembersTable from "./MembersTable";
 
 interface MembersPageProps {
@@ -13,18 +12,23 @@ interface MembersPageProps {
 }
 
 const MembersPage = async ({ params }: MembersPageProps) => {
-  const { shortCode } = params;
+  const { shortCode } = await params;
   const supabase = await createClient();
+
+  // Get user and validate league membership in parallel
+  const [userResult, leagueResult] = await Promise.all([
+    supabase.auth.getUser(),
+    LeagueService.getLeagueByShortCode(shortCode),
+  ]);
 
   const {
     data: { user },
-  } = await supabase.auth.getUser();
+  } = userResult;
   if (!user) {
     redirect("/login");
   }
 
-  const { data: league, error: leagueError } =
-    await LeagueService.getLeagueByShortCode(shortCode);
+  const { data: league, error: leagueError } = leagueResult;
   if (leagueError) {
     redirect("/");
   }
@@ -34,10 +38,6 @@ const MembersPage = async ({ params }: MembersPageProps) => {
   if (membershipError || !membership) {
     redirect("/");
   }
-
-  const leagueNumMembers = league.num_members;
-
-  const membersData = members.Members;
 
   return (
     <div className="members-page p-10">

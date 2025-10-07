@@ -10,7 +10,7 @@ interface MembersTableProps {
 
 const MembersTable = async ({ leagueId, userId }: MembersTableProps) => {
   const { data: members, error: membersError } =
-    await MembersService.getMembersByLeague(leagueId, userId);
+    await MembersService.getMembersTableData(leagueId, userId);
   if (membersError) {
     return (
       <div className="alert alert-error">
@@ -19,7 +19,14 @@ const MembersTable = async ({ leagueId, userId }: MembersTableProps) => {
     );
   }
 
-//   const self = members?.find((member: MemberRow) => member.manager_name === userId);
+  const currentUserMember = members?.find((member: MemberRow) => member.user_id === userId);
+  const otherMembers = members?.filter((member: MemberRow) => member.user_id !== userId) || [];
+  
+  const orderedMembers: MemberRow[] = [];
+  if (currentUserMember) {
+    orderedMembers.push(currentUserMember);
+  }
+  orderedMembers.push(...otherMembers);
 
   return (
     <div>
@@ -35,8 +42,8 @@ const MembersTable = async ({ leagueId, userId }: MembersTableProps) => {
           </tr>
         </thead>
         <tbody>
-          {members?.map((member: MemberRow, index: number) => (
-            <MemberTableRow key={index} member={member} />
+          {orderedMembers?.map((member: MemberRow, index: number) => (
+            <MemberTableRow key={index} member={member} userId={userId} />
           ))}
         </tbody>
       </table>

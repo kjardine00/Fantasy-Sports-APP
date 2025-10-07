@@ -14,6 +14,10 @@ export async function getAllLeaguesMembers(league_id: string) {
 export async function getAllLeaguesMembersAndUserInfo(league_id: string) {
   const supabase = await createClient();
   
+  // NOTE: Using two separate queries instead of JOIN because Supabase schema cache
+  // doesn't recognize the foreign key relationship between leagues_members and profiles
+  // even though the foreign key constraint exists in the database.
+  
   // First get league members
   const { data: membersData, error: membersError } = await supabase
     .from("leagues_members")
