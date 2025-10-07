@@ -93,7 +93,7 @@ export interface Invitation {
   email?: string;
   invited_by: string;
   token?: string;
-  status: 'pending' | 'accepted' | 'expired';
+  status: 'pending' | 'accepted' | 'expired'; // general invites will be pending until max uses is reached or league is full
   expires_at?: string;
   created_at?: string; // DB generated
   accepted_at?: string;

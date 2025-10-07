@@ -50,7 +50,7 @@ const InviteLinkCard = ({ leagueId }: { leagueId: string }) => {
       <div className="invite-link mx-6 px-4 py-6 flex items-center gap-5">
         <h3 className="text-sm">Invite Link</h3>
         <div className="skeleton h-10 flex-1"></div>
-        <div className="skeleton h-8 w-16"></div>
+        <div className="skeleton h-8 w-8"></div>
       </div>
     );
   }

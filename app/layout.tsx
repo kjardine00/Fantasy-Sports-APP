@@ -4,6 +4,8 @@ import "./globals.css";
 import Navbar from "./components/Navbar/Navbar";
 import { AlertProvider } from "./components/Alert/AlertContext";
 import { AlertContainer } from "./components/Alert/AlertContainer";
+import { AuthModalProvider } from "./components/Auth/AuthModalContext";
+import AuthModal from "./components/Auth/AuthModal";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,11 +33,14 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen`}
       >
         <AlertProvider>
-        <Navbar />
-        <AlertContainer />
-        <main className="flex-1 pt-16">
-          {children}
-        </main>
+          <AuthModalProvider>
+            <Navbar />
+            <AlertContainer />
+            <AuthModal /> {/* This renders the modal when needed */}
+            <main className="flex-1 pt-16">
+              {children}
+            </main>
+          </AuthModalProvider>
         </AlertProvider>
       </body>
     </html>

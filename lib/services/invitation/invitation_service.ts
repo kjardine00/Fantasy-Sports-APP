@@ -6,6 +6,7 @@ import {
   deactivateGenericInviteLink,
   getLeagueMemberCount,
   acceptInvitation,
+  getInviteByToken,
 } from "@/lib/database/queries/invitations_queries";
 import { sendLeagueInvite } from "@/lib/services/email/resend";
 import { createClient } from "@/lib/database/server";
@@ -154,5 +155,42 @@ export class InvitationService {
     }
 
     return { data: invitation, error: null };
+  }
+
+  static async validateInviteToken(token: string) {
+    const { data: invitation, error } = await getInviteByToken(token);
+    
+    if (error) {
+      return { data: null, error };
+    }
+
+    let validationResult: 'loading' | 'valid' | 'invalid' | 'expired' | 'max_uses_reached' = 'loading';
+    
+    if (invitation.status !== "pending") {
+      validationResult = 'invalid';
+      return { data: null, error: { message: "Invitation is expired or already used" } };
+    }
+
+    if (invitation.expires_at && new Date(invitation.expires_at) < new Date()) {
+      // TODO: update these queries to just set the status to expired maybe just needs to be renamed
+      const { error: deactivateError } = await deactivateGenericInviteLink(invitation.id);
+      if (deactivateError) {
+        return { data: null, error: { message: "An error occurred deactivating the invite" } };
+      }
+      validationResult = 'expired';
+      return { data: null, error: { message: "Invitation is expired" } };
+    }
+
+    if (invitation.max_uses && invitation.current_uses >= invitation.max_uses) {
+      // TODO: update these queries to just set the status to expired maybe just needs to be renamed
+      const { error: deactivateError } = await deactivateGenericInviteLink(invitation.id);
+      if (deactivateError) {
+        return { data: null, error: { message: "An error occurred deactivating the invite" } };
+      }
+      validationResult = 'max_uses_reached';
+      return { data: null, error: { message: "Invitation has reached maximum uses" } };
+    }
+
+    return { validationResult , error: null };
   }
 }

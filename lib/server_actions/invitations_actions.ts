@@ -117,6 +117,16 @@ export async function deactivateGenericLinksIfLeagueFull(leagueId: string) {
   return { success: true, data };
 }
 
+export async function validateInviteToken(token: string) {
+  const { validationResult, error } = await InvitationService.validateInviteToken(token);
+
+  if (error) {
+    return { validationResult: 'error', error: error.message || "An error occurred validating the invite token" };
+  }
+
+  return { validationResult , error: null };
+}
+
 export async function handleInviteRedirect(token: string) {
   const supabase = await createClient();
   const {

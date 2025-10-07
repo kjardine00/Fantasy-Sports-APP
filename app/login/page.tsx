@@ -3,7 +3,7 @@
 import { login } from "@/lib/server_actions/auth_actions";
 import Link from "next/link";
 import React, { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useAlert } from "@/app/components/Alert/AlertContext";
 import { AlertType } from "@/lib/types/alert_types";
 
@@ -21,11 +21,16 @@ const LoginPage = () => {
   const [draftLeagueData, setDraftLeagueData] = useState<LeagueData | null>(
     null
   );
+  const [inviteToken, setInviteToken] = useState<string | null>(null);
 
   useEffect(() => {
     const tempLeagueData = sessionStorage.getItem("tempLeagueData");
     if (tempLeagueData) {
       setDraftLeagueData(JSON.parse(tempLeagueData));
+    }
+    const inviteToken = sessionStorage.getItem("inviteToken");
+    if (inviteToken) {
+      setInviteToken(inviteToken);
     }
   }, []);
 

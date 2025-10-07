@@ -12,7 +12,6 @@ interface AlertContextType {
 
 const AlertContext = createContext<AlertContextType | undefined>(undefined);
 
-// Fix the React.FC syntax - remove the extra braces and fix the typing
 export const AlertProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const [alerts, setAlerts] = useState<Alert[]>([]);
 

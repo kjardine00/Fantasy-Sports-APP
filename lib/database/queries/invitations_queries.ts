@@ -201,3 +201,19 @@ export async function getLeagueMemberCount(leagueId: string) {
 
   return { data: count || 0, error: null };
 }
+
+export async function getInviteByToken(token: string) {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("invitations")
+    .select("*")
+    .eq("token", token)
+    .single();
+
+  if (error) {
+    return { data: null, error };
+  }
+
+  return { data, error: null };
+}

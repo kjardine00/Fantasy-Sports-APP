@@ -2,7 +2,6 @@ import { createClient } from "@/lib/database/server";
 import { redirect } from "next/navigation";
 import { acceptInvitation } from "@/lib/database/queries/invitations_queries";
 
-
 //TODO: Add Update invite page to handle generic tokens and show appropriate UI
 //TODO: Add league capacity/max teams tracking to prevent overfilling
 interface InvitePageProps {
@@ -15,11 +14,8 @@ export default async function InvitePage({ params }: InvitePageProps) {
   const supabase = await createClient();
   const {data: {user}} = await supabase.auth.getUser();
 
-  if (!user) {
-    redirect(`/login?invite=${params.token}`);
-  }
 
-  const {data, error} = await acceptInvitation(params.token, user.id);
+  const {data, error} = await acceptInvitation(params.token, user?.id || '');
 
   if (error) {
     console.log('Error type:', typeof error);

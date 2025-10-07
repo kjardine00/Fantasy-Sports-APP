@@ -4,6 +4,7 @@ import { createClient } from "@/lib/database/server";
 import DefaultLinks from "./components/DefaultLinks";
 import ProfileIcon from "./components/ProfileIcon";
 import { Profile } from "@/lib/types";
+import AuthButtons from "./components/AuthButtons";
 
 const Navbar = async () => {
   const supabase = await createClient();
@@ -40,18 +41,7 @@ const Navbar = async () => {
           // Not signed in mode
           <>
             <DefaultLinks />
-            <Link
-              className="btn btn-primary text-lg rounded px-4"
-              href="/login"
-            >
-              Log In
-            </Link>
-            <Link
-              className="btn btn-secondary text-lg rounded px-4"
-              href="/register"
-            >
-              Sign Up
-            </Link>
+            <AuthButtons />
           </>
         )}
       </div>
