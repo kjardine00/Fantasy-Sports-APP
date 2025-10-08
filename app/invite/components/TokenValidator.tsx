@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { validateInviteToken } from '@/lib/server_actions/invitations_actions'
 import { useAlert } from '@/app/components/Alert/AlertContext'
 import { AlertType } from '@/lib/types/alert_types';
+import Link from 'next/link';
 
 interface TokenValidatorProps {
     token: string
@@ -78,9 +79,21 @@ const TokenValidator = ({ token }: TokenValidatorProps) => {
         )
     }
 
-    return (
-        <div>TokenValidator</div>
-    )
+    if (tokenStatus !== 'valid') {
+        return (
+            <div className="min-h-screen bg-base-200 flex items-center justify-center">
+                <div className="card w-96 bg-base-100 shadow-xl">
+                    <div className="card-body text-center">
+                        <h2 className="card-title">Unable to join league</h2>
+                        <p>{tokenStatus}</p>
+                        <div className="card-actions justify-center">
+                            <Link href="/" className="btn btn-primary">Go Home</Link>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        )
+    }
 }
 
 export default TokenValidator

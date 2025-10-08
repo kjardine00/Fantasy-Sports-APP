@@ -97,7 +97,10 @@ const RegisterForm = () => {
               >
                 Sign Up
               </button>
-              <button className="btn btn-primary rounded" onClick={() => { switchView('login') }}
+              <button 
+                type="button"
+                className="btn btn-primary rounded" 
+                onClick={() => { switchView('login') }}
               >
                 Already have an account? Log In
               </button>

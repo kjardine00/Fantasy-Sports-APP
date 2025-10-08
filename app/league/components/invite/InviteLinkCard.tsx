@@ -37,8 +37,9 @@ const InviteLinkCard = ({ leagueId }: { leagueId: string }) => {
           type: AlertType.ERROR,
           duration: 3000,
         });
+        setInviteLink("No Generic Invite Link Available");
       } else {
-        setInviteLink(result.data || "");
+        setInviteLink(result.data || "No Generic Invite Link Available");
       }
       setIsLoading(false);
     }

@@ -10,7 +10,7 @@ const AuthButtons = () => {
     <div>
         <button className="btn btn-primary text-lg rounded px-4" onClick={() => {openAuthModal('login')}}>Log In</button>
  
-           <button className="btn btn-secondary text-lg rounded px-4" onClick={() => {openAuthModal('register')}}>Sign Up</button>
+        <button className="btn btn-secondary text-lg rounded px-4" onClick={() => {openAuthModal('register')}}>Sign Up</button>
     </div>
   )
     

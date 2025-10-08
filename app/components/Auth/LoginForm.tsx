@@ -51,7 +51,6 @@ const LoginForm = () => {
                 type: AlertType.ERROR,
                 duration: 2000,
             });
-            sessionStorage.removeItem("tempLeagueData");
         }
     };
 
@@ -96,7 +95,10 @@ const LoginForm = () => {
                                 {/* TODO: add error handling and error messages */}
                                 Log In
                             </button>
-                            <button className="btn btn-secondary rounded" onClick={() => { switchView('register') }}
+                            <button 
+                                type="button"
+                                className="btn btn-secondary rounded" 
+                                onClick={() => { switchView('register') }}
                             >
                                 Don't have an account? Sign Up
                             </button>
