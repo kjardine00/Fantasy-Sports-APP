@@ -2,9 +2,9 @@
 
 ## Current Scenarios
 - [x] Invite Flow - LoginForm → LoginSuccess/LoginFail
-- [] Invite Flow - RegisterForm → RegisterSuccess/RegisterInvalidForm/RegisterError
+- [x] Invite Flow - RegisterForm → RegisterSuccess/RegisterInvalidForm/RegisterError
 - [x] Navbar Flow - LoginForm → LoginSuccess/LoginFail
-- [] Navbar Flow - RegisterForm → RegisterSuccess/RegisterInvalidForm/RegisterError
+- [x] Navbar Flow - RegisterForm → RegisterSuccess/RegisterInvalidForm/RegisterError
 
 ## Missing Critical Scenarios
 
