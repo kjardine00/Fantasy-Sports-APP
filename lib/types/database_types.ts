@@ -1,12 +1,13 @@
 // Profile interface (renamed from users_info)
 export interface Profile {
-  id: string;
-  auth_id: string;
-  username: string | null;
+  id?: string;
+  auth_id?: string;
+  name: string | null;
+  email: string | null;
   role: 'user' | 'admin';
-  profile_picture: string | null;
-  created_at: string;
-  updated_at: string;
+  profile_picture?: string | null;
+  created_at?: string;
+  updated_at?: string;
 }
 
 // League interface

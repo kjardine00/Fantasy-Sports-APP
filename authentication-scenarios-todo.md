@@ -1,10 +1,10 @@
 # Authentication Flow Scenarios - Todo List
 
-## Current Scenarios (Already Implemented)
+## Current Scenarios
 - [x] Invite Flow - LoginForm → LoginSuccess/LoginFail
-- [x] Invite Flow - RegisterForm → RegisterSuccess/RegisterInvalidForm/RegisterError
+- [] Invite Flow - RegisterForm → RegisterSuccess/RegisterInvalidForm/RegisterError
 - [x] Navbar Flow - LoginForm → LoginSuccess/LoginFail
-- [x] Navbar Flow - RegisterForm → RegisterSuccess/RegisterInvalidForm/RegisterError
+- [] Navbar Flow - RegisterForm → RegisterSuccess/RegisterInvalidForm/RegisterError
 
 ## Missing Critical Scenarios
 
