@@ -5,13 +5,14 @@ import { useEffect } from 'react';
 
 interface AuthRedirectProps {
   view: 'login' | 'register' | 'forgot-password';
+  token?: string;
 }
 
-export default function AuthRedirect({ view }: AuthRedirectProps) {
+export default function AuthRedirect({ view, token }: AuthRedirectProps) {
   const { openAuthModal } = useAuthModal();
 
   useEffect(() => {
-    openAuthModal(view);
+    openAuthModal(view, token);
   }, []);
 
   return null;

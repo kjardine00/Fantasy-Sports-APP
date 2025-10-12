@@ -72,3 +72,14 @@ export async function getUsersLeagues(userId: string) {
 
   return { data, error }
 }
+
+export async function acceptInvitation(token: string, userId: string) {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from('leagues_members')
+    .insert({
+      league_id: invitation.league_id,
+      user_id: userId,
+      role: "member",
+    })
+}

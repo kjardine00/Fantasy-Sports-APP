@@ -38,9 +38,6 @@ export async function signup(prevState: any, formData: FormData) {
   const name = formData.get("name") as string;
   const password = formData.get("password") as string;
   const confirmPassword = formData.get("confirmPassword") as string;
-
-  // Validation
-  console.log("Starting validation...");
   
   if (name.length > 20) {
     console.log("Validation failed: Name too long");
@@ -61,11 +58,7 @@ export async function signup(prevState: any, formData: FormData) {
     console.log("Validation failed: Passwords don't match");
     return { error: "Passwords do not match" };
   }
-  
-  console.log("Validation passed, checking for existing email...");
 
-  // Check if email already exists
-  console.log("Checking for existing email...");
   const { data: existingEmail } = await supabase
     .from("profiles")
     .select("email")
@@ -77,9 +70,6 @@ export async function signup(prevState: any, formData: FormData) {
     return { error: "Email already taken" };
   }
   
-  console.log("Email is available, creating Supabase auth user...");
-
-  // Create Supabase auth user
   const {data: user, error } = await supabase.auth.signUp({
     email,
     password,

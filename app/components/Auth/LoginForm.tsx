@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useActionState } from "react";
 import { login } from "@/lib/server_actions/auth_actions";
+import { processInviteAfterAuth } from "@/lib/server_actions/invitations_actions";
 import { useRouter } from "next/navigation";
 import { useAuthModal } from "./AuthModalContext";
 
@@ -14,17 +15,19 @@ interface LeagueData {
 
 const LoginForm = () => {
   const router = useRouter();
-  const { switchView, closeModal } = useAuthModal();
+  const { switchView, closeModal, inviteToken } = useAuthModal();
   const [state, formAction, isPending] = useActionState(login, null);
   
   const [draftLeagueData, setDraftLeagueData] = useState<LeagueData | null>(
     null
   );
-  const [inviteToken, setInviteToken] = useState<string | null>(null);
 
   useEffect(() => {
-    if (state?.success) {
-      const draftLeageuData = sessionStorage.getItem("tempLeagueData");
+    if (state?.success && inviteToken) {
+      // Process the invite after successful login
+      processInviteAfterAuth(inviteToken);
+    } else if (state?.success) {
+      const draftLeagueData = sessionStorage.getItem("tempLeagueData");
       if (draftLeagueData) {
         sessionStorage.removeItem("tempLeagueData");
         router.push("/league/create");
@@ -33,7 +36,7 @@ const LoginForm = () => {
       }
       closeModal();
     }
-  }, [state?.success]);
+  }, [state?.success, inviteToken]);
 
   return (
     <div className="flex items-center justify-center">
