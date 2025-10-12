@@ -9,8 +9,6 @@ const AuthModal = () => {
     const {
         isOpen,
         currentView,
-        inviteToken,
-        openAuthModal,
         closeModal,
         switchView
     } = useAuthModal();

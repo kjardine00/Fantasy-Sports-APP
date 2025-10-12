@@ -1,5 +1,5 @@
 import {
-  createInvitation,
+  insertInivtation,
   deleteInvitation,
   createGenericInviteLink,
   getGenericInviteLink,
@@ -25,7 +25,7 @@ export class InvitationService {
       current_uses: 0,
     };
 
-    const { data: invitation, error: invitationError } = await createInvitation(
+    const { data: invitation, error: invitationError } = await insertInivtation(
       { invite: emailInvite },
     );
 
@@ -157,40 +157,62 @@ export class InvitationService {
     return { data: invitation, error: null };
   }
 
-  static async validateInviteToken(token: string) {
+  static async validateInviteToken(token: string, userId?: string) {
     const { data: invitation, error } = await getInviteByToken(token);
     
     if (error) {
-      return { data: null, error };
+      return { validationResult: 'error', error };
     }
 
-    let validationResult: 'loading' | 'valid' | 'invalid' | 'expired' | 'max_uses_reached' = 'loading';
+    // Fetch the league to get the short code
+    const { data: league, error: leagueError } = await getLeague(invitation.league_id);
+    if (leagueError || !league) {
+      return { validationResult: 'error', error: { message: "League not found" } };
+    }
+
+    let validationResult: 'loading' | 'valid' | 'invalid' | 'expired' | 'max_uses_reached' | 'joined' = 'loading';
     
     if (invitation.status !== "pending") {
       validationResult = 'invalid';
-      return { data: null, error: { message: "Invitation is expired or already used" } };
+      return { validationResult, error: { message: "Invitation is expired or already used" } };
     }
 
     if (invitation.expires_at && new Date(invitation.expires_at) < new Date()) {
-      // TODO: update these queries to just set the status to expired maybe just needs to be renamed
       const { error: deactivateError } = await deactivateGenericInviteLink(invitation.id);
       if (deactivateError) {
-        return { data: null, error: { message: "An error occurred deactivating the invite" } };
+        return { validationResult: 'error', error: { message: "An error occurred deactivating the invite" } };
       }
       validationResult = 'expired';
-      return { data: null, error: { message: "Invitation is expired" } };
+      return { validationResult, error: { message: "Invitation is expired" } };
     }
 
     if (invitation.max_uses && invitation.current_uses >= invitation.max_uses) {
-      // TODO: update these queries to just set the status to expired maybe just needs to be renamed
       const { error: deactivateError } = await deactivateGenericInviteLink(invitation.id);
       if (deactivateError) {
-        return { data: null, error: { message: "An error occurred deactivating the invite" } };
+        return { validationResult: 'error', error: { message: "An error occurred deactivating the invite" } };
       }
       validationResult = 'max_uses_reached';
-      return { data: null, error: { message: "Invitation has reached maximum uses" } };
+      return { validationResult, error: { message: "Invitation has reached maximum uses" } };
     }
 
-    return { validationResult , error: null };
+    // Check if user is already a member of this league
+    if (userId) {
+      const supabase = await createClient();
+      const { data: existingMember } = await supabase
+        .from("leagues_members")
+        .select("user_id")
+        .eq("league_id", invitation.league_id)
+        .eq("user_id", userId)
+        .single();
+
+      if (existingMember) {
+        validationResult = 'joined';
+        return { validationResult, shortCode: league.short_code, error: null };
+      }
+    }
+
+    // If we got here, the invitation is valid
+    validationResult = 'valid';
+    return { validationResult, shortCode: league.short_code, error: null };
   }
 }

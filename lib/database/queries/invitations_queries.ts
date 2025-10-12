@@ -1,7 +1,7 @@
 import { createClient } from "@/lib/database/server";
 import { Invitation } from "@/lib/types/database_types";
 
-export async function createInvitation({ invite }: { invite: Invitation }) {
+export async function insertInivtation({ invite }: { invite: Invitation }) {
   const supabase = await createClient();
   const { data: invitation, error } = await supabase
     .from("invitations")

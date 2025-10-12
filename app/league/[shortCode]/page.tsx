@@ -12,7 +12,7 @@ interface LeaguePageProps {
 }
 
 const LeaguePage = async ({ params }: LeaguePageProps) => {
-  const { shortCode } = params;
+  const { shortCode } = await params;
   const supabase = await createClient();
 
   const {

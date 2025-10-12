@@ -7,8 +7,7 @@ type AuthView = 'login' | 'register' | 'forgot-password';
 interface AuthModalContextType {
     isOpen: boolean;
     currentView: AuthView;
-    inviteToken: string | null;
-    openAuthModal: (view: AuthView, token?: string) => void;
+    openAuthModal: (view: AuthView) => void;
     closeModal: () => void;
     switchView: (view: AuthView) => void;
 }
@@ -18,17 +17,14 @@ const AuthModalContext = createContext<AuthModalContextType | undefined>(undefin
 export const AuthModalProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [currentView, setCurrentView] = useState<AuthView>('login');
-    const [inviteToken, setInviteToken] = useState<string | null>(null);
 
-    const openAuthModal = (view: AuthView, token?: string) => {
+    const openAuthModal = (view: AuthView) => {
         setCurrentView(view);
-        setInviteToken(token || null);
         setIsOpen(true);
     };
 
     const closeModal = () => {
         setIsOpen(false);
-        setInviteToken(null);
     };
 
     const switchView = (view: AuthView) => {
@@ -39,7 +35,6 @@ export const AuthModalProvider: React.FC<{ children: ReactNode }> = ({ children 
         <AuthModalContext.Provider value={{
             isOpen,
             currentView,
-            inviteToken,
             openAuthModal,
             closeModal,
             switchView

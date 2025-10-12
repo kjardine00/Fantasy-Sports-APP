@@ -117,14 +117,14 @@ export async function deactivateGenericLinksIfLeagueFull(leagueId: string) {
   return { success: true, data };
 }
 
-export async function validateInviteToken(token: string) {
-  const { validationResult, error } = await InvitationService.validateInviteToken(token);
+export async function validateInviteToken(token: string, userId?: string) {
+  const { validationResult, shortCode, error } = await InvitationService.validateInviteToken(token, userId);
 
   if (error) {
-    return { validationResult: 'error', error: error.message || "An error occurred validating the invite token" };
+    return { validationResult: 'error', shortCode: null, error: error.message || "An error occurred validating the invite token" };
   }
 
-  return { validationResult, error: null };
+  return { validationResult, shortCode, error: null };
 }
 
 export async function handleInviteRedirect(token: string) {
@@ -140,26 +140,6 @@ export async function handleInviteRedirect(token: string) {
   redirect(`/invite/${token}`);
 }
 
-export async function processInviteAfterAuth(token: string) {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    return { error: "User must be authenticated to accept invitation" };
-  }
-
-  const { data: invitation, error } = await InvitationService.acceptInvitation(token, user.id);
-
-  if (error) {
-    return { error: error.message || "Failed to accept invitation" };
-  }
-
-  // Redirect to the league page
-  redirect(`/league/${invitation.league_id}`);
-}
-
 export async function handleAcceptInvite(token: string, userId: string) {
   const { data, error } = await InvitationService.acceptInvitation(token, userId);
 
@@ -167,5 +147,17 @@ export async function handleAcceptInvite(token: string, userId: string) {
     return { data: null, error: error.message || "An error occurred accepting the invite" };
   }
 
-  return { data, error: null };
+  if (data) {
+    // Fetch the league to get the short code
+    const { LeagueService } = await import("@/lib/services/league/leagues_service");
+    const { data: league, error: leagueError } = await LeagueService.getLeague(data.league_id);
+    
+    if (leagueError || !league) {
+      return { data: null, error: "Failed to fetch league information" };
+    }
+    
+    redirect(`/league/${league.short_code}`);
+  } else {
+    return { data: null, error: "An error occurred accepting the invite" };
+  }
 }

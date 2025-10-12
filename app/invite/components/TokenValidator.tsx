@@ -1,17 +1,22 @@
 "use client";
 
+import Link from 'next/link';
 import { useState, useEffect } from 'react'
-import { validateInviteToken } from '@/lib/server_actions/invitations_actions'
+import { useRouter } from 'next/navigation';
+import { validateInviteToken, handleAcceptInvite } from '@/lib/server_actions/invitations_actions'
 import { useAlert } from '@/app/components/Alert/AlertContext'
 import { AlertType } from '@/lib/types/alert_types';
-import Link from 'next/link';
+import { User } from '@supabase/supabase-js';
 
 interface TokenValidatorProps {
     token: string
+    user: User
 }
 
-const TokenValidator = ({ token }: TokenValidatorProps) => {
-    const [tokenStatus, setTokenStatus] = useState<'loading' | 'valid' | 'invalid' | 'expired' | 'max_uses_reached'>('loading');
+const TokenValidator = ({ token, user }: TokenValidatorProps) => {
+    const router = useRouter();
+    const [tokenStatus, setTokenStatus] = useState<'loading' | 'valid' | 'invalid' | 'expired' | 'max_uses_reached' | 'joined'>('loading');
+    const [shortCode, setShortCode] = useState<string | null>(null);
     const { addAlert } = useAlert();
 
     useEffect(() => {
@@ -20,10 +25,23 @@ const TokenValidator = ({ token }: TokenValidatorProps) => {
 
     const validateToken = async (token: string) => {
         try {
-            const { validationResult, error } = await validateInviteToken(token);
+            const { validationResult, shortCode, error } = await validateInviteToken(token, user.id);
+            
+            if (shortCode) {
+                setShortCode(shortCode);
+            }
+            
             switch (validationResult) {
                 case 'valid':
                     setTokenStatus('valid');
+                    break;
+                case 'joined':
+                    setTokenStatus('joined');
+                    addAlert({
+                        message: "You're already a member of this league!",
+                        type: AlertType.INFO,
+                        duration: 3000,
+                    });
                     break;
                 case 'invalid':
                     setTokenStatus('invalid');
@@ -69,10 +87,34 @@ const TokenValidator = ({ token }: TokenValidatorProps) => {
     if (tokenStatus === 'loading') {
         return (
             <div className="min-h-screen bg-base-200 flex items-center justify-center">
-                <div className="card w-96 bg-base-100 shadow-xl">
+                <div className="card w-120 bg-base-100 shadow-xl">
                     <div className="card-body text-center">
                         <span className="loading loading-spinner loading-lg"></span>
                         <h2 className="card-title">Validating invite...</h2>
+                    </div>
+                </div>
+            </div>
+        )
+    }
+
+    if (tokenStatus === 'joined') {
+        return (
+            <div className="min-h-screen bg-base-200 flex items-center justify-center">
+                <div className="card w-96 bg-base-100 shadow-xl">
+                    <div className="card-body text-center">
+                        <h2 className="card-title">Already a Member</h2>
+                        <p>You're already a member of this league!</p>
+                        <div className="card-actions justify-center gap-2">
+                            {shortCode && (
+                                <button 
+                                    onClick={() => router.push(`/league/${shortCode}`)} 
+                                    className="btn btn-primary"
+                                >
+                                    Go to League
+                                </button>
+                            )}
+                            <Link href="/" className="btn btn-ghost">Go Home</Link>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -92,6 +134,20 @@ const TokenValidator = ({ token }: TokenValidatorProps) => {
                     </div>
                 </div>
             </div>
+        )
+    }
+
+    if (tokenStatus === 'valid') {
+        return ( 
+            <div className="min-h-screen bg-base-200 flex items-center justify-center">
+            <div className="card w-96 bg-base-100 shadow-xl">
+                <div className="card-body text-center">
+                    <div className="card-actions justify-center">
+                        <button onClick={() => handleAcceptInvite(token, user.id)} className="btn btn-primary">Join League</button>
+                    </div>
+                </div>
+            </div>
+        </div>
         )
     }
 }

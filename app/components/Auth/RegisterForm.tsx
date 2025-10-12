@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect, useActionState } from "react";
 import { signup } from "@/lib/server_actions/auth_actions";
-import { processInviteAfterAuth } from "@/lib/server_actions/invitations_actions";
 import { useRouter } from "next/navigation";
 import { useAuthModal } from "./AuthModalContext";
 
@@ -16,7 +15,7 @@ interface LeagueData {
 // TODO:Confirm Password, Field Validation
 const RegisterForm = () => {
   const router = useRouter();
-  const { switchView, closeModal, inviteToken } = useAuthModal();
+  const { switchView, closeModal } = useAuthModal();
   const [state, formAction, isPending] = useActionState(signup, null);
 
   const [draftLeagueData, setDraftLeagueData] = useState<LeagueData | null>(
@@ -24,20 +23,16 @@ const RegisterForm = () => {
   );
 
   useEffect(() => {
-    if (state?.success && inviteToken) {
-      // Process the invite after successful registration
-      processInviteAfterAuth(inviteToken);
-    } else if (state?.success) {
+     if (state?.success) {
       const draftLeagueData = sessionStorage.getItem("tempLeagueData");
       if (draftLeagueData) {
         sessionStorage.removeItem("tempLeagueData");
         router.push("/league/create");
-      } else {
-        router.push("/");
       }
+      
       closeModal();
     }
-  }, [state?.success, inviteToken]);
+  }, [state?.success, router, closeModal]);
 
   return (
     <div className="flex items-center justify-center">

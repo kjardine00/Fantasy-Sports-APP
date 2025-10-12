@@ -12,21 +12,20 @@
 - [ ] TokenInvalid - Invalid token format/doesn't exist
 - [ ] TokenExpired - Token past expiration date
 - [ ] TokenMaxUsesReached - League is full
-- [ ] TokenAlreadyUsed - User already joined this league
+- [x] TokenAlreadyUsed - User already joined this league
 - [ ] TokenValidationError - Server error during validation
-- [ ] LoginSuccess + ValidToken → Join league flow
-- [ ] LoginSuccess + InvalidToken → Show error, redirect to home
-- [ ] RegisterSuccess + ValidToken → Join league flow
-- [ ] RegisterSuccess + InvalidToken → Show error, redirect to home
+- [x] LoginSuccess + ValidToken → Join league flow
+- [x] LoginSuccess + InvalidToken → Show error, redirect to home
+- [x] RegisterSuccess + InvalidToken → Show error, redirect to home
 
 ### 2. Form Validation Scenarios
 
 #### LoginForm Missing:
-- [ ] EmptyFields - Email/password empty
-- [ ] InvalidEmailFormat - Malformed email
-- [ ] PasswordTooShort - Password validation
-- [ ] AccountLocked - Too many failed attempts
-- [ ] EmailNotVerified - User needs to verify email
+- [x] EmptyFields - Email/password empty
+- [x] InvalidEmailFormat - Malformed email
+- [x] PasswordTooShort - Password validation
+- [] AccountLocked - Too many failed attempts
+- [] EmailNotVerified - User needs to verify email
 
 #### RegisterForm Missing:
 - [ ] EmptyFields - Username/email/password empty
@@ -38,7 +37,7 @@
 - [ ] EmailVerificationRequired - User needs to verify email
 
 ### 3. Authentication State Scenarios
-- [ ] UserAlreadyLoggedIn - User tries to access login/register while logged in
+- [x] UserAlreadyLoggedIn - User tries to access login/register while logged in
 - [ ] SessionExpired - User's session expired during form submission
 - [ ] InvalidSession - Corrupted session data
 

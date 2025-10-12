@@ -112,7 +112,6 @@ export async function signup(prevState: any, formData: FormData) {
 
   console.log("=== SIGNUP COMPLETED SUCCESSFULLY ===");
   revalidatePath("/", "layout");
-  redirect("/profile/setup");
   return { success: true };
 }
 
