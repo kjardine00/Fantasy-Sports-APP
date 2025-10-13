@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useAlert } from "@/app/components/Alert/AlertContext";
 import { AlertType } from "@/lib/types/alert_types";
-import { generateGenericInviteUrl } from "@/lib/server_actions/invitations_actions";
+import { generateGenericInviteUrl } from "@/lib/server_actions/invite_actions";
 
 const InviteLinkCard = ({ leagueId }: { leagueId: string }) => {
   const [inviteLink, setInviteLink] = useState("");
