@@ -4,15 +4,15 @@ import {
   insertLeague,
   getLeague,
   getUsersLeagues,
+  getLeagueByShortCode,
 } from "@/lib/database/queries/leagues_queries";
 import {
   setLeagueComissioner,
   getMemberRole,
   getAllLeaguesMembers,
-  getLeagueByShortCode,
 } from "@/lib/database/queries/leagues_members_queries";
 import { generateShortCode } from "@/utils/short-code-gen";
-import { InvitationService } from "../invitation/invitation_service";
+import { InviteService } from "../invite/invite_service";
 
 export class LeagueService {
   static async getLeague(leagueId: string) {
@@ -134,7 +134,7 @@ export class LeagueService {
     return { data: data, error: null };
   }
 
-  private static async generateUniqueShortCode(): Promise<string> {
+  static async generateUniqueShortCode(): Promise<string> {
     const maxRetries = 10;
 
     for (let i = 0; i < maxRetries; i++) {

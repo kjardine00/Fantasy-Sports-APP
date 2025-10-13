@@ -10,5 +10,7 @@
 [] Supabase - Setup Email
 [] Supabase - Invite Email Migration from Resend I think? :shrug:
 
-10/9/2025
-[] 
+10/12/2025
+[] Email Verification Flow
+    - If a user signs up via a join link we need a way for them to get a pop-up that shows that they need to confirm their email and 
+    then setup the email confirmation page to sign them up for the league I think that could work. 

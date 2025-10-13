@@ -27,9 +27,8 @@ const RegisterForm = () => {
       const draftLeagueData = sessionStorage.getItem("tempLeagueData");
       if (draftLeagueData) {
         sessionStorage.removeItem("tempLeagueData");
-        router.push("/league/create");
+        router.push("/league/create"); 
       }
-      
       closeModal();
     }
   }, [state?.success, router, closeModal]);

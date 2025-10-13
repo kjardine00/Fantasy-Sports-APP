@@ -8,10 +8,12 @@ interface AuthRedirectProps {
 }
 
 export default function AuthRedirect({ view }: AuthRedirectProps) {
-  const { openAuthModal } = useAuthModal();
+  const { openAuthModal, isOpen } = useAuthModal();
 
   useEffect(() => {
-    openAuthModal(view);
+    if (!isOpen) {
+      openAuthModal(view); 
+    }
   }, [view, openAuthModal]);
 
   return null;

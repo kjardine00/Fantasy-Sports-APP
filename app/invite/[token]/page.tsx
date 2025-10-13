@@ -15,11 +15,11 @@ export default async function InvitePage({ params }: InvitePageProps) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  // If no user, show the auth redirect component which will open the modal
   if (!user) {
     return <AuthRedirect view="login" />;
   }
 
-  // If user is authenticated, show the token validator and join league option
-  return <TokenValidator token={token} user={user} />;
+  if (user) {
+    return <TokenValidator token={token} user={user} />;
+  }
 }

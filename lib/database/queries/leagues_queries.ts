@@ -1,10 +1,11 @@
 import { createClient } from '@/lib/database/server'
+import { TABLES } from '@/lib/database/tables'
 import { League } from '@/lib/types/database_types'
 
 export async function insertLeague(league: League) {
   const supabase = await createClient()
   const { data, error } = await supabase
-    .from('leagues')
+    .from(TABLES.LEAGUES)
     .insert(league)
     .select()
     .single()
@@ -15,7 +16,7 @@ export async function insertLeague(league: League) {
 export async function getLeague(leagueId: string) {
   const supabase = await createClient()
   const { data, error } = await supabase
-    .from('leagues')
+    .from(TABLES.LEAGUES)
     .select('*')
     .eq('id', leagueId)
     .single()
@@ -25,7 +26,7 @@ export async function getLeague(leagueId: string) {
 export async function getLeagueByShortCode(shortCode: string) {
   const supabase = await createClient()
   const { data, error } = await supabase
-    .from('leagues')
+    .from(TABLES.LEAGUES)
     .select('*')
     .eq('short_code', shortCode)
     .single()
@@ -35,7 +36,7 @@ export async function getLeagueByShortCode(shortCode: string) {
 export async function getLeagueSettings(leagueId: string) {
   const supabase = await createClient()
   const { data, error } = await supabase
-    .from('leagues')
+    .from(TABLES.LEAGUES)
     .select('settings')
     .eq('id', leagueId)
     .single()
@@ -45,7 +46,7 @@ export async function getLeagueSettings(leagueId: string) {
 export async function checkShortCodeExists(shortCode: string) {
   const supabase = await createClient()
   const { data, error } = await supabase
-    .from('leagues')
+    .from(TABLES.LEAGUES)
     .select('id')
     .eq('short_code', shortCode)
     .maybeSingle()
@@ -55,7 +56,7 @@ export async function checkShortCodeExists(shortCode: string) {
 export async function getUsersLeagues(userId: string) {
   const supabase = await createClient()
   const { data, error } = await supabase
-    .from('leagues_members')
+    .from(TABLES.LEAGUES_MEMBERS)
     .select(`
       league_id,
       leagues (
@@ -71,15 +72,4 @@ export async function getUsersLeagues(userId: string) {
     .eq('user_id', userId)
 
   return { data, error }
-}
-
-export async function acceptInvitation(token: string, userId: string) {
-  const supabase = await createClient();
-  const { data, error } = await supabase
-    .from('leagues_members')
-    .insert({
-      league_id: invitation.league_id,
-      user_id: userId,
-      role: "member",
-    })
 }

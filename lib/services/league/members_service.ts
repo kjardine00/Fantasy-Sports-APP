@@ -32,7 +32,7 @@ export class MembersService {
       abbreviation: member.abbreviation || "",
       team_icon: member.team_icon || "",
       team_name: member.team_name || "",
-      manager_name: member.profiles?.username || "Unknown",
+      manager_name: member.profiles?.name || "Unknown",
       status: member.status || "",
       user_id: member.user_id, // Keep user_id for sorting
     }));

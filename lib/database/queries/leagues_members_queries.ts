@@ -1,10 +1,11 @@
 import { createClient } from "@/lib/database/server";
+import { TABLES } from "@/lib/database/tables";
 import { LeagueMember } from "@/lib/types/database_types";
 
 export async function getAllLeaguesMembers(league_id: string) {
   const supabase = await createClient();
   const { data, error } = await supabase
-    .from("leagues_members")
+    .from(TABLES.LEAGUES_MEMBERS)
     .select("*")
     .eq("league_id", league_id);
 
@@ -20,15 +21,8 @@ export async function getAllLeaguesMembersAndUserInfo(league_id: string) {
   
   // First get league members
   const { data: membersData, error: membersError } = await supabase
-    .from("leagues_members")
-    .select(`
-      league_number,
-      abbreviation,
-      team_icon,
-      team_name,
-      status,
-      user_id
-    `)
+    .from(TABLES.LEAGUES_MEMBERS)
+    .select("*")
     .eq("league_id", league_id);
 
   if (membersError) {
@@ -44,11 +38,11 @@ export async function getAllLeaguesMembersAndUserInfo(league_id: string) {
 
   // Fetch profiles for these users
   const { data: profilesData, error: profilesError } = await supabase
-    .from("profiles")
+    .from(TABLES.PROFILES)
     .select(`
       id,
       auth_id,
-      username,
+      name,
       role,
       profile_picture,
       created_at,
@@ -72,10 +66,10 @@ export async function getAllLeaguesMembersAndUserInfo(league_id: string) {
   return { data: combinedData, error: null };
 }
 
-export async function setLeagueMember(member: LeagueMember) {
+export async function insertLeagueMember(member: LeagueMember) {
   const supabase = await createClient();
   const { data, error } = await supabase
-    .from("leagues_members")
+    .from(TABLES.LEAGUES_MEMBERS)
     .insert(member)
     .select()
     .single();
@@ -86,7 +80,7 @@ export async function setLeagueMember(member: LeagueMember) {
 export async function getMemberRole(league_id: string, user_id: string) {
   const supabase = await createClient();
   const { data, error } = await supabase
-    .from("leagues_members")
+    .from(TABLES.LEAGUES_MEMBERS)
     .select("role")
     .eq("league_id", league_id)
     .eq("user_id", user_id)
@@ -97,7 +91,7 @@ export async function getMemberRole(league_id: string, user_id: string) {
 export async function setLeagueComissioner(member: LeagueMember) {
   const supabase = await createClient();
   const { data, error } = await supabase
-    .from("leagues_members")
+    .from(TABLES.LEAGUES_MEMBERS)
     .insert(member)
     .select()
     .single();
@@ -108,7 +102,7 @@ export async function setLeagueComissioner(member: LeagueMember) {
 export async function getDraftOrder(league_id: string) {
   const supabase = await createClient();
   const { data, error } = await supabase
-    .from("leagues_members")
+    .from(TABLES.LEAGUES_MEMBERS)
     .select("user_id, draft_pick_order")
     .eq("league_id", league_id)
     .order("draft_pick_order", { ascending: true });
@@ -116,12 +110,23 @@ export async function getDraftOrder(league_id: string) {
   return { data, error };
 }
 
-export async function getLeagueByShortCode(shortCode: string) {
+export async function getLeagueMemberCount(leagueId: string) {
+  const supabase = await createClient();
+  const { count, error } = await supabase
+    .from(TABLES.LEAGUES_MEMBERS)
+    .select("*", { count: "exact", head: true })
+    .eq("league_id", leagueId);
+
+  return { data: count || 0, error };
+}
+
+export async function addMemberToLeague(leagueId: string, userId: string, role: string = "member") {
   const supabase = await createClient();
   const { data, error } = await supabase
-    .from("leagues")
-    .select("*")
-    .eq("short_code", shortCode)
-    .single();
+  .from(TABLES.LEAGUES_MEMBERS)
+  .insert({ league_id: leagueId, user_id: userId, role: role })
+  .select()
+  .single();
+
   return { data, error };
 }

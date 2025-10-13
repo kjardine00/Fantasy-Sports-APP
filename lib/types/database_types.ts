@@ -87,8 +87,8 @@ export interface Trade {
   completed_at: string | null;
 }
 
-//Invitations interface
-export interface Invitation {
+//Invite interface
+export interface Invite {
   id?: string; // DB generated
   league_id: string;
   email?: string;

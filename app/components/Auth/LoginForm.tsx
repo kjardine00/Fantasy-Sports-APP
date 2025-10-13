@@ -28,7 +28,6 @@ const LoginForm = () => {
         sessionStorage.removeItem("tempLeagueData");
         router.push("/league/create");
       }
-      
       closeModal();
     }
   }, [state?.success, router, closeModal]);

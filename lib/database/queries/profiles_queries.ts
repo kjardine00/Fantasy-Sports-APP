@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/database/server'
+import { TABLES } from '@/lib/database/tables'
 import { Profile } from '@/lib/types/database_types'
 
 // export interface Profile {
@@ -15,7 +16,7 @@ import { Profile } from '@/lib/types/database_types'
 export async function createProfile(profile: Profile) {
   const supabase = await createClient()
   const { data, error } = await supabase
-    .from('profiles')
+    .from(TABLES.PROFILES)
     .insert(profile)
     .select()
     .single()
@@ -25,7 +26,7 @@ export async function createProfile(profile: Profile) {
 export async function getProfileByAuthId(authId: string) {
   const supabase = await createClient()
   const { data, error } = await supabase
-    .from('profiles')
+    .from(TABLES.PROFILES)
     .select('*')
     .eq('auth_id', authId)
     .single()
