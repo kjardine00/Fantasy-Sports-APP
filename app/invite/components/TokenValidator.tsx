@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation';
-import { validateInviteToken, handleAcceptInvite } from '@/lib/server_actions/invitations_actions'
+import { validateInviteToken, handleAcceptInvite } from '@/lib/server_actions/invite_actions'
 import { useAlert } from '@/app/components/Alert/AlertContext'
 import { AlertType } from '@/lib/types/alert_types';
 import { User } from '@supabase/supabase-js';
