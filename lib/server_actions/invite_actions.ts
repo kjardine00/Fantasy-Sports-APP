@@ -79,13 +79,13 @@ export async function validateInviteToken(token: string, userId?: string) {
 
   if (error) {
     return {
-      validationResult: "error",
+      validationResult: validationResult,
       shortCode: null,
-      error: error.message || "An error occurred validating the invite token",
+      error: error || "An error occurred validating the invite token",
     };
   }
 
-  return { validationResult, shortCode, error: null };
+  return { validationResult, shortCode, error };
 }
 
 export async function handleAcceptInvite(token: string, userId: string) {

@@ -17,9 +17,6 @@ const getAlertIcon = (type: AlertType): string => {
 };
 
 const Alert = ( {error, type}: {error: string, type: AlertType} ) => {
-
-  console.log(`Alert type: ${type}, String value: ${String(type)}`)
-  console.log(`Full className: alert alert-${String(type)}`)
   
   return (
     <div role="alert" className={`alert alert-${String(type)}`}>

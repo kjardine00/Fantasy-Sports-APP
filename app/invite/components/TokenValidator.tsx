@@ -68,6 +68,7 @@ const TokenValidator = ({ token, user }: TokenValidatorProps) => {
                     });
                     break;
                 case 'error':
+                    console.log(error);
                     addAlert({
                         message: "An error occurred validating the invite token",
                         type: AlertType.ERROR,
@@ -76,10 +77,11 @@ const TokenValidator = ({ token, user }: TokenValidatorProps) => {
                     break;
             }
         } catch (error) {
+            console.log(error);
             addAlert({
-                message: "An error occurred validating the invite token",
+                message: error as string || "An error occurred validating the invite token",
                 type: AlertType.ERROR,
-                duration: 4000,
+                duration: 10000,
             });
         }
     }
