@@ -68,6 +68,56 @@ const ASSETS = {
         "Virgins": "/assets/Jerseys/virgins-jersey.webp",
         "Wishlist Curiousity BC": "/assets/Jerseys/wc-jersey.webp",
         "Wet Blankets": "/assets/Jerseys/wet-blankets-jersey.webp"
+    },
+    defaultTeamIcons: {
+        1: "/assets/Teams/Birdo-Beauties.png",
+        2: "/assets/Teams/Birdo-Bows.png",
+        3: "/assets/Teams/Birdo-Fans.png",
+        4: "/assets/Teams/Birdo-Models.png",
+        5: "/assets/Teams/Bowser-Black-Stars.png",
+        6: "/assets/Teams/Bowser-Blue-Shells.png",
+        7: "/assets/Teams/Bowser-Flames.png",
+        8: "/assets/Teams/Bowser-Monsters.png",
+        9: "/assets/Teams/DK-Animals.png",
+        10: "/assets/Teams/DK-Explorers.png",
+        11: "/assets/Teams/DK-Kongs.png",
+        12: "/assets/Teams/DK-Wild-Ones.png",
+        13: "/assets/Teams/Daisy-Cupids.png",
+        14: "/assets/Teams/Daisy-Lillies.png",
+        15: "/assets/Teams/Daisy-Petals.png",
+        16: "/assets/Teams/Daisy-Queen-Bees.png",
+        17: "/assets/Teams/Diddy-Ninjas.png",
+        18: "/assets/Teams/Diddy-Red-Caps.png",
+        19: "/assets/Teams/Diddy-Survivors.png",
+        20: "/assets/Teams/Diddy-Tails.png",
+        21: "/assets/Teams/Jr-Bombers.png",
+        22: "/assets/Teams/Jr-Fangs.png",
+        23: "/assets/Teams/Jr-Pixies.png",
+        24: "/assets/Teams/Jr-Rookies.png",
+        25: "/assets/Teams/Luigi-Gentlemen.png",
+        26: "/assets/Teams/Luigi-Leapers.png",
+        27: "/assets/Teams/Luigi-Mansioneers.png",
+        28: "/assets/Teams/Luigi-Vacuums.png",
+        29: "/assets/Teams/Mario-All-Stars.png",
+        30: "/assets/Teams/Mario-Fireballs.png",
+        31: "/assets/Teams/Mario-Heroes.png",
+        32: "/assets/Teams/Mario-Sunshines.png",
+        33: "/assets/Teams/Peach-Dynasties.png",
+        34: "/assets/Teams/Peach-Monarchs.png",
+        35: "/assets/Teams/Peach-Princesses.png",
+        36: "/assets/Teams/Peach-Roses.png",
+        37: "/assets/Teams/Waluigi-Flankers.png",
+        38: "/assets/Teams/Waluigi-Mashers.png",
+        39: "/assets/Teams/Waluigi-Mystiques.png",
+        40: "/assets/Teams/Waluigi-SmartAlecks.png",
+        41: "/assets/Teams/Wario-Beasts.png",
+        42: "/assets/Teams/Wario-Garlics.png",
+        43: "/assets/Teams/Wario-Greats.png",
+        44: "/assets/Teams/Wario-Steakheads.png",
+        45: "/assets/Teams/Yoshi-Eggs.png",
+        46: "/assets/Teams/Yoshi-Flutters.png",
+        47: "/assets/Teams/Yoshi-Islanders.png",
+        48: "/assets/Teams/Yoshi-Speed-Stars.png"
     }
 }
 
@@ -78,4 +128,8 @@ export function getPlayerIcon(name: string): string | null {
 
 export function getJerseyIcon(name: string): string | null {
     return ASSETS.jerseyIcons[name as keyof typeof ASSETS.jerseyIcons];
+}
+
+export function getDefaultTeamIcon(index: number): string | null {
+    return ASSETS.defaultTeamIcons[index as keyof typeof ASSETS.defaultTeamIcons];
 }
