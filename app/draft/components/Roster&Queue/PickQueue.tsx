@@ -32,13 +32,15 @@ const PickQueue = () => {
           />
         </div>
       </div>
-      <div className="divider"></div>
+      <div className="divider w-full my-2 mx-0"></div>
 
       <div>
         <PlayerCard name={picks[0].name} team={picks[0].team} />
         <PlayerCard name={picks[1].name} team={picks[1].team} />
         <PlayerCard name={picks[2].name} team={picks[2].team} />
       </div>
+
+      <div className="text-center text-sm font-semibold">Show More...</div>
     </div>
   );
 };

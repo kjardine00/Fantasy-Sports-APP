@@ -2,6 +2,7 @@ import React from "react";
 import Banner from "./components/Banner";
 import DraftOrder from "./components/DraftOrder/DraftOrder";
 import PickQueue from "./components/Roster&Queue/PickQueue";
+import Roster from "./components/Roster&Queue/Roster";
 
 const DraftPage = () => {
   return (
@@ -17,7 +18,8 @@ const DraftPage = () => {
               <div className="card bg-base-100 shadow-lg">
                 <div className="card-body">
                 <PickQueue />
-                <div className="">Pick Queue // Rosters </div>
+                <div className="divider w-full my-2 mx-0"></div>
+                <Roster />
                 </div>
               </div>
             </div>
