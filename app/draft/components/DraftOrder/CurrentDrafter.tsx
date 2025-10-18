@@ -16,7 +16,7 @@ const CurrentDrafter: React.FC<CurrentDrafterProps> = ({ drafterTeamIcon, drafte
 
     
     return (
-        <div className="flex flex-row items-center gap-2 bg-accent rounded-lg p-4">
+        <div className="flex flex-row items-center gap-2 bg-accent rounded-lg p-4 mx-4">
             <div className="w-20">
                 <img className="" src={teamIcon} alt={drafterTeamName} />
             </div>
