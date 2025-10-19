@@ -130,3 +130,25 @@ export async function addMemberToLeague(leagueId: string, userId: string, role: 
 
   return { data, error };
 }
+
+export async function getTeamCount(leagueId: string) {
+  const supabase = await createClient();
+  const { count: teamCount, error } = await supabase
+  .from(TABLES.LEAGUES_MEMBERS)
+  .select('*', { count: 'exact', head: true })
+  .eq('league_id', leagueId);
+
+  return { data: teamCount, error: "No teams found in league" };
+}
+
+export async function getUsersDraftPickOrder(leagueId: string) {
+  const supabase = await createClient();
+
+    const { data: members } = await supabase
+      .from(TABLES.LEAGUES_MEMBERS)
+      .select('user_id, draft_pick_order')
+      .eq('league_id', leagueId)
+      .order('draft_pick_order', { ascending: true });
+
+    return { data: members, error: "No members found in league" };
+}

@@ -12,6 +12,9 @@ export const TABLES = {
     PROFILES: "profiles",
     ROSTERS: "rosters",
     TRADES: "trades",
+    DRAFTS: "drafts",
+    DRAFT_PICKS: "draft_picks",
+    DRAFT_QUEUES: "draft_queues",
 } as const;
 
 export type TableName = typeof TABLES[keyof typeof TABLES];

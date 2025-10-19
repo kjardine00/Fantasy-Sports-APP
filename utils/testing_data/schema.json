@@ -198,7 +198,7 @@
           "column_default": "now()"
         }
       ],
-      "table_name": "roster"
+      "table_name": "rosters"
     },
     {
       "columns": [
@@ -373,9 +373,27 @@
           "column_name": "accepted_at",
           "is_nullable": "YES",
           "column_default": null
+        },
+        {
+          "data_type": "integer",
+          "column_name": "max_uses",
+          "is_nullable": "YES",
+          "column_default": null
+        },
+        {
+          "data_type": "integer",
+          "column_name": "current_uses",
+          "is_nullable": "YES",
+          "column_default": "0"
+        },
+        {
+          "data_type": "character varying",
+          "column_name": "invite_type",
+          "is_nullable": "YES",
+          "column_default": "'email'::character varying"
         }
       ],
-      "table_name": "invitations"
+      "table_name": "invites"
     },
     {
       "columns": [
@@ -393,7 +411,7 @@
         },
         {
           "data_type": "character varying",
-          "column_name": "username",
+          "column_name": "email",
           "is_nullable": "YES",
           "column_default": null
         },
@@ -420,6 +438,12 @@
           "column_name": "updated_at",
           "is_nullable": "YES",
           "column_default": "now()"
+        },
+        {
+          "data_type": "text",
+          "column_name": "name",
+          "is_nullable": "YES",
+          "column_default": null
         }
       ],
       "table_name": "profiles"

@@ -102,3 +102,43 @@ export interface Invite {
   current_uses?: number; // DB default is 0
   invite_type?: 'email' | 'general'; // 'email' for specific invites, 'general' for generic links
 }
+
+export interface Draft {
+  id?: string;
+  league_id: string;
+  is_active: boolean;
+  scheduled_start?: string;
+  ended_at?: string;
+  current_pick: number;
+  current_user_id?: string;
+  current_round: number;
+  total_rounds: number;
+  pick_deadline?: string;
+  pick_time_limit_seconds: number;
+  draft_order_type: 'snake' | 'auction';
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface DraftPick {
+  id?: string;
+  draft_id: string;
+  league_id: string;
+  user_id: string;
+  player_id: string;
+  round: number;
+  pick_number: number;
+  pick_order: number;
+  created_at?: string;
+}
+
+export interface DraftQueue {
+  id?: string;
+  draft_id: string;
+  league_id: string;
+  user_id: string;
+  player_id: string;
+  rank: number; 
+  created_at?: string;
+  updated_at?: string;
+}
