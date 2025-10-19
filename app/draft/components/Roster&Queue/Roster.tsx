@@ -52,7 +52,7 @@ const Roster = () => {
       <div className="divider w-full my-2 mx-0"></div>
 
       {players.map((player, index) => (
-        <div className="m-0 p-0">
+        <div key={index} className="m-0 p-0">
           <div className="flex flex-row items-center gap-2 my-2 mx-0">
             <div className="text-2xl font-bold">{index + 1}</div>
             <img src={player.icon ?? ""} alt={player.name} className="w-10 h-10" />
