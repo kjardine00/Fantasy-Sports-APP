@@ -28,6 +28,19 @@ export async function getDraft(draftId: string) {
   return { data, error };
 }
 
+export async function getDraftsToStart() {
+    const supabase = await createClient();
+
+    const { data: draftsToStart, error } = await supabase
+    .from(TABLES.DRAFTS)
+    .select("id")
+    .eq("is_active", false)
+    .not("scheduled_start", "is", null)
+    .lte("scheduled_start", new Date().toISOString());
+
+    return { draftsToStart, error };
+}
+
 export async function getDraftByLeagueId(leagueId: string) {
   const supabase = await createClient();
   const { data, error } = await supabase
@@ -102,4 +115,19 @@ export async function endDraft(draftId: string) {
     .single();
 
   return { data, error };
+}
+
+export async function updateScheduledStart(draftId: string, newScheduledStart: string) {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from(TABLES.DRAFTS)
+    .update({
+      scheduled_start: newScheduledStart,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", draftId)
+    .select()
+    .single();
+
+    return { data, error };
 }
