@@ -16,5 +16,7 @@ Strikeouts: 2 pt = strikeouts_pitched
 Batters Faced: 1 = batters_faced / 3
 Earned Runs Allowed: -1 pt = runs_allowed
 
+Big Plays?
+
 *Disclaimer: Duplicate Players on a ASSBLAST team will be averaged between the duplicates.*
 
