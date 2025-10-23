@@ -13,6 +13,7 @@ export async function createLeagueAction(formData: FormData) {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) {
+    console.log("User not logged in");
     return { error: "You must be logged in to create a league" };
   }
 
@@ -30,6 +31,7 @@ export async function createLeagueAction(formData: FormData) {
   const shortCode = await LeagueService.generateUniqueShortCode();
    
   if (!shortCode) {
+    console.log("Failed to generate unique short code");
     return { error: "Failed to generate unique short code" };
   }
   
@@ -46,6 +48,7 @@ export async function createLeagueAction(formData: FormData) {
   const { data: league, error: leagueError } = await insertLeague(newLeague);
 
   if (leagueError) {
+    console.log("Failed to insert league: ", newLeague);
     return { data: null, error: leagueError.message };
   }
 
@@ -65,14 +68,17 @@ export async function createLeagueAction(formData: FormData) {
     await setLeagueComissioner(newLeagueComissioner);
 
   if (memberError) {
+    console.log("Failed to set league commissioner: ", newLeagueComissioner);
     return { data: league, error: memberError.message };
   }
 
   const { error: inviteError } = await createGenericInviteLink(league.id, user.id, parseInt(settings.numberOfTeams));
 
   if (inviteError) {
-    return { data: league, error: inviteError };
+    console.log("Failed to create generic invite link: ", league.id, user.id, parseInt(settings.numberOfTeams));
+    return { data: league, error: typeof inviteError === 'string' ? inviteError : 'Failed to create invite link' };
   }
 
+  console.log("=== LEAGUE CREATED SUCCESSFULLY ===");
   return { data: league, error: null };
 }

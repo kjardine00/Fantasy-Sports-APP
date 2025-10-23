@@ -1,37 +1,31 @@
 "use client";
 
-import React, { useState, useEffect, useActionState } from "react";
+import React, { useEffect, useActionState, useState } from "react";
 import { signup } from "@/lib/server_actions/auth_actions";
-import { useRouter } from "next/navigation";
 import { useAuthModal } from "./AuthModalContext";
 
-interface LeagueData {
-  name: string;
-  numberOfTeams: number;
-  useChemistry: boolean;
-  duplicatePlayers: string;
-}
-
-// TODO:Confirm Password, Field Validation
 const RegisterForm = () => {
-  const router = useRouter();
-  const { switchView, closeModal } = useAuthModal();
+  const { switchView, closeModal, onAuthSuccess } = useAuthModal();
   const [state, formAction, isPending] = useActionState(signup, null);
-
-  const [draftLeagueData, setDraftLeagueData] = useState<LeagueData | null>(
-    null
-  );
+  const [ isExecutingCallback, setIsExecutingCallback] = useState(false);
 
   useEffect(() => {
      if (state?.success) {
-      const draftLeagueData = sessionStorage.getItem("tempLeagueData");
-      if (draftLeagueData) {
-        sessionStorage.removeItem("tempLeagueData");
-        router.push("/league/create"); 
+      if (onAuthSuccess) {
+        setIsExecutingCallback(true);
+        Promise.resolve(onAuthSuccess())
+        .then(() => {
+
+        })
+        .catch((error) => {
+          console.error("Error in onAuthSuccess callback:", error);
+            setIsExecutingCallback(false);
+        })
+      } else {
+        closeModal();
       }
-      closeModal();
     }
-  }, [state?.success, router, closeModal]);
+  }, [state?.success, closeModal, onAuthSuccess]);
 
   return (
     <div className="flex items-center justify-center">
@@ -107,9 +101,9 @@ const RegisterForm = () => {
                 <button
                   type="submit"
                   className="btn btn-secondary rounded"
-                  disabled={isPending}
+                  disabled={isPending || isExecutingCallback}
                 >
-                  {isPending ? "Signing up..." : "Sign Up"}
+                  {isPending || isExecutingCallback ? "Signing up..." : "Sign Up"}
                 </button>
 
                 <button

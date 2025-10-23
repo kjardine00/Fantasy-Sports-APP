@@ -18,15 +18,13 @@ export async function createNewProfile(authId: string, email: string, name: stri
     updated_at: new Date().toISOString(),
   };
 
-  console.log("Creating profile with data:", newProfile);
-
   const { data, error } = await createProfile(newProfile as Profile);
   
   if (error) {
-    console.error("Profile creation error:", error);
+    // console.error("Profile creation error:", error);
     return { data, error };
   }
   
-  console.log("Profile created successfully:", data);
+  // console.log("Profile created successfully:", data);
   return { data, error };
 }

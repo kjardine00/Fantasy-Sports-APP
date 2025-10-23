@@ -12,7 +12,7 @@ export default function AuthRedirect({ view }: AuthRedirectProps) {
 
   useEffect(() => {
     if (!isOpen) {
-      openAuthModal(view); 
+      openAuthModal(view, false); 
     }
   }, [view, openAuthModal]);
 

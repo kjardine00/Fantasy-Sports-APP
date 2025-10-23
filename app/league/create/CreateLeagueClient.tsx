@@ -1,86 +1,86 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import NumberOfTeamsSelector from "../../components/NumberOfTeamsSelector";
 import { createLeagueAction } from "@/lib/server_actions/leagues_actions";
 import { AlertType } from "@/lib/types/alert_types";
 import { useAlert } from "@/app/components/Alert/AlertContext";
+import { useAuthModal } from "@/app/components/Auth/AuthModalContext";
 
 const CreateLeagueClient = () => {
   const router = useRouter();
   const { addAlert } = useAlert();
+  const { openAuthModal, closeModal } = useAuthModal();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const pendingFormDataRef = useRef<FormData | null>(null);
 
-  useEffect(() => {
-    // Check for temp data from previous unauthenticated attempt
-    const tempLeagueData = sessionStorage.getItem("tempLeagueData");
-    if (tempLeagueData) {
-      const parsedData = JSON.parse(tempLeagueData);
-
-      // Pre-populate form fields directly
-      const nameInput = document.querySelector(
-        'input[name="name"]'
-      ) as HTMLInputElement;
-      const numberOfTeamsSelect = document.querySelector(
-        'select[name="numberOfTeams"]'
-      ) as HTMLSelectElement;
-      const chemistryInput = document.querySelector(
-        'input[name="useChemistry"]'
-      ) as HTMLInputElement;
-      const duplicatePlayersSelect = document.querySelector(
-        'select[name="duplicatePlayers"]'
-      ) as HTMLSelectElement;
-
-      if (nameInput) nameInput.value = parsedData.name;
-      if (numberOfTeamsSelect)
-        numberOfTeamsSelect.value = parsedData.numberOfTeams.toString();
-      if (chemistryInput) chemistryInput.checked = parsedData.useChemistry;
-      if (duplicatePlayersSelect)
-        duplicatePlayersSelect.value = parsedData.duplicatePlayers;
-
-      sessionStorage.removeItem("tempLeagueData");
-
-      // Auto-submit the form
-      const form = document.querySelector("form[action]") as HTMLFormElement;
-      if (form) form.requestSubmit();
-    }
-  }, []);
-
+  // Auth State Change Listener
   const handleSubmit = async (formData: FormData) => {
     setIsSubmitting(true);
-
-    sessionStorage.removeItem("tempLeagueData");
 
     try {
       const result = await createLeagueAction(formData);
 
       if (result?.error) {
         if (result.error === "You must be logged in to create a league") {
-          const tempData = {
-            name: formData.get("name") as string,
-            numberOfTeams: formData.get("numberOfTeams") as string,
-            useChemistry: formData.get("useChemistry") === "on",
-            duplicatePlayers: formData.get("duplicatePlayers") as string,
-          };
-          sessionStorage.setItem("tempLeagueData", JSON.stringify(tempData));
-          router.push("/login");
-        } else {
-          addAlert({
-            message: result.error,
-            type: AlertType.ERROR,
-            duration: 5000,
+          pendingFormDataRef.current = formData;
+
+          openAuthModal("login", {
+            isDismissible: false,
+            onAuthSuccess: async () => {
+              try {
+                const retryResult = await createLeagueAction(pendingFormDataRef.current!);
+                
+                if (retryResult?.error) {
+                  addAlert({
+                    message: retryResult.error,
+                    type: AlertType.ERROR,
+                    duration: 5000,
+                  });
+                  closeModal();
+                } else if (retryResult?.data) {
+                  addAlert({
+                    message: "League created successfully",
+                    type: AlertType.SUCCESS,
+                    duration: 5000,
+                  });
+                  closeModal();
+                  router.push(`/league/${retryResult.data.short_code}`);
+                }
+              } catch (error) {
+                addAlert({
+                  message: "Failed to create league after authentication",
+                  type: AlertType.ERROR,
+                  duration: 5000,
+                });
+                closeModal();
+              } finally {
+                pendingFormDataRef.current = null;
+                setIsSubmitting(false);
+              }
+            }
           });
+          
+          setIsSubmitting(false);
+          return;
         }
+        
+        // Other errors
+        addAlert({
+          message: result.error,
+          type: AlertType.ERROR,
+          duration: 5000,
+        });
       } else if (result?.data) {
         addAlert({
           message: "League created successfully",
           type: AlertType.SUCCESS,
           duration: 5000,
         });
-        router.push(`/league/${result.data.id}`);
+        router.push(`/league/${result.data.short_code}`);
       }
-    } catch (err) {
+    } catch (error) {
       addAlert({
         message: "An unexpected error occurred",
         type: AlertType.ERROR,

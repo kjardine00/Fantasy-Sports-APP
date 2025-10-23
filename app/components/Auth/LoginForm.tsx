@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect, useActionState } from "react";
 import { login } from "@/lib/server_actions/auth_actions";
-import { useRouter } from "next/navigation";
 import { useAuthModal } from "./AuthModalContext";
 
 interface LeagueData {
@@ -13,24 +12,27 @@ interface LeagueData {
 }
 
 const LoginForm = () => {
-  const router = useRouter();
-  const { switchView, closeModal } = useAuthModal();
+  const { switchView, closeModal, onAuthSuccess } = useAuthModal();
   const [state, formAction, isPending] = useActionState(login, null);
-  
-  const [draftLeagueData, setDraftLeagueData] = useState<LeagueData | null>(
-    null
-  );
+  const [ isExecutingCallback, setIsExecutingCallback] = useState(false);
 
   useEffect(() => {
     if (state?.success) {
-      const draftLeagueData = sessionStorage.getItem("tempLeagueData");
-      if (draftLeagueData) {
-        sessionStorage.removeItem("tempLeagueData");
-        router.push("/league/create");
+      if (onAuthSuccess) {
+        setIsExecutingCallback(true);
+        Promise.resolve(onAuthSuccess())
+        .then(() => {
+
+        })
+        .catch((error) => {
+          console.error("Error in onAuthSuccess callback:", error);
+            setIsExecutingCallback(false);
+        });
+      } else {
+        closeModal();
       }
-      closeModal();
     }
-  }, [state?.success, router, closeModal]);
+  }, [state?.success, closeModal, onAuthSuccess]);
 
   return (
     <div className="flex items-center justify-center">
@@ -77,11 +79,9 @@ const LoginForm = () => {
               <button
                 type="submit"
                 className="btn btn-primary rounded"
-                disabled={isPending}
+                disabled={isPending || isExecutingCallback}
               >
-                {" "}
-                {/* TODO: add error handling and error messages */}
-                {isPending ? "Logging in..." : "Log In"}
+                {isPending || isExecutingCallback ? "Logging in..." : "Log In"}
               </button>
 
               <button

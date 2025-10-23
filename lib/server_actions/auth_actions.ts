@@ -76,8 +76,6 @@ export async function signup(prevState: any, formData: FormData) {
     return { error: "Failed to create user" };
   }
 
-  // console.log("Creating profile for user:", user.user.id, "email:", email, "name:", name);
-
   const { data: profileData, error: profileError } = await createNewProfile(
     user.user.id,
     email,
@@ -102,4 +100,11 @@ export async function logout() {
   
   revalidatePath("/", "layout");
   redirect("/");
+}
+
+
+export async function verifyAuth() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  return { authenticated: !!user, userId: user?.id}
 }

@@ -9,20 +9,21 @@ const AuthModal = () => {
     const {
         isOpen,
         currentView,
+        isDismissible,
         closeModal,
         switchView
     } = useAuthModal();
 
     useEffect(() => {
         const handleEsc = (e: KeyboardEvent) => {
-            if (e.key === 'Escape') closeModal();
+            if (e.key === 'Escape' && isDismissible) closeModal();
         };
 
         if (isOpen) {
             document.addEventListener('keydown', handleEsc);
             return () => document.removeEventListener('keydown', handleEsc);
         }
-    }, [isOpen, closeModal]);
+    }, [isOpen, closeModal, isDismissible]);
 
     if (!isOpen) return null;
 
@@ -31,7 +32,7 @@ const AuthModal = () => {
             <div
                 className="absolute inset-0 bg-black/25"
                 style={{ backgroundColor: 'rgba(0, 0, 0, 0.25)' }}
-                onClick={closeModal}
+                onClick={isDismissible ? closeModal : undefined}
             />
 
             <div className="relative z-10">

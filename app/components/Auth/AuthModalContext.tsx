@@ -6,8 +6,10 @@ type AuthView = 'login' | 'register' | 'forgot-password';
 
 interface AuthModalContextType {
     isOpen: boolean;
+    isDismissible: boolean;
     currentView: AuthView;
-    openAuthModal: (view: AuthView) => void;
+    onAuthSuccess?: () => void | Promise<void>;  // ADD THIS
+    openAuthModal: (view: AuthView, options?: { isDismissible?: boolean; onAuthSuccess?: () => void | Promise<void> }) => void;  // UPDATE THIS
     closeModal: () => void;
     switchView: (view: AuthView) => void;
 }
@@ -17,14 +19,20 @@ const AuthModalContext = createContext<AuthModalContextType | undefined>(undefin
 export const AuthModalProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [currentView, setCurrentView] = useState<AuthView>('login');
+    const [isDismissible, setIsDismissible] = useState(true);
+    const [onAuthSuccess, setOnAuthSuccess] = useState<(() => void | Promise<void>) | undefined>(undefined);  // ADD THIS
 
-    const openAuthModal = (view: AuthView) => {
+    const openAuthModal = (view: AuthView, options?: { isDismissible?: boolean; onAuthSuccess?: () => void | Promise<void> }) => {
         setCurrentView(view);
         setIsOpen(true);
+        setIsDismissible(options?.isDismissible ?? true);
+        // Wrap in function to preserve the callback reference
+        setOnAuthSuccess(() => options?.onAuthSuccess);  // ADD THIS
     };
 
     const closeModal = () => {
         setIsOpen(false);
+        setOnAuthSuccess(undefined);  // ADD THIS - Clear callback when closing
     };
 
     const switchView = (view: AuthView) => {
@@ -34,7 +42,9 @@ export const AuthModalProvider: React.FC<{ children: ReactNode }> = ({ children 
     return (
         <AuthModalContext.Provider value={{
             isOpen,
+            isDismissible,
             currentView,
+            onAuthSuccess,  // ADD THIS
             openAuthModal,
             closeModal,
             switchView
