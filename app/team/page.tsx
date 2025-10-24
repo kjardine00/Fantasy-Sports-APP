@@ -3,6 +3,8 @@ import TeamInfoCard from "./components/TeamInfoCard";
 import RosterCard from "../components/RosterCard";
 import GlossaryCard from "../components/GlossaryCard";
 
+//team?leagueId=512274528&teamId=1
+
 const TeamPage = () => {
   return (
     <>
