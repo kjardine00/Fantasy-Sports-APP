@@ -81,7 +81,7 @@ export async function getMemberRole(league_id: string, user_id: string) {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from(TABLES.LEAGUES_MEMBERS)
-    .select("role")
+    .select("*")
     .eq("league_id", league_id)
     .eq("user_id", user_id)
     .single();

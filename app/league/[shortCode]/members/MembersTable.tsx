@@ -1,32 +1,14 @@
+"use client";
+
 import React from "react";
+import { useLeague } from "../../LeagueContext";
 import MemberTableRow from "./MemberTableRow";
-import { MembersService } from "@/lib/services/league/members_service";
 import { MemberRow } from "@/lib/types/members_types";
 
-interface MembersTableProps {
-  leagueId: string;
-  userId: string;
-}
-
-const MembersTable = async ({ leagueId, userId }: MembersTableProps) => {
-  const { data: members, error: membersError } =
-    await MembersService.getMembersTableData(leagueId, userId);
-  if (membersError) {
-    return (
-      <div className="alert alert-error">
-        <span>Error loading members: {membersError}</span>
-      </div>
-    );
-  }
-
-  const currentUserMember = members?.find((member: MemberRow) => member.user_id === userId);
-  const otherMembers = members?.filter((member: MemberRow) => member.user_id !== userId) || [];
-  
-  const orderedMembers: MemberRow[] = [];
-  if (currentUserMember) {
-    orderedMembers.push(currentUserMember);
-  }
-  orderedMembers.push(...otherMembers);
+const MembersTable = () => {
+  const { membersTableData, membership } = useLeague();
+  const userId = membership.user_id;
+  const members = membersTableData;
 
   return (
     <div>
@@ -42,7 +24,7 @@ const MembersTable = async ({ leagueId, userId }: MembersTableProps) => {
           </tr>
         </thead>
         <tbody>
-          {orderedMembers?.map((member: MemberRow, index: number) => (
+          {members?.map((member: MemberRow, index: number) => (
             <MemberTableRow key={index} member={member} userId={userId} />
           ))}
         </tbody>

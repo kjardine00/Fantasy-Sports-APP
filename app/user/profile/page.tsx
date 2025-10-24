@@ -1,10 +1,8 @@
 import React from "react";
-import { redirect } from "next/navigation";
-import { createClient } from "@/lib/database/server";
-import { Profile } from "@/lib/types/database_types";
+import { requireAuth } from "@/lib/contexts/UserContext";
 
 // Fields to display:
-// Username
+// Name
 // Email
 // Role
 // Profile Picture
@@ -13,19 +11,7 @@ import { Profile } from "@/lib/types/database_types";
 // Logout
 
 const ProfilePage = async () => {
-  const supabase = await createClient();
-
-  const { data, error } = await supabase.auth.getUser();
-  if (error || !data?.user) {
-    redirect("/login");
-  }
-
-  // TODO: move this to lib/database/queries/profiles.ts
-  const { data: profile, error: profileError } = await supabase
-    .from("profiles")
-    .select("*")
-    .eq("auth_id", data?.user?.id)
-    .single();
+  const { user, profile } = await requireAuth();
 
   return (
     <div className="min-h-screen bg-base-200 flex items-center justify-center p-4">
@@ -38,7 +24,7 @@ const ProfilePage = async () => {
             <input
               type="text"
               className="input"
-              placeholder={`${profile?.name}` || "Name"}
+              placeholder={`${profile?.name ?? "Name"}`}
             />
             <p className="label"></p>
 
@@ -46,7 +32,7 @@ const ProfilePage = async () => {
             <input
               type="text"
               className="input"
-              placeholder={`${profile?.username}` || "Username"}
+              placeholder={`${profile?.name ?? "Username"}`}
             />
             <p className="label"></p>
 
@@ -54,11 +40,11 @@ const ProfilePage = async () => {
             <input
               type="text"
               className="input"
-              placeholder={`${data?.user?.email}` || "Email"}
+              placeholder={`${profile?.email ?? "Email"}`}
             />
             <p className="label"></p>
           </fieldset>
-          email role delete account edit profile logout
+          email, role, delete account, edit profile, logout,
         </div>
       </div>
     </div>

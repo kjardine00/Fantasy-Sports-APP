@@ -1,39 +1,12 @@
+"use client";
+
 import React from 'react'
 import roster from '../../../../public/data/roster.json'
 import RosterCard from '../../components/RosterCard'
-import { LeagueService } from '@/lib/services/league/leagues_service';
-import { createClient } from "@/lib/database/server";
-import { redirect } from "next/navigation";
+import { useLeague } from '../../LeagueContext';
 
-interface RostersPageProps {
-  params: {
-    shortCode: string;
-  };
-}
-
-const RostersPage = async ({ params }: RostersPageProps) => {
-    const { shortCode } = await params;
-    const supabase = await createClient();
-
-    const {
-        data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) {
-        redirect("/login");
-    }
-
-    const { data: league, error: leagueError } = await LeagueService.getLeagueByShortCode(shortCode);
-    if (leagueError) {
-        redirect("/");
-    }
-
-    const { data: membership, error: membershipError } =
-        await LeagueService.validateLeagueMembership(league.id, user.id);
-
-    if (membershipError || !membership) {
-        redirect("/");
-    }
-
+const RostersPage = () => {
+    const { league } = useLeague();
     const rosterData = roster.Rosters;
 
     return (

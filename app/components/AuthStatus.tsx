@@ -1,11 +1,8 @@
-import { createClient } from '@/lib/database/server'
 import LogoutButton from './LogoutButton'
+import { getCurrentUser } from '@/lib/contexts/UserContext'
 
 export default async function AuthStatus() {
-  const supabase = await createClient()
-  
-  // This gets the current user from the server-side session
-  const { data: { user } } = await supabase.auth.getUser()
+  const { user, profile } = await getCurrentUser();
 
   return (
     <div className="alert alert-info">

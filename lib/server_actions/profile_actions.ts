@@ -2,7 +2,7 @@
 
 import { createClient } from "@/lib/database/server";
 import { Profile } from "@/lib/types/database_types";
-import { createProfile } from "@/lib/database/queries/profiles_queries";
+import { createProfile, getProfileByAuthId } from "@/lib/database/queries/profiles_queries";
 
 export async function createNewProfile(authId: string, email: string, name: string) {
   const supabase = await createClient();
@@ -26,5 +26,19 @@ export async function createNewProfile(authId: string, email: string, name: stri
   }
   
   // console.log("Profile created successfully:", data);
+  return { data, error };
+}
+
+export async function getProfile(authId: string) {
+  const { data, error } = await getProfileByAuthId(authId);
+
+  if (error) {
+    return { data: null, error: error.message };
+  }
+
+  if (!data) {
+    return { data: null, error: "Profile not found" };
+  }
+
   return { data, error };
 }

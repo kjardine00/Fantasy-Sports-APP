@@ -8,3 +8,7 @@
 [] Database>Queries - check all DB queries are updating the updated_at fields
 [] Supabase - Setup Email
 [] Supabase - Invite Email Migration from Resend I think? :shrug:
+
+
+10/23/2025
+[] Create an Error page where the UserContext can throw the user to when it errors

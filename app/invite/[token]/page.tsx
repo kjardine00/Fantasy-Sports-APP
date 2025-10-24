@@ -1,5 +1,4 @@
-import { createClient } from "@/lib/database/server";
-import AuthRedirect from "../components/AuthRedirect";
+import { requireAuth } from "@/lib/contexts/UserContext";
 import TokenValidator from "../components/TokenValidator";
 
 interface InvitePageProps {
@@ -10,16 +9,7 @@ interface InvitePageProps {
 
 export default async function InvitePage({ params }: InvitePageProps) {
   const { token } = await params;
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    return <AuthRedirect view="login" />;
-  }
-
-  if (user) {
-    return <TokenValidator token={token} user={user} />;
-  }
+  const { user, profile } = await requireAuth();
+  
+  return <TokenValidator token={token} user={user} />;
 }

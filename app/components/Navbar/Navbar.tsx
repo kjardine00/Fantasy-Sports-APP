@@ -1,24 +1,14 @@
 import Link from "next/link";
 import React from "react";
-import { createClient } from "@/lib/database/server";
+import { getCurrentUser } from "@/lib/contexts/UserContext";
 import DefaultLinks from "./components/DefaultLinks";
 import ProfileIcon from "./components/ProfileIcon";
 import { Profile } from "@/lib/types";
 import AuthButtons from "./components/AuthButtons";
+import { redirect } from "next/navigation";
 
 const Navbar = async () => {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  const { data, error } = await supabase
-    .from("profiles")
-    .select("*")
-    .eq("auth_id", user?.id)
-    .single();
-
-  const profile = data || null;
+  const { user, profile } = await getCurrentUser();
 
   return (
     <div className="navbar bg-base-300 shadow-sm fixed top-0 left-0 right-0 z-50">
@@ -35,7 +25,7 @@ const Navbar = async () => {
           // Signed in mode
           <>
             <DefaultLinks />
-            <ProfileIcon profile={profile as Profile} userId={user.id} />
+            <ProfileIcon profile={profile} userId={user.id} />
           </>
         ) : (
           // Not signed in mode

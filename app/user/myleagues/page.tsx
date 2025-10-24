@@ -1,18 +1,13 @@
-import { createClient } from '@/lib/database/server';
 import React from 'react'
 import { LeagueCard } from './LeagueCard';
-import { getUserLeagues } from '@/lib/database/queries/leagues_queries';
-import { League } from '@/lib/types/database_types';
+import { getUsersLeagues } from '@/lib/database/queries/leagues_queries';
+import { requireAuth } from '@/lib/contexts/UserContext';
 
 const MyLeaguesPage = async () => {
-
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const { user, profile } = await requireAuth();
 
   const { data: userLeagues, error: userLeaguesError } =
-    await getUserLeagues(user?.id || '');
+    await getUsersLeagues(user.id);
 
   if (userLeaguesError) {
     console.error('Error fetching user leagues:', userLeaguesError);

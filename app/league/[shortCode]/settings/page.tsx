@@ -1,52 +1,19 @@
-import NumberOfTeamsSelector from "../../../components/NumberOfTeamsSelector";
+"use client";
+
 import React from "react";
-import { LeagueService } from "@/lib/services/league/leagues_service";
-import { createClient } from "@/lib/database/server";
-import { redirect } from "next/navigation";
+import NumberOfTeamsSelector from "../../../components/NumberOfTeamsSelector";
+import { useLeague } from "../../LeagueContext";
 
-interface SettingsPageProps {
-  params: {
-    shortCode: string;
-  };
-}
-
-const SettingsPage = async ({ params }: SettingsPageProps) => {
-  const { shortCode } = await params;
-  const supabase = await createClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) {
-    redirect("/login");
-  }
-
-  const { data: league, error: leagueError } =
-    await LeagueService.getLeagueByShortCode(shortCode);
-  if (leagueError) {
-    redirect("/");
-  }
-
-  const { data: membership, error: membershipError } =
-    await LeagueService.validateLeagueMembership(league.id, user.id);
-
-  if (membershipError || !membership) {
-    redirect("/");
-  }
-
-  // Check if user is commissioner
-  const isCommissioner = membership.role === "commissioner";
-  if (!isCommissioner) {
-    redirect(`/league/${league.id}`);
-  }
-
-  const leagueName: string = league.name;
+const SettingsPage = () => {
+  const { league } = useLeague();
 
   return (
     <div className="settings-page p-10">
       <div className="flex items-center gap-4">
         <h1 className="text-2xl font-bold">League Settings</h1>
-        <h4>{leagueName}</h4>
+        <h4 className="text-md font-semibold text-base-content/70">
+          {league.name}
+        </h4>
       </div>
 
       <div className="settings-section p-10">
@@ -68,7 +35,7 @@ const SettingsPage = async ({ params }: SettingsPageProps) => {
                   <label className="floating-label">
                     <input
                       type="text"
-                      placeholder={leagueName}
+                      placeholder={league.name}
                       className="input input-md"
                     />
                   </label>
