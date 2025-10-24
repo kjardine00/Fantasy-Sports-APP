@@ -4,13 +4,16 @@ import Link from "next/link";
 import React from "react";
 import NotFullPromptCard from "./NotFullPromptCard";
 import { useLeague } from "../LeagueContext";
+import DraftInfoCard from "./DraftInfoCard";
 
 const MainLeagueContentCard = () => {
-  const { league, isCommissioner } = useLeague();
+  const { league, isCommissioner, members } = useLeague();
+
+  const isLeagueFull = members.length >= league.settings?.numberOfTeams;
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="main-container card w-full lg:w-160 bg-base-100 shadow-lg">
+      <div className="main-container card w-full lg:w-200 bg-base-100 shadow-lg">
         <div className="card-body">
           <h2 className="card-title text-xl font-bold">
             {league.name || "League Name Goes Here"}
@@ -38,7 +41,7 @@ const MainLeagueContentCard = () => {
             </Link>
           </div>
 
-          <NotFullPromptCard />
+          <DraftInfoCard />
         </div>
       </div>
     </div>

@@ -27,7 +27,22 @@ export async function getLeagueByShortCode(shortCode: string) {
   const supabase = await createClient()
   const { data, error } = await supabase
     .from(TABLES.LEAGUES)
-    .select('*')
+    .select(`
+      *,
+      drafts (
+        id,
+        scheduled_start,
+        is_active,
+        ended_at,
+        current_pick,
+        current_round,
+        total_rounds,
+        pick_time_limit_seconds,
+        draft_order_type,
+        created_at,
+        updated_at
+      )
+    `)
     .eq('short_code', shortCode)
     .single()
   return { data, error }

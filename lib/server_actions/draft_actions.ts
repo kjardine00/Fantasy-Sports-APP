@@ -8,8 +8,23 @@ import {
   getDraft,
   getDraftsToStart,
   updateScheduledStart,
+  getDraftByLeagueId,
 } from "@/lib/database/queries/draft_queries";
 import { removePlayerFromAllQueues } from "../database/queries/draft_queue_queries";
+
+export async function getDraftByLeagueIDAction(leagueId: string) {
+  const { data, error } = await getDraftByLeagueId(leagueId);
+  if (error) {
+    return { data: null, error: error };
+  }
+
+  if (!data) {
+    return { data: null, error: "Draft not found" };
+  }
+
+
+  return { data, error: null };
+}
 
 export async function createDraftActions(
   leagueId: string,

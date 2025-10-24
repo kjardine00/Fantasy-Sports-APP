@@ -32,7 +32,7 @@ const LeaguePage = () => {
           <div className="flex flex-col gap-4">
             <MainLeagueContentCard />
 
-            <div className="card w-full lg:w-160 bg-base-100 shadow-lg">
+            <div className="card w-full lg:w-200 bg-base-100 shadow-lg">
               <div className="card-body">
                 <h2 className="card-title text-xl font-bold">
                   Recent Activity
