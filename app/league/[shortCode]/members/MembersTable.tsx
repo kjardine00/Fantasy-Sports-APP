@@ -6,7 +6,7 @@ import MemberTableRow from "./MemberTableRow";
 import { MemberRow } from "@/lib/types/members_types";
 
 const MembersTable = () => {
-  const { membersTableData, membership } = useLeague();
+  const { membersTableData, membership, isCommissioner } = useLeague();
   const userId = membership.user_id;
   const members = membersTableData;
 
@@ -20,12 +20,12 @@ const MembersTable = () => {
             <th>TEAM NAME</th>
             <th>MANAGER NAME</th>
             <th>STATUS</th>
-            <th>ACTION</th>
+            {isCommissioner && <th>ACTION</th>}
           </tr>
         </thead>
         <tbody>
           {members?.map((member: MemberRow, index: number) => (
-            <MemberTableRow key={index} member={member} userId={userId} />
+            <MemberTableRow key={index} member={member} userId={userId} isCommissioner={isCommissioner} />
           ))}
         </tbody>
       </table>

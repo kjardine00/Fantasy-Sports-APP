@@ -7,7 +7,7 @@ import InviteLinkCard from "../../components/invite/InviteLinkCard";
 import { useLeague } from "../../LeagueContext";
 
 const MembersPage = () => {
-  const { league, membership } = useLeague();
+  const { league } = useLeague();
 
   return (
     <div className="league-page min-h-screen bg-base-200">
@@ -16,9 +16,12 @@ const MembersPage = () => {
           <div className="flex items-center justify-between mx-6 px-4 py-6">
             <div className="flex items-center gap-4">
               <h1 className="text-2xl font-bold">League Members</h1>
-              <h4 className="text-md font-semibold text-base-content/70">
+              <Link 
+                href={`/league/${league.short_code}`}
+                className="text-md font-semibold text-base-content/70 hover:text-primary transition-colors"
+              >
                 {league.name}
-              </h4>
+              </Link>
             </div>
 
             <Link

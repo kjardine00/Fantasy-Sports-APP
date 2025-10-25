@@ -4,9 +4,10 @@ import { MemberRow } from "@/lib/types/members_types";
 interface MemberRowProps {
   member: MemberRow;
   userId: string;
+  isCommissioner: boolean;
 }
 
-const MemberTableRow = ({ member, userId }: MemberRowProps) => {
+const MemberTableRow = ({ member, userId, isCommissioner }: MemberRowProps) => {
   const isCurrentUser = member.user_id === userId;
   const isEmptySlot = member.status === "empty";
   
@@ -23,7 +24,7 @@ const MemberTableRow = ({ member, userId }: MemberRowProps) => {
       <td>{member.team_name}</td>
       <td>{member.manager_name}</td>
       <td>{member.status}</td>
-      <td>{isEmptySlot ? "" : "Delete BTN?"}</td>
+      {isCommissioner && <td>{isEmptySlot ? "" : "Delete BTN?"}</td>}
     </tr>
   );
 };
