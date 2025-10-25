@@ -42,7 +42,7 @@ const InviteLinkCard = ({ leagueId }: { leagueId: string }) => {
         setInviteLink(result.data || "No Generic Invite Link Available");
       }
       setIsLoading(false);
-    }
+    };
     fetchInviteLink();
   }, [leagueId]);
 
@@ -57,8 +57,11 @@ const InviteLinkCard = ({ leagueId }: { leagueId: string }) => {
   }
 
   return (
-    <div className="invite-link mx-6 px-4 py-6 flex items-center gap-5">
-      <h3 className="text-sm">Invite Link</h3>
+    <div className="invite-link py-4 flex flex-row items-center gap-5">
+      <div className="flex items-center gap-3">
+        <div className="w-1 h-8 bg-gradient-to-b from-primary to-secondary rounded-full"></div>
+        <h2 className="text-2xl font-bold text-base-content">Invite Link</h2>
+      </div>
 
       <label className="input">
         <svg
@@ -86,7 +89,12 @@ const InviteLinkCard = ({ leagueId }: { leagueId: string }) => {
         />
       </label>
 
-      <a className="link link-info text-sm" onClick={() => copyToClipboard(inviteLink)}>Click me</a>
+      <a
+        className="link link-info text-sm"
+        onClick={() => copyToClipboard(inviteLink)}
+      >
+        Click me
+      </a>
     </div>
   );
 };
