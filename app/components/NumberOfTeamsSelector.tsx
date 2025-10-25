@@ -28,7 +28,6 @@ const NumberOfTeamsSelector: React.FC<NumberOfTeamsSelectorProps> = ({
   return (
     <div className="form-control">
       <select 
-        defaultValue={defaultValue} 
         className={className}
         value={value}
         onChange={handleChange}

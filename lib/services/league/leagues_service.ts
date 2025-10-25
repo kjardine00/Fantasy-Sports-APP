@@ -12,7 +12,6 @@ import {
   getAllLeaguesMembers,
 } from "@/lib/database/queries/leagues_members_queries";
 import { generateShortCode } from "@/utils/short-code-gen";
-import { InviteService } from "../invite/invite_service";
 
 export class LeagueService {
   static async getLeague(leagueId: string) {
@@ -80,11 +79,11 @@ export class LeagueService {
     const useChemistry = formData.get("useChemistry") as string;
     const duplicatePlayers = formData.get("duplicatePlayers") as string;
 
-    const settings = {
-      numberOfTeams,
-      useChemistry,
-      duplicatePlayers,
-    };
+const settings = {
+  numberOfTeams: parseInt(numberOfTeams),
+  useChemistry: useChemistry === "true",
+  numOfDuplicatePlayers: parseInt(duplicatePlayers),
+};
 
     const shortCode = await this.generateUniqueShortCode();
 

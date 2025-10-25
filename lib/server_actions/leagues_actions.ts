@@ -2,10 +2,12 @@
 
 import { createClient } from "@/lib/database/server";
 import { League, LeagueMember } from "@/lib/types/database_types";
-import { insertLeague } from "@/lib/database/queries/leagues_queries";
+import { SettingsFormState } from "@/lib/types/settings_types";
+import { insertLeague, updateLeagueAndSettings } from "@/lib/database/queries/leagues_queries";
 import { setLeagueComissioner } from "@/lib/database/queries/leagues_members_queries";
 import { createGenericInviteLink } from "@/lib/server_actions/invite_actions";
 import { LeagueService } from "../services/league/leagues_service";
+import { SettingsService } from "../services/league/settings_service";
 
 export async function createLeagueAction(formData: FormData) {
   const supabase = await createClient();
@@ -20,12 +22,12 @@ export async function createLeagueAction(formData: FormData) {
   const name = formData.get("name") as string;
   const numberOfTeams = formData.get("numberOfTeams") as string;
   const useChemistry = formData.get("useChemistry") as string;
-  const duplicatePlayers = formData.get("duplicatePlayers") as string;
+  const numOfDuplicatePlayers = formData.get("numOfDuplicatePlayers") as string;
 
   const settings = {
-    numberOfTeams,
-    useChemistry,
-    duplicatePlayers,
+    numberOfTeams: parseInt(numberOfTeams),
+    useChemistry: useChemistry === "true",
+    numOfDuplicatePlayers: parseInt(numOfDuplicatePlayers),
   };
 
   const shortCode = await LeagueService.generateUniqueShortCode();
@@ -72,13 +74,61 @@ export async function createLeagueAction(formData: FormData) {
     return { data: league, error: memberError.message };
   }
 
-  const { error: inviteError } = await createGenericInviteLink(league.id, user.id, parseInt(settings.numberOfTeams));
+  const { error: inviteError } = await createGenericInviteLink(league.id, user.id, settings.numberOfTeams);
 
   if (inviteError) {
-    console.log("Failed to create generic invite link: ", league.id, user.id, parseInt(settings.numberOfTeams));
+    console.log("Failed to create generic invite link: ", league.id, user.id, settings.numberOfTeams);
     return { data: league, error: typeof inviteError === 'string' ? inviteError : 'Failed to create invite link' };
   }
 
   console.log("=== LEAGUE CREATED SUCCESSFULLY ===");
   return { data: league, error: null };
+}
+
+export async function getLeagueSettingsAction(leagueId: string) {
+  // getLeagueSettings
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) {
+    console.log("User not logged in");
+    return { error: "User not logged in" };
+  }
+
+  const { data, error } = await SettingsService.fromDatabase(leagueId);
+  
+  if (error) {
+    console.log("Failed to get league settings: ", leagueId);
+    return { data: null, error: "Failed to get league settings"};
+  }
+  return { data: data, error: null };
+}
+
+export async function updateLeagueSettingsAction(leagueId: string, settings: SettingsFormState) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) {
+    console.log("User not logged in");
+    return { error: "User not logged in" };
+  }
+
+  const { data: transformed, error: transformError } = await SettingsService.toDatabase(leagueId, settings);
+  if (transformError || !transformed) {
+    return { error: "Failed to transform settings" };
+  }
+
+  const { data, error: updateError } = await updateLeagueAndSettings(
+    leagueId, 
+    transformed.leagueFields, 
+    transformed.settings
+  );
+  
+  if (updateError) {
+    return { error: "Failed to update" };
+  }
+
+  return { data, error: null };
 }

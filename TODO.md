@@ -12,3 +12,9 @@
 
 10/23/2025
 [] Create an Error page where the UserContext can throw the user to when it errors
+
+
+10/24/2025
+[] Create updateLeagueSettingsAction in leagues_actions.ts that fetches current settings, merges with new values using spread operator ({ ...currentSettings, ...updates }), and saves back to database.
+[] Add permission checking to ensure only commissioners/owners can update settings.
+[] Wire up the action to the Settings page by uncommenting the handleSave implementation and importing the new action.

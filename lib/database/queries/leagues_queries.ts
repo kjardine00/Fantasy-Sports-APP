@@ -1,33 +1,34 @@
-import { createClient } from '@/lib/database/server'
-import { TABLES } from '@/lib/database/tables'
-import { League } from '@/lib/types/database_types'
+import { createClient } from "@/lib/database/server";
+import { TABLES } from "@/lib/database/tables";
+import { League, LeagueSettings } from "@/lib/types/database_types";
 
 export async function insertLeague(league: League) {
-  const supabase = await createClient()
+  const supabase = await createClient();
   const { data, error } = await supabase
     .from(TABLES.LEAGUES)
     .insert(league)
     .select()
-    .single()
+    .single();
 
-    return { data, error }
+  return { data, error };
 }
 
 export async function getLeague(leagueId: string) {
-  const supabase = await createClient()
+  const supabase = await createClient();
   const { data, error } = await supabase
     .from(TABLES.LEAGUES)
-    .select('*')
-    .eq('id', leagueId)
-    .single()
-  return { data, error }
+    .select("*")
+    .eq("id", leagueId)
+    .single();
+  return { data, error };
 }
 
 export async function getLeagueByShortCode(shortCode: string) {
-  const supabase = await createClient()
+  const supabase = await createClient();
   const { data, error } = await supabase
     .from(TABLES.LEAGUES)
-    .select(`
+    .select(
+      `
       *,
       drafts (
         id,
@@ -42,49 +43,80 @@ export async function getLeagueByShortCode(shortCode: string) {
         created_at,
         updated_at
       )
-    `)
-    .eq('short_code', shortCode)
-    .single()
-  return { data, error }
-}
-
-export async function getLeagueSettings(leagueId: string) {
-  const supabase = await createClient()
-  const { data, error } = await supabase
-    .from(TABLES.LEAGUES)
-    .select('settings')
-    .eq('id', leagueId)
-    .single()
-  return { data, error }
+    `
+    )
+    .eq("short_code", shortCode)
+    .single();
+  return { data, error };
 }
 
 export async function checkShortCodeExists(shortCode: string) {
-  const supabase = await createClient()
+  const supabase = await createClient();
   const { data, error } = await supabase
     .from(TABLES.LEAGUES)
-    .select('id')
-    .eq('short_code', shortCode)
-    .maybeSingle()
-  return { exists: !!data, error }
+    .select("id")
+    .eq("short_code", shortCode)
+    .maybeSingle();
+  return { exists: !!data, error };
 }
 
 export async function getUsersLeagues(userId: string) {
-  const supabase = await createClient()
+  const supabase = await createClient();
   const { data, error } = await supabase
     .from(TABLES.LEAGUES_MEMBERS)
-    .select(`
-      league_id,
-      leagues (
-        id,
-        name,
-        owner_id,
-        draft_completed,
-        short_code,
-        created_at,
-        settings
+    .select(
+      `
+    league_id,
+    leagues (
+      id,
+      name,
+      owner_id,
+      draft_completed,
+      short_code,
+      created_at,
+      settings
       )
-    `)
-    .eq('user_id', userId)
+      `
+    )
+    .eq("user_id", userId);
 
-  return { data, error }
+  return { data, error };
+}
+
+export async function getLeagueSettings(leagueId: string) {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from(TABLES.LEAGUES)
+    .select("settings")
+    .eq("id", leagueId)
+    .single();
+  return { data, error };
+}
+
+export async function updateLeagueAndSettings(
+  leagueId: string,
+  leagueFields: Partial<League>,
+  newSettings: Partial<LeagueSettings>
+) {
+  const supabase = await createClient();
+
+  const { data: current } = await supabase
+    .from(TABLES.LEAGUES)
+    .select("settings")
+    .eq("id", leagueId)
+    .single();
+
+  const mergedSettings = { ...current?.settings, ...newSettings };
+
+  const { data, error } = await supabase
+    .from(TABLES.LEAGUES)
+    .update({
+      ...leagueFields,
+      settings: mergedSettings,
+    })
+    .eq("id", leagueId)
+    .select()
+    .single();
+
+  return { data, error };
 }

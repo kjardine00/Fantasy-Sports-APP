@@ -136,7 +136,7 @@ const CreateLeagueClient = () => {
                 <select
                   defaultValue="10"
                   className="select select-bordered w-full"
-                  name="duplicatePlayers"
+                  name="numOfDuplicatePlayers"
                 >
                   <option disabled={true}>Number of Duplicate Players</option>
                   <option>None</option>

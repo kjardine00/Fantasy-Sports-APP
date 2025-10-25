@@ -11,6 +11,7 @@ export interface Profile {
 }
 
 // League interface
+// Add Public field
 export interface League {
   id?: string;
   name: string;
@@ -18,7 +19,23 @@ export interface League {
   draft_completed: boolean;
   short_code: string;
   created_at?: string;
-  settings: Record<string, any>;
+  settings: Partial<LeagueSettings>;
+}
+
+export interface LeagueSettings {
+  numberOfTeams: number;
+  draftType: 'snake' | 'auction' | 'offline';
+  draftDate: string;
+  draftTime: string;
+  timePerPick: number;
+  rosterSize: number;
+  totalStartingPlayers: number;
+  allowDuplicatePicks: boolean;
+  numberOfDuplicatePicks: number;
+  useChemistry: boolean;
+  chemistryMultiplier: number;
+  useBigPlays: boolean;
+  bigPlaysMultiplier: number;
 }
 
 // League members interface (many-to-many relationship)
