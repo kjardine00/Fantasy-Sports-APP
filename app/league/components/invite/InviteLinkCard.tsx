@@ -60,7 +60,7 @@ const InviteLinkCard = ({ leagueId }: { leagueId: string }) => {
     <div className="invite-link py-4 flex flex-row items-center gap-5">
       <div className="flex items-center gap-3">
         <div className="w-1 h-8 bg-gradient-to-b from-primary to-secondary rounded-full"></div>
-        <h2 className="text-2xl font-bold text-base-content">Invite Link</h2>
+        <h2 className="text-lg font-bold text-base-content">Invite Link</h2>
       </div>
 
       <label className="input">
