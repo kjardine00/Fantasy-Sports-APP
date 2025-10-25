@@ -63,7 +63,6 @@ export class InviteService {
     invitedBy: string,
     maxUses: number | null = null
   ) {
-    // Check if a generic link already exists for this league
     const { data: existingLink } = await getGenericInviteLink(leagueId);
 
     if (existingLink) {
@@ -97,6 +96,7 @@ export class InviteService {
     const { data: invite, error } = await this.getGenericInviteLink(leagueId);
 
     if (error || !invite) {
+      console.error("No generic invite link found", error);
       return { data: null, error: "No generic invite link found" };
     }
 
@@ -165,7 +165,17 @@ export class InviteService {
       return { data: null, error: { message: "Invite not found" } };
     }
 
-    // 3. Add member to league
+    // 3. Double-check membership doesn't exist (in case of race condition)
+    const { exists: alreadyMember } = await checkMembershipExists(
+      invite.league_id,
+      userId
+    );
+
+    if (alreadyMember) {
+      return { data: null, error: { message: "You are already a member of this league" } };
+    }
+
+    // 4. Add member to league
     const { error: memberError } = await addMemberToLeague(
       invite.league_id,
       userId,
@@ -173,10 +183,15 @@ export class InviteService {
     );
 
     if (memberError) {
-      return { data: null, error: { message: "Failed to add member" } };
+      console.error("Error adding member to league:", memberError);
+      // Check if it's a duplicate key error
+      if (memberError.code === "23505" || memberError.message?.includes("duplicate")) {
+        return { data: null, error: { message: "You are already a member of this league" } };
+      }
+      return { data: null, error: { message: `Failed to add member: ${memberError.message || "Unknown error"}` } };
     }
 
-    // 4. Update invite usage
+    // 5. Update invite usage
     const newUseCount = (invite.current_uses || 0) + 1;
     const shouldMarkAccepted =
       invite.invite_type === "email" ||

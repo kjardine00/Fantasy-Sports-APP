@@ -1,6 +1,5 @@
 "use server";
 
-import { redirect } from "next/navigation";
 import { createClient } from "@/lib/database/server";
 import { InviteService } from "@/lib/services/invite/invite_service";
 import { Invite } from "@/lib/types/database_types";
@@ -94,6 +93,7 @@ export async function handleAcceptInvite(token: string, userId: string) {
   if (error) {
     return {
       data: null,
+      shortCode: null,
       error: error.message || "An error occurred accepting the invite",
     };
   }
@@ -108,11 +108,11 @@ export async function handleAcceptInvite(token: string, userId: string) {
     );
 
     if (leagueError || !league) {
-      return { data: null, error: "Failed to fetch league information" };
+      return { data: null, shortCode: null, error: "Failed to fetch league information" };
     }
 
-    redirect(`/league/${league.short_code}`);
+    return { data, shortCode: league.short_code, error: null };
   } else {
-    return { data: null, error: "An error occurred accepting the invite" };
+    return { data: null, shortCode: null, error: "An error occurred accepting the invite" };
   }
 }

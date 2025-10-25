@@ -10,7 +10,11 @@ import {
 } from "@/lib/server_actions/leagues_actions";
 import { LeagueSettings } from "@/lib/types/database_types";
 import { SettingsFormState } from "@/lib/types/settings_types";
-import Link from "next/link";
+import {
+  PageContainer,
+  PageHeader,
+  PageSection,
+} from "@/app/components/Layout";
 
 const SettingsPage = () => {
   const { league } = useLeague();
@@ -124,82 +128,74 @@ const SettingsPage = () => {
   };
 
   if (isLoading) {
-    return (
-      <div className="league-page min-h-screen bg-base-200">
-        <div className="container mx-auto px-4 py-8">
-          <div className="card w-full bg-base-100 shadow-lg">
-            <div className="flex items-center justify-center p-8">
-              <span className="loading loading-spinner loading-lg"></span>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
+    return <PageContainer isLoading />;
   }
 
   return (
-    <div className="league-page min-h-screen bg-gradient-to-br from-base-200 to-base-300">
-      <div className="container mx-auto px-4 py-8">
-        <div className="card w-full bg-base-100 shadow-2xl border border-base-300">
-          {/* Header Section */}
-          <div className="bg-gradient-to-r from-primary/10 to-secondary/10 border-b border-base-300">
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mx-6 px-4 py-6">
-              <div className="flex flex-col gap-2">
-                <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-                  League Settings
-                </h1>
-                <Link 
-                  href={`/league/${league.short_code}`}
-                  className="text-sm font-semibold text-base-content/60 hover:text-primary transition-all duration-200 flex items-center gap-2 w-fit"
+    <PageContainer>
+      <PageHeader
+        title="League Settings"
+        breadcrumb={{
+          label: `${league.name} page`,
+          href: `/league/${league.short_code}`,
+        }}
+        actions={
+          !isEditing ? (
+            <button
+              onClick={handleEdit}
+              className="btn btn-primary rounded-full shadow-lg hover:shadow-xl transition-all duration-200 gap-2"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                />
+              </svg>
+              Edit Settings
+            </button>
+          ) : (
+            <>
+              <button
+                onClick={handleCancel}
+                className="btn btn-ghost rounded-full hover:bg-base-200 transition-all duration-200"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSave}
+                className="btn btn-primary rounded-full shadow-lg hover:shadow-xl transition-all duration-200 gap-2"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                  </svg>
-                  Back to {league.name} page
-                </Link>
-              </div>
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+                Save Changes
+              </button>
+            </>
+          )
+        }
+      />
 
-              <div className="flex gap-2">
-                {!isEditing ? (
-                  <button
-                    onClick={handleEdit}
-                    className="btn btn-primary rounded-full shadow-lg hover:shadow-xl transition-all duration-200 gap-2"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                    </svg>
-                    Edit Settings
-                  </button>
-                ) : (
-                  <>
-                    <button
-                      onClick={handleCancel}
-                      className="btn btn-ghost rounded-full hover:bg-base-200 transition-all duration-200"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      onClick={handleSave}
-                      className="btn btn-primary rounded-full shadow-lg hover:shadow-xl transition-all duration-200 gap-2"
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
-                      Save Changes
-                    </button>
-                  </>
-                )}
-              </div>
-            </div>
-          </div>
-
-          {/* Basic Settings Section */}
-          <div className="settings-section mx-6 px-4 py-8">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-1 h-8 bg-gradient-to-b from-primary to-secondary rounded-full"></div>
-              <h2 className="text-2xl font-bold text-base-content">Basic Settings</h2>
-            </div>
-            <div className="overflow-x-auto bg-base-200/50 rounded-xl p-4 shadow-inner">
+      <PageSection title="Basic Settings">
+        <div className="overflow-x-auto">
               <table className="table table-zebra">
                 <tbody>
                   {/* row 1 */}
@@ -276,7 +272,7 @@ const SettingsPage = () => {
                           </label>
                         </div>
                       ) : (
-                        <span className="badge badge-lg badge-outline">
+                        <span className="badge badge-md badge-outline">
                           {settings.isPublic ? "Public" : "Private"}
                         </span>
                       )}
@@ -285,15 +281,10 @@ const SettingsPage = () => {
                 </tbody>
               </table>
             </div>
-          </div>
+          </PageSection>
 
-          {/* Draft Settings Section */}
-          <div className="settings-section mx-6 px-4 py-8 border-t border-base-300">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-1 h-8 bg-gradient-to-b from-primary to-secondary rounded-full"></div>
-              <h2 className="text-2xl font-bold text-base-content">Draft Settings</h2>
-            </div>
-            <div className="overflow-x-auto bg-base-200/50 rounded-xl p-4 shadow-inner">
+      <PageSection title="Draft Settings" showBorderTop>
+        <div className="overflow-x-auto">
               <table className="table table-zebra">
                 <tbody>
                   {/* row 1 */}
@@ -317,7 +308,7 @@ const SettingsPage = () => {
                           <option value="auction" disabled>Auction (Coming Soon)</option>
                         </select>
                       ) : (
-                        <span className="badge badge-lg badge-outline capitalize">
+                        <span className="badge badge-md badge-outline capitalize">
                           {settings.draftType}
                         </span>
                       )}
@@ -504,15 +495,10 @@ const SettingsPage = () => {
                 </tbody>
               </table>
             </div>
-          </div>
+          </PageSection>
 
-          {/* Roster Settings Section */}
-          <div className="settings-section mx-6 px-4 py-8 border-t border-base-300">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-1 h-8 bg-gradient-to-b from-primary to-secondary rounded-full"></div>
-              <h2 className="text-2xl font-bold text-base-content">Roster Settings</h2>
-            </div>
-            <div className="overflow-x-auto bg-base-200/50 rounded-xl p-4 shadow-inner">
+      <PageSection title="Roster Settings" showBorderTop>
+        <div className="overflow-x-auto">
               <table className="table table-zebra">
                 <tbody>
                   {/* row 1 */}
@@ -602,7 +588,7 @@ const SettingsPage = () => {
                           </label>
                         </div>
                       ) : (
-                        <span className="badge badge-lg badge-outline">
+                        <span className="badge badge-md badge-outline">
                           {settings.allowDuplicatePicks ? "Allowed" : "Not Allowed"}
                         </span>
                       )}
@@ -638,15 +624,10 @@ const SettingsPage = () => {
                 </tbody>
               </table>
             </div>
-          </div>
+          </PageSection>
 
-          {/* Scoring Settings Section */}
-          <div className="settings-section mx-6 px-4 py-8 border-t border-base-300">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-1 h-8 bg-gradient-to-b from-primary to-secondary rounded-full"></div>
-              <h2 className="text-2xl font-bold text-base-content">Scoring Settings</h2>
-            </div>
-            <div className="overflow-x-auto bg-base-200/50 rounded-xl p-4 shadow-inner">
+      <PageSection title="Scoring Settings" showBorderTop>
+        <div className="overflow-x-auto">
               <table className="table table-zebra">
                 <tbody>
                   {/* row 1 */}
@@ -670,7 +651,7 @@ const SettingsPage = () => {
                           </label>
                         </div>
                       ) : (
-                        <span className="badge badge-lg badge-outline">
+                        <span className="badge badge-md badge-outline">
                           {settings.useChemistry ? "Enabled" : "Disabled"}
                         </span>
                       )}
@@ -727,7 +708,7 @@ const SettingsPage = () => {
                           </label>
                         </div>
                       ) : (
-                        <span className="badge badge-lg badge-outline">
+                        <span className="badge badge-md badge-outline">
                           {settings.useBigPlays ? "Enabled" : "Disabled"}
                         </span>
                       )}
@@ -765,10 +746,8 @@ const SettingsPage = () => {
                 </tbody>
               </table>
             </div>
-          </div>
-        </div>
-      </div>
-    </div>
+          </PageSection>
+    </PageContainer>
   );
 };
 

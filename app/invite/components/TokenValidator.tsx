@@ -17,6 +17,7 @@ const TokenValidator = ({ token, user }: TokenValidatorProps) => {
     const router = useRouter();
     const [tokenStatus, setTokenStatus] = useState<'loading' | 'valid' | 'invalid' | 'expired' | 'max_uses_reached' | 'joined'>('loading');
     const [shortCode, setShortCode] = useState<string | null>(null);
+    const [isJoining, setIsJoining] = useState(false);
     const { addAlert } = useAlert();
 
     useEffect(() => {
@@ -86,6 +87,44 @@ const TokenValidator = ({ token, user }: TokenValidatorProps) => {
         }
     }
 
+    const handleJoinLeague = async () => {
+        setIsJoining(true);
+        try {
+            const result = await handleAcceptInvite(token, user.id);
+            
+            if (result?.error) {
+                addAlert({
+                    message: result.error,
+                    type: AlertType.ERROR,
+                    duration: 4000,
+                });
+                setIsJoining(false);
+            } else if (result?.shortCode) {
+                addAlert({
+                    message: "Successfully joined the league!",
+                    type: AlertType.SUCCESS,
+                    duration: 3000,
+                });
+                router.push(`/league/${result.shortCode}`);
+            } else {
+                addAlert({
+                    message: "An unexpected error occurred",
+                    type: AlertType.ERROR,
+                    duration: 4000,
+                });
+                setIsJoining(false);
+            }
+        } catch (error) {
+            console.error('Error joining league:', error);
+            addAlert({
+                message: "An error occurred joining the league",
+                type: AlertType.ERROR,
+                duration: 4000,
+            });
+            setIsJoining(false);
+        }
+    }
+
     if (tokenStatus === 'loading') {
         return (
             <div className="min-h-screen bg-base-200 flex items-center justify-center">
@@ -144,8 +183,23 @@ const TokenValidator = ({ token, user }: TokenValidatorProps) => {
             <div className="min-h-screen bg-base-200 flex items-center justify-center">
             <div className="card w-96 bg-base-100 shadow-xl">
                 <div className="card-body text-center">
+                    <h2 className="card-title">Join League</h2>
+                    <p>You've been invited to join this league!</p>
                     <div className="card-actions justify-center">
-                        <button onClick={() => handleAcceptInvite(token, user.id)} className="btn btn-primary">Join League</button>
+                        <button 
+                            onClick={handleJoinLeague} 
+                            className="btn btn-primary"
+                            disabled={isJoining}
+                        >
+                            {isJoining ? (
+                                <>
+                                    <span className="loading loading-spinner loading-sm"></span>
+                                    Joining...
+                                </>
+                            ) : (
+                                'Join League'
+                            )}
+                        </button>
                     </div>
                 </div>
             </div>

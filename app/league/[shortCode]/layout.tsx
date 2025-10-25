@@ -5,6 +5,9 @@ import { LeagueProvider } from "../LeagueContext";
 import { LeagueService } from "@/lib/services/league/leagues_service";
 import { MembersService } from "@/lib/services/league/members_service";
 
+// Force dynamic rendering to prevent caching issues when members join
+export const dynamic = 'force-dynamic';
+
 interface LeagueLayoutProps {
   children: React.ReactNode;
   params: {
