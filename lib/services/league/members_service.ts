@@ -1,4 +1,4 @@
-import { getAllLeaguesMembersAndUserInfo } from "@/lib/database/queries/leagues_members_queries";
+import { getAllLeaguesMembersAndUserInfo, getMember, getMemberbyTeamId } from "@/lib/database/queries/leagues_members_queries";
 import { getLeagueSettings } from "@/lib/database/queries/leagues_queries";
 import { MemberRow } from "@/lib/types/members_types";
 
@@ -85,5 +85,21 @@ export class MembersService {
     }
 
     return { data: membersTable, error: null };
+  }
+
+  static async getMemberInfo(leagueId: string, userId: string) {
+    const { data, error } = await getMember(leagueId, userId);
+    if (error) {
+      return { data: null, error: error.message };
+    }
+    return { data, error: null };
+  }
+
+  static async getMemberInfobyTeamId(leagueId: string, teamId: string) {
+    const { data, error } = await getMemberbyTeamId(leagueId, teamId);
+    if (error) {
+      return { data: null, error: error.message };
+    }
+    return { data, error: null };
   }
 }

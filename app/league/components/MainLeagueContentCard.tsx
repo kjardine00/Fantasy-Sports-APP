@@ -2,14 +2,11 @@
 
 import Link from "next/link";
 import React from "react";
-import NotFullPromptCard from "./NotFullPromptCard";
 import { useLeague } from "../LeagueContext";
 import DraftInfoCard from "./DraftInfoCard";
 
 const MainLeagueContentCard = () => {
   const { league, isCommissioner, members } = useLeague();
-
-  const isLeagueFull = members.length >= league.settings?.numberOfTeams;
 
   return (
     <div className="flex flex-col gap-4">
@@ -19,8 +16,6 @@ const MainLeagueContentCard = () => {
             {league.name || "League Name Goes Here"}
           </h2>
           <div className="navbar bg-base-100">
-            {" "}
-            {/* TODO: fix the styling for this */}
             <Link
               href={`/league/${league.short_code}/settings`}
               className={`btn btn-ghost text-sm ${isCommissioner ? '' : 'hidden'}`}

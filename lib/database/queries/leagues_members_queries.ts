@@ -77,13 +77,24 @@ export async function insertLeagueMember(member: LeagueMember) {
   return { data, error };
 }
 
-export async function getMemberRole(league_id: string, user_id: string) {
+export async function getMember(league_id: string, user_id: string) {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from(TABLES.LEAGUES_MEMBERS)
     .select("*")
     .eq("league_id", league_id)
     .eq("user_id", user_id)
+    .single();
+  return { data, error };
+}
+
+export async function getMemberbyTeamId(leagueId: string, teamId: string) {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from(TABLES.LEAGUES_MEMBERS)
+    .select("*")
+    .eq("league_id", leagueId)
+    .eq("league_number", teamId)
     .single();
   return { data, error };
 }

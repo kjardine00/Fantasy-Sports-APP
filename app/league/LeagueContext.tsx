@@ -1,12 +1,13 @@
 "use client";
 
 import React, { createContext, useContext, ReactNode } from "react";
-import { League, LeagueMember } from "@/lib/types/database_types";
+import { League, LeagueMember, Profile } from "@/lib/types/database_types";
 import { MemberRow } from "@/lib/types/members_types";
 
 interface LeagueContextType {
     league: League;
     membership: LeagueMember;
+    profile: Profile;
     members: LeagueMember[];
     membersTableData: MemberRow[];
     isCommissioner: boolean;
@@ -18,6 +19,7 @@ interface LeagueProviderProps {
     children: ReactNode;
     league: League;
     membership: LeagueMember;
+    profile: Profile;
     members: LeagueMember[];
     membersTableData: MemberRow[];
   }
@@ -26,6 +28,7 @@ interface LeagueProviderProps {
     children,
     league,
     membership,
+    profile,
     members,
     membersTableData,
   }) => {
@@ -36,6 +39,7 @@ interface LeagueProviderProps {
           value={{
             league,
             membership,
+            profile,
             members,
             membersTableData,
             isCommissioner,

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import React from "react";
 import DraftCard from "@/app/components/DraftCountdown/DraftCard";
+import { getDraftByLeagueIDAction } from "@/lib/server_actions/draft_actions";
 
 interface TeamInfoCardProps {
   teamName: string;
@@ -8,10 +9,15 @@ interface TeamInfoCardProps {
   teamRecord?: string;
   teamManager: string;
   teamRoster?: string;
+  leagueId: string;
+  leagueShortCode: string;
   leagueName: string;
 }
 
-const TeamInfoCard = ({ teamName, teamLogo, teamManager, leagueName }: TeamInfoCardProps) => {
+const TeamInfoCard = async ({ teamName, teamLogo, teamManager, leagueName, leagueId, leagueShortCode }: TeamInfoCardProps) => {
+
+  const { data: draftData, error: draftError } = await getDraftByLeagueIDAction(leagueId);
+
   return (
     <div className="card bg-base-200 card-xl shadow-sm">
       <div className="card-body">
@@ -20,24 +26,24 @@ const TeamInfoCard = ({ teamName, teamLogo, teamManager, leagueName }: TeamInfoC
             <img
               src={teamLogo ? teamLogo : "/icons/baseball-bat.svg"}
               alt="team-logo"
-              className="w-24 h-24 invert"
+              className="size-32"
             />
 
             <div className="team-info px-4">
               <h1 className="card-title text-2xl font-bold py-1">
-                {teamName ? teamName : "John Sports' Dingers"}
+                {teamName ? teamName : "Loading Team Name..."}
               </h1>
 
               <div className="flex flex-row items-center gap-2">
                 <Link
-                  href="/league"
+                  href={`/league/${leagueShortCode}`}
                   className="text-sm text-info font-semibold"
                 >
-                  {leagueName ? leagueName : "My 2025 League"}
+                  {leagueName ? leagueName : "Loading League Name..."}
                 </Link>
                 <span className="text-sm font-semibold">|</span>
                 <h4 className="text-sm font-semibold">
-                  {teamManager ? teamManager : "John Sports"}
+                  {teamManager ? teamManager : "Loading Team Manager..."}
                 </h4>
               </div>
             </div>
@@ -54,10 +60,14 @@ const TeamInfoCard = ({ teamName, teamLogo, teamManager, leagueName }: TeamInfoC
         </div>
 
         <div className="py-4">
+        {!draftError && draftData ? (
           <DraftCard
-            draftType="Snake"
-            draftDate={new Date("2025-12-25T21:00:00")}
+            draftType={draftData?.draft_order_type === "snake" ? "Snake" : "Auction"}
+            draftDate={draftData?.scheduled_start ? new Date(draftData.scheduled_start) : undefined}
           />
+        ) : (
+          <></>
+        )}
         </div>
       </div>
     </div>

@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/database/server";
 import { DraftService } from "@/lib/services/draft/draft_service";
-import { getMemberRole } from "@/lib/database/queries/leagues_members_queries";
+import { getMember } from "@/lib/database/queries/leagues_members_queries";
 import {
   getDraft,
   getDraftsToStart,
@@ -40,7 +40,7 @@ export async function createDraftActions(
     return { error: "You must be logged in to create a draft" };
   }
 
-  const { data: member } = await getMemberRole(leagueId, user.id);
+  const { data: member } = await getMember(leagueId, user.id);
 
   if (!member || member.role !== "commissioner") {
     return { error: "You must be a commissioner to create a draft" };
@@ -70,7 +70,7 @@ export async function startDraftNowAction(draftId: string) {
     return { error: "You must be logged in to start a draft" };
   }
 
-  const { data: member } = await getMemberRole(draftId, user.id);
+  const { data: member } = await getMember(draftId, user.id);
   const { data: draftData, error: draftError } = await getDraft(draftId);
 
   if (!draftData || draftError) {

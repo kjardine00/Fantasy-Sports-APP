@@ -45,7 +45,7 @@ export interface LeagueMember {
   role: 'member' | 'commissioner';
   draft_pick_order?: number | null;
   created_at?: string;
-  league_number: number | null;
+  league_number: number;
   abbreviation: string | null;
   team_icon?: string | null;
   team_name: string | null;

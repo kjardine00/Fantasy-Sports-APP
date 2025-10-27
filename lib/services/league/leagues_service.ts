@@ -8,7 +8,7 @@ import {
 } from "@/lib/database/queries/leagues_queries";
 import {
   setLeagueComissioner,
-  getMemberRole,
+  getMember,
   getAllLeaguesMembers,
 } from "@/lib/database/queries/leagues_members_queries";
 import { generateShortCode } from "@/utils/short-code-gen";
@@ -50,7 +50,7 @@ export class LeagueService {
   }
 
   static async validateLeagueMembership(leagueId: string, userId: string) {
-    const { data, error } = await getMemberRole(leagueId, userId);
+    const { data, error } = await getMember(leagueId, userId);
     if (error) {
       return { error: error.message };
     }

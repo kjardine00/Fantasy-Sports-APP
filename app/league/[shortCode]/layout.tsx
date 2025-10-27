@@ -4,6 +4,7 @@ import { requireAuth } from "@/lib/contexts/UserContext";
 import { LeagueProvider } from "../LeagueContext";
 import { LeagueService } from "@/lib/services/league/leagues_service";
 import { MembersService } from "@/lib/services/league/members_service";
+import { Profile } from "@/lib/types/database_types";
 
 // Force dynamic rendering to prevent caching issues when members join
 export const dynamic = 'force-dynamic';
@@ -20,7 +21,7 @@ export default async function LeagueLayout({
   params,
 }: LeagueLayoutProps) {
   const { shortCode } = await params;
-  const { user } = await requireAuth();
+  const { user, profile } = await requireAuth();
 
   const { data: league, error: leagueError } =
     await LeagueService.getLeagueByShortCode(shortCode);
@@ -54,6 +55,7 @@ export default async function LeagueLayout({
     <LeagueProvider
       league={league}
       membership={membership}
+      profile={profile as Profile}
       members={members}
       membersTableData={membersTableData || []}
     >
