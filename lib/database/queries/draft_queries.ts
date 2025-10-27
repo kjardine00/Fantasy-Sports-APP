@@ -6,7 +6,7 @@ import { Draft } from "@/lib/types/database_types";
 // DRAFT QUERIES
 // ==========================================
 
-export async function createDraft(draft: Draft) {
+export async function create(draft: Draft) {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from(TABLES.DRAFTS)
@@ -17,7 +17,7 @@ export async function createDraft(draft: Draft) {
   return { data, error };
 }
 
-export async function getDraft(draftId: string) {
+export async function findById(draftId: string) {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from(TABLES.DRAFTS)
@@ -28,7 +28,7 @@ export async function getDraft(draftId: string) {
   return { data, error };
 }
 
-export async function getDraftsToStart() {
+export async function findReadyToStart() {
     const supabase = await createClient();
 
     const { data: draftsToStart, error } = await supabase
@@ -41,7 +41,7 @@ export async function getDraftsToStart() {
     return { draftsToStart, error };
 }
 
-export async function getDraftByLeagueId(leagueId: string) {
+export async function findByLeagueId(leagueId: string) {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from(TABLES.DRAFTS)
@@ -52,7 +52,7 @@ export async function getDraftByLeagueId(leagueId: string) {
   return { data, error };
 }
 
-export async function getActiveDraft(leagueId: string) {
+export async function findActive(leagueId: string) {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from(TABLES.DRAFTS)
@@ -64,7 +64,8 @@ export async function getActiveDraft(leagueId: string) {
   return { data, error };
 }
 
-export async function updateDraft(draftId: string, updates: Partial<Draft>) {
+// TODO: Consider if startDraft and endDraft should be in service layer as they contain business logic
+export async function update(draftId: string, updates: Partial<Draft>) {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from(TABLES.DRAFTS)
@@ -79,11 +80,8 @@ export async function updateDraft(draftId: string, updates: Partial<Draft>) {
   return { data, error };
 }
 
-export async function startDraft(
-  draftId: string,
-  firstUserId: string,
-  pickDeadline: string
-) {
+// TODO: This is business logic, consider moving to service layer
+export async function start(draftId: string, firstUserId: string, pickDeadline: string) {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from(TABLES.DRAFTS)
@@ -101,7 +99,8 @@ export async function startDraft(
   return { data, error };
 }
 
-export async function endDraft(draftId: string) {
+// TODO: This is business logic, consider moving to service layer
+export async function end(draftId: string) {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from(TABLES.DRAFTS)

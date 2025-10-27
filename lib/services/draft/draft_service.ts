@@ -1,29 +1,29 @@
 import { createClient } from "@/lib/database/server";
 import { Draft, DraftPick, DraftQueue } from "@/lib/types/database_types";
 import {
-  createDraft,
-  getDraft,
-  getDraftByLeagueId,
-  getActiveDraft,
-  updateDraft,
-  startDraft as startDraftQuery,
-  endDraft as endDraftQuery,
+  create,
+  findById,
+  findByLeagueId,
+  findActive as getActiveDraftQuery,
+  update as updateDraftQuery,
+  start as startDraftQuery,
+  end as endDraftQuery,
 } from "@/lib/database/queries/draft_queries";
 import {
-  createDraftPick,
-  getDraftPicksWithPlayers,
-  isPlayerDrafted,
-  getDraftedPlayerIds,
+  create as createDraftPick,
+  findManyWithPlayers as getDraftPicksWithPlayers,
+  draftedExists as isPlayerDrafted,
+  findDraftedPlayerIds as getDraftedPlayerIds,
 } from "@/lib/database/queries/draft_picks_queries";
 import {
-  addToQueue,
-  getUserQueue,
-  getUserQueueWithPlayers,
-  removePlayerFromQueue,
-  updateQueueRank,
-  removePlayerFromAllQueues,
+  add as addToQueue,
+  findByUser as getUserQueue,
+  findByUserWithPlayers as getUserQueueWithPlayers,
+  removeByPlayer as removePlayerFromQueue,
+  updateRank as updateQueueRank,
+  removePlayerFromAll as removePlayerFromAllQueues,
 } from "@/lib/database/queries/draft_queue_queries";
-import { getTeamCount, getUsersDraftPickOrder } from "@/lib/database/queries/leagues_members_queries";
+import { countTeams, findPickOrderByUser } from "@/lib/database/queries/leagues_members_queries";
 
 export class DraftService {
   // ==========================================
@@ -43,7 +43,7 @@ export class DraftService {
       return { data: null, error: "User not authenticated" };
     }
 
-    const { data: existingDraft } = await getDraftByLeagueId(leagueId);
+    const { data: existingDraft } = await findByLeagueId(leagueId);
     if (existingDraft) {
       return { data: null, error: "Draft already exists for this league" };
     }
@@ -58,7 +58,7 @@ export class DraftService {
       draft_order_type: draftType,
     };
 
-    const { data, error } = await createDraft(newDraft);
+    const { data, error } = await create(newDraft);
 
     if (error) {
       return { data: null, error: error.message };
@@ -68,7 +68,7 @@ export class DraftService {
   }
 
   static async startDraft(draftId: string) {
-    const { data: draft } = await getDraft(draftId);
+    const { data: draft } = await findById(draftId);
 
     if (!draft) {
       return { data: null, error: "Draft not found" };
@@ -112,7 +112,7 @@ export class DraftService {
   }
 
   static async getActiveDraft(leagueId: string) {
-    const { data, error } = await getActiveDraft(leagueId);
+    const { data, error } = await getActiveDraftQuery(leagueId);
 
     if (error) {
       return { data: null, error: error.message };
@@ -125,7 +125,7 @@ export class DraftService {
   // DRAFT PICK LOGIC
   // ==========================================
   static async makePick(draftId: string, userId: string, playerId: string) {
-    const { data: draft, error: draftError } = await getDraft(draftId);
+    const { data: draft, error: draftError } = await findById(draftId);
     if (draftError || !draft) {
       return { data: null, error: "Draft not found" };
     }
@@ -145,7 +145,7 @@ export class DraftService {
       return { data: null, error: "This player has already been drafted" };
     }
 
-    const { data: teamCount, error: countError } = await getTeamCount(
+    const { data: teamCount, error: countError } = await countTeams(
       draft.league_id
     );
 
@@ -290,7 +290,7 @@ static async reorderQueue(
         pickNumber: number, 
         draftOrderType: "snake" | "auction"
     ) {
-        const { data: members, error: orderError } = await getUsersDraftPickOrder(leagueId);
+        const { data: members, error: orderError } = await findPickOrderByUser(leagueId);
 
         if (!members || members.length === 0) return null;
 
@@ -331,7 +331,7 @@ static async reorderQueue(
             Date.now() + draft.pick_time_limit_seconds * 1000
         ).toISOString();
 
-        await updateDraft(draft.id!, {
+        await updateDraftQuery(draft.id!, {
             current_pick: nextPickNumber,
             current_round: nextRound,
             current_user_id: nextUserId,

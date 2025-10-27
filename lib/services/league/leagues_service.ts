@@ -1,21 +1,21 @@
 import { createClient } from "@/lib/database/server";
 import { League, LeagueMember } from "@/lib/types/database_types";
 import {
-  insertLeague,
-  getLeague,
-  getUsersLeagues,
-  getLeagueByShortCode,
+  create,
+  findById,
+  findByUserId,
+  findByShortCode,
 } from "@/lib/database/queries/leagues_queries";
 import {
-  setLeagueComissioner,
-  getMember,
-  getAllLeaguesMembers,
+  createCommissioner,
+  findOne,
+  findAllByLeagueId,
 } from "@/lib/database/queries/leagues_members_queries";
 import { generateShortCode } from "@/utils/short-code-gen";
 
 export class LeagueService {
   static async getLeague(leagueId: string) {
-    const { data, error } = await getLeague(leagueId);
+    const { data, error } = await findById(leagueId);
     if (error) {
       return { error: error.message };
     }
@@ -23,7 +23,7 @@ export class LeagueService {
   }
 
   static async getLeagues(userId: string) {
-    const { data, error } = await getUsersLeagues(userId);
+    const { data, error } = await findByUserId(userId);
 
     if (error) {
       return { error: error.message };
@@ -50,7 +50,7 @@ export class LeagueService {
   }
 
   static async validateLeagueMembership(leagueId: string, userId: string) {
-    const { data, error } = await getMember(leagueId, userId);
+    const { data, error } = await findOne(leagueId, userId);
     if (error) {
       return { error: error.message };
     }
@@ -58,7 +58,7 @@ export class LeagueService {
   }
 
   static async getLeagueMembers(leagueId: string) {
-    const { data, error } = await getAllLeaguesMembers(leagueId);
+    const { data, error } = await findAllByLeagueId(leagueId);
     if (error) {
       return { error: error.message };
     }
@@ -97,7 +97,7 @@ const settings = {
       settings,
     };
 
-    const { data: league, error: leagueError } = await insertLeague(newLeague);
+    const { data: league, error: leagueError } = await create(newLeague);
 
     if (leagueError) {
       return { data: null, error: leagueError.message };
@@ -116,7 +116,7 @@ const settings = {
     };
 
     const { error: memberError } =
-      await setLeagueComissioner(newLeagueComissioner);
+      await createCommissioner(newLeagueComissioner);
 
     if (memberError) {
       return { data: league, error: memberError.message };
@@ -126,7 +126,7 @@ const settings = {
   }
 
   static async getLeagueByShortCode(shortCode: string) {
-    const { data, error } = await getLeagueByShortCode(shortCode);
+    const { data, error } = await findByShortCode(shortCode);
     if (error) {
       return { error: error.message };
     }
@@ -140,7 +140,7 @@ const settings = {
       const shortCode = generateShortCode(6);
 
       // Check if short code already exists
-      const { data: existingLeague } = await getLeagueByShortCode(shortCode);
+      const { data: existingLeague } = await findByShortCode(shortCode);
 
       if (!existingLeague) {
         return shortCode; // Unique code found

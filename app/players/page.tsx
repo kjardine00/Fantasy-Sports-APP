@@ -1,9 +1,9 @@
 import React from "react";
-import { getPlayers } from "@/lib/database/queries/players_queries";
+import { findAll } from "@/lib/database/queries/players_queries";
 import PlayerRow from "./components/PlayerRow";
 
 const PlayersPage = async () => {
-  const { data, error } = await getPlayers();
+  const { data, error } = await findAll();
 
   if (error) {
     console.error(error);

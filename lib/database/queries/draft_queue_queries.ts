@@ -6,7 +6,7 @@ import { DraftQueue } from "@/lib/types/database_types";
 // DRAFT QUEUE QUERIES
 // ==========================================
 
-export async function addToQueue(queue: DraftQueue) {
+export async function add(queue: DraftQueue) {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from(TABLES.DRAFT_QUEUES)
@@ -17,7 +17,7 @@ export async function addToQueue(queue: DraftQueue) {
   return { data, error };
 }
 
-export async function getUserQueue(draftId: string, userId: string) {
+export async function findByUser(draftId: string, userId: string) {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from(TABLES.DRAFT_QUEUES)
@@ -29,7 +29,8 @@ export async function getUserQueue(draftId: string, userId: string) {
   return { data, error };
 }
 
-export async function getUserQueueWithPlayers(draftId: string, userId: string) {
+// TODO: Consider consolidating with findByUser using optional include parameter
+export async function findByUserWithPlayers(draftId: string, userId: string) {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from(TABLES.DRAFT_QUEUES)
@@ -51,7 +52,7 @@ export async function getUserQueueWithPlayers(draftId: string, userId: string) {
   return { data, error };
 }
 
-export async function removeFromQueue(queueId: string) {
+export async function removeById(queueId: string) {
   const supabase = await createClient();
   const { error } = await supabase
     .from(TABLES.DRAFT_QUEUES)
@@ -61,11 +62,7 @@ export async function removeFromQueue(queueId: string) {
   return { error };
 }
 
-export async function removePlayerFromQueue(
-  draftId: string,
-  userId: string,
-  playerId: string
-) {
+export async function removeByPlayer(draftId: string, userId: string, playerId: string) {
   const supabase = await createClient();
   const { error } = await supabase
     .from(TABLES.DRAFT_QUEUES)
@@ -77,7 +74,7 @@ export async function removePlayerFromQueue(
   return { error };
 }
 
-export async function updateQueueRank(queueId: string, newRank: number) {
+export async function updateRank(queueId: string, newRank: number) {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from(TABLES.DRAFT_QUEUES)
@@ -92,7 +89,7 @@ export async function updateQueueRank(queueId: string, newRank: number) {
   return { data, error };
 }
 
-export async function clearUserQueue(draftId: string, userId: string) {
+export async function clearByUser(draftId: string, userId: string) {
   const supabase = await createClient();
   const { error } = await supabase
     .from(TABLES.DRAFT_QUEUES)
@@ -103,7 +100,7 @@ export async function clearUserQueue(draftId: string, userId: string) {
   return { error };
 }
 
-export async function removePlayerFromAllQueues(draftId: string, playerId: string) {
+export async function removePlayerFromAll(draftId: string, playerId: string) {
     const supabase = await createClient();
 
     const { error } = await supabase

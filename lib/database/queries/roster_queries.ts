@@ -2,7 +2,7 @@ import { createClient } from '@/lib/database/server'
 import { TABLES } from '@/lib/database/tables'
 import { Roster, Player } from '@/lib/types/database_types'
 
-export async function getTeamRoster(user_id: string, league_id: string) {
+export async function findByTeam(user_id: string, league_id: string) {
     const supabase = await createClient()
     const { data, error } = await supabase
         .from(TABLES.ROSTERS)
@@ -12,7 +12,8 @@ export async function getTeamRoster(user_id: string, league_id: string) {
     return { data, error }
 }
 
-export async function getTeamRosterWithPlayers(user_id: string, league_id: string) {
+// TODO: Consider consolidating with findByTeam using optional include parameter
+export async function findByTeamWithPlayers(user_id: string, league_id: string) {
     const supabase = await createClient()
     const { data, error } = await supabase
         .from(TABLES.ROSTERS)

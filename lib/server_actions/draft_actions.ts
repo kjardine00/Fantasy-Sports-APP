@@ -3,17 +3,17 @@
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/database/server";
 import { DraftService } from "@/lib/services/draft/draft_service";
-import { getMember } from "@/lib/database/queries/leagues_members_queries";
+import { findOne } from "@/lib/database/queries/leagues_members_queries";
 import {
-  getDraft,
-  getDraftsToStart,
+  findById,
+  findReadyToStart,
   updateScheduledStart,
-  getDraftByLeagueId,
+  findByLeagueId,
 } from "@/lib/database/queries/draft_queries";
 import { removePlayerFromAllQueues } from "../database/queries/draft_queue_queries";
 
 export async function getDraftByLeagueIDAction(leagueId: string) {
-  const { data, error } = await getDraftByLeagueId(leagueId);
+  const { data, error } = await findByLeagueId(leagueId);
   if (error) {
     return { data: null, error: error };
   }
@@ -40,7 +40,7 @@ export async function createDraftActions(
     return { error: "You must be logged in to create a draft" };
   }
 
-  const { data: member } = await getMember(leagueId, user.id);
+  const { data: member } = await findOne(leagueId, user.id);
 
   if (!member || member.role !== "commissioner") {
     return { error: "You must be a commissioner to create a draft" };
@@ -70,8 +70,8 @@ export async function startDraftNowAction(draftId: string) {
     return { error: "You must be logged in to start a draft" };
   }
 
-  const { data: member } = await getMember(draftId, user.id);
-  const { data: draftData, error: draftError } = await getDraft(draftId);
+  const { data: member } = await findOne(draftId, user.id);
+  const { data: draftData, error: draftError } = await findById(draftId);
 
   if (!draftData || draftError) {
     return { data: null, error: "Draft not found" };
@@ -96,7 +96,7 @@ export async function startDraftNowAction(draftId: string) {
 }
 
 export async function checkAndStartDraftAction() {
-  const { draftsToStart, error } = await getDraftsToStart();
+  const { draftsToStart, error } = await findReadyToStart();
 
   if (error || !draftsToStart || draftsToStart.length === 0) {
     return { started: 0, error: error?.message || null };

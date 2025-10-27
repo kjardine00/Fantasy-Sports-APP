@@ -1,6 +1,6 @@
 import { SettingsFormState } from "@/lib/types/settings_types";
 import { League, LeagueSettings } from "@/lib/types/database_types";
-import { getLeague } from "@/lib/database/queries/leagues_queries";
+import { findById } from "@/lib/database/queries/leagues_queries";
 
 export class SettingsService {
   static async toDatabase(
@@ -42,7 +42,7 @@ export class SettingsService {
   static async fromDatabase(
     leagueId: string
   ): Promise<{ data: SettingsFormState | null; error: string | null }> {
-    const { data: leagueData, error: leagueError } = await getLeague(leagueId);
+    const { data: leagueData, error: leagueError } = await findById(leagueId);
 
     if (leagueError || !leagueData) {
       return { data: null, error: "Failed to get league: " + leagueId };

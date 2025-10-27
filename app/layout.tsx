@@ -34,7 +34,7 @@ export default function RootLayout({
       >
         <AlertProvider>
           <AuthModalProvider>
-            <Navbar />
+            <Navbar visible={true} />
             <AlertContainer />
             <AuthModal /> {/* This renders the modal when needed */}
             <main className="flex-1 pt-16">

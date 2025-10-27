@@ -1,11 +1,11 @@
-import { getAllLeaguesMembersAndUserInfo, getMember, getMemberbyTeamId } from "@/lib/database/queries/leagues_members_queries";
-import { getLeagueSettings } from "@/lib/database/queries/leagues_queries";
+import { findManyWithProfilesByLeagueId, findOne, findByTeamId } from "@/lib/database/queries/leagues_members_queries";
+import { findSettings } from "@/lib/database/queries/leagues_queries";
 import { MemberRow } from "@/lib/types/members_types";
 
 export class MembersService {
   static async getMembersTableData(leagueId: string, userId: string) {
     const { data: leagueData, error: leagueError } =
-      await getLeagueSettings(leagueId);
+      await findSettings(leagueId);
     if (leagueError) {
       return { data: null, error: leagueError.message };
     }
@@ -17,7 +17,7 @@ export class MembersService {
     }
 
     const { data: membersData, error: membersError } =
-      await getAllLeaguesMembersAndUserInfo(leagueId);
+      await findManyWithProfilesByLeagueId(leagueId);
 
     if (membersError) {
       return { data: null, error: membersError.message };
@@ -88,7 +88,7 @@ export class MembersService {
   }
 
   static async getMemberInfo(leagueId: string, userId: string) {
-    const { data, error } = await getMember(leagueId, userId);
+    const { data, error } = await findOne(leagueId, userId);
     if (error) {
       return { data: null, error: error.message };
     }
@@ -96,7 +96,7 @@ export class MembersService {
   }
 
   static async getMemberInfobyTeamId(leagueId: string, teamId: string) {
-    const { data, error } = await getMemberbyTeamId(leagueId, teamId);
+    const { data, error } = await findByTeamId(leagueId, teamId);
     if (error) {
       return { data: null, error: error.message };
     }

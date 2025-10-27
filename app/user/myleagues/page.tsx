@@ -1,13 +1,13 @@
 import React from 'react'
 import { LeagueCard } from './LeagueCard';
-import { getUsersLeagues } from '@/lib/database/queries/leagues_queries';
+import { findByUserId } from '@/lib/database/queries/leagues_queries';
 import { requireAuth } from '@/lib/contexts/UserContext';
 
 const MyLeaguesPage = async () => {
   const { user, profile } = await requireAuth();
 
   const { data: userLeagues, error: userLeaguesError } =
-    await getUsersLeagues(user.id);
+    await findByUserId(user.id);
 
   if (userLeaguesError) {
     console.error('Error fetching user leagues:', userLeaguesError);

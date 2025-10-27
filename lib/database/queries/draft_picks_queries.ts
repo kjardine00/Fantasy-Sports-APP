@@ -6,7 +6,7 @@ import { DraftPick } from "@/lib/types/database_types";
 // DRAFT PICKS QUERIES
 // ==========================================
 
-export async function createDraftPick(pick: DraftPick) {
+export async function create(pick: DraftPick) {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from(TABLES.DRAFT_PICKS)
@@ -17,7 +17,7 @@ export async function createDraftPick(pick: DraftPick) {
   return { data, error };
 }
 
-export async function getDraftPicks(draftId: string) {
+export async function findMany(draftId: string) {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from(TABLES.DRAFT_PICKS)
@@ -28,7 +28,8 @@ export async function getDraftPicks(draftId: string) {
   return { data, error };
 }
 
-export async function getDraftPicksWithPlayers(draftId: string) {
+// TODO: Consider consolidating with findMany using optional include parameter
+export async function findManyWithPlayers(draftId: string) {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from(TABLES.DRAFT_PICKS)
@@ -49,7 +50,7 @@ export async function getDraftPicksWithPlayers(draftId: string) {
   return { data, error };
 }
 
-export async function getUserDraftPicks(draftId: string, userId: string) {
+export async function findByUser(draftId: string, userId: string) {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from(TABLES.DRAFT_PICKS)
@@ -61,7 +62,7 @@ export async function getUserDraftPicks(draftId: string, userId: string) {
   return { data, error };
 }
 
-export async function isPlayerDrafted(draftId: string, playerId: string) {
+export async function draftedExists(draftId: string, playerId: string) {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from(TABLES.DRAFT_PICKS)
@@ -73,7 +74,7 @@ export async function isPlayerDrafted(draftId: string, playerId: string) {
   return { exists: !!data, error };
 }
 
-export async function getDraftedPlayerIds(draftId: string) {
+export async function findDraftedPlayerIds(draftId: string) {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from(TABLES.DRAFT_PICKS)

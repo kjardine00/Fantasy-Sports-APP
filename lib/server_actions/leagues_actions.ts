@@ -3,8 +3,8 @@
 import { createClient } from "@/lib/database/server";
 import { League, LeagueMember } from "@/lib/types/database_types";
 import { SettingsFormState } from "@/lib/types/settings_types";
-import { insertLeague, updateLeagueAndSettings } from "@/lib/database/queries/leagues_queries";
-import { setLeagueComissioner } from "@/lib/database/queries/leagues_members_queries";
+import { create, updateSettings } from "@/lib/database/queries/leagues_queries";
+import { createCommissioner } from "@/lib/database/queries/leagues_members_queries";
 import { createGenericInviteLink } from "@/lib/server_actions/invite_actions";
 import { LeagueService } from "../services/league/leagues_service";
 import { SettingsService } from "../services/league/settings_service";
@@ -47,7 +47,7 @@ export async function createLeagueAction(formData: FormData) {
     settings,
   };
 
-  const { data: league, error: leagueError } = await insertLeague(newLeague);
+  const { data: league, error: leagueError } = await create(newLeague);
 
   if (leagueError) {
     console.log("Failed to insert league: ", newLeague);
@@ -67,7 +67,7 @@ export async function createLeagueAction(formData: FormData) {
   };
 
   const { error: memberError } =
-    await setLeagueComissioner(newLeagueComissioner);
+    await createCommissioner(newLeagueComissioner);
 
   if (memberError) {
     console.log("Failed to set league commissioner: ", newLeagueComissioner);
@@ -120,7 +120,7 @@ export async function updateLeagueSettingsAction(leagueId: string, settings: Set
     return { error: "Failed to transform settings" };
   }
 
-  const { data, error: updateError } = await updateLeagueAndSettings(
+  const { data, error: updateError } = await updateSettings(
     leagueId, 
     transformed.leagueFields, 
     transformed.settings

@@ -1,21 +1,21 @@
 import { Invite } from "@/lib/types/database_types";
 import {
-  insertInvite,
-  deleteInvite,
-  createGenericInviteLink,
-  getGenericInviteLink,
-  deactivateGenericInviteLink,
-  getInviteByToken,
-  checkMembershipExists,
-  updateInviteUsage,
-  updateInviteUsageKeepPending,
-  deactivateGenericInviteLinkByLeagueId,
+  create,
+  deleteById,
+  createGeneric,
+  findGenericByLeagueId,
+  deactivateById,
+  findByToken,
+  membershipExists,
+  updateUsage,
+  updateUsageOnly,
+  deactivateGenericByLeagueId,
 } from "@/lib/database/queries/invite_queries";
 import {
-  addMemberToLeague,
-  getLeagueMemberCount,
+  add,
+  count,
 } from "@/lib/database/queries/leagues_members_queries";
-import { getLeague } from "@/lib/database/queries/leagues_queries";
+import { findById } from "@/lib/database/queries/leagues_queries";
 import { sendLeagueInvite } from "@/lib/services/email/resend";
 
 export class InviteService {
@@ -29,13 +29,13 @@ export class InviteService {
     };
 
     const { data: createdInvite, error: createdInviteError } =
-      await insertInvite({ invite: emailInvite });
+      await create({ invite: emailInvite });
 
     if (createdInviteError) {
       return { data: null, error: createdInviteError };
     }
 
-    const { data: league, error: leagueError } = await getLeague(
+    const { data: league, error: leagueError } = await findById(
       createdInvite.league_id
     );
     if (leagueError) {
@@ -51,7 +51,7 @@ export class InviteService {
     });
 
     if (emailError) {
-      await deleteInvite(createdInvite.id);
+      await deleteById(createdInvite.id);
       return { data: null, error: emailError };
     }
 
@@ -63,13 +63,13 @@ export class InviteService {
     invitedBy: string,
     maxUses: number | null = null
   ) {
-    const { data: existingLink } = await getGenericInviteLink(leagueId);
+    const { data: existingLink } = await findGenericByLeagueId(leagueId);
 
     if (existingLink) {
       return { data: existingLink, error: null };
     }
 
-    const { data: invite, error } = await createGenericInviteLink(
+    const { data: invite, error } = await createGeneric(
       leagueId,
       invitedBy,
       maxUses
@@ -83,7 +83,7 @@ export class InviteService {
   }
 
   static async getGenericInviteLink(leagueId: string) {
-    const { data: invite, error } = await getGenericInviteLink(leagueId);
+    const { data: invite, error } = await findGenericByLeagueId(leagueId);
 
     if (error) {
       return { data: null, error };
@@ -105,7 +105,7 @@ export class InviteService {
   }
 
   static async checkLeagueCapacity(leagueId: string, maxTeams: number = 12) {
-    const { data: memberCount, error } = await getLeagueMemberCount(leagueId);
+    const { data: memberCount, error } = await count(leagueId);
 
     if (error) {
       return { data: null, error };
@@ -130,7 +130,7 @@ export class InviteService {
 
     if (capacityInfo.isFull) {
       const { data: deactivated, error: deactivateError } =
-        await deactivateGenericInviteLink(leagueId);
+        await deactivateById(leagueId);
 
       if (deactivateError) {
         return { data: null, error: deactivateError };
@@ -160,13 +160,13 @@ export class InviteService {
     }
 
     // 2. Get the invite
-    const { data: invite, error: inviteError } = await getInviteByToken(token);
+    const { data: invite, error: inviteError } = await findByToken(token);
     if (inviteError || !invite) {
       return { data: null, error: { message: "Invite not found" } };
     }
 
     // 3. Double-check membership doesn't exist (in case of race condition)
-    const { exists: alreadyMember } = await checkMembershipExists(
+    const { exists: alreadyMember } = await membershipExists(
       invite.league_id,
       userId
     );
@@ -176,7 +176,7 @@ export class InviteService {
     }
 
     // 4. Add member to league
-    const { error: memberError } = await addMemberToLeague(
+    const { error: memberError } = await add(
       invite.league_id,
       userId,
       "member"
@@ -198,9 +198,9 @@ export class InviteService {
       (invite.max_uses && newUseCount >= invite.max_uses);
 
     if (shouldMarkAccepted) {
-      await updateInviteUsage(invite.id!, newUseCount);
+      await updateUsage(invite.id!, newUseCount);
     } else {
-      await updateInviteUsageKeepPending(invite.id!, newUseCount);
+      await updateUsageOnly(invite.id!, newUseCount);
     }
 
     await this.deactivateIfLeagueFull(invite.league_id);
@@ -209,26 +209,26 @@ export class InviteService {
   }
 
   private static async deactivateIfLeagueFull(leagueId: string) {
-    const { data: league } = await getLeague(leagueId);
+    const { data: league } = await findById(leagueId);
     if (!league?.settings?.numberOfTeams) return;
 
     const maxTeams = parseInt(league.settings.numberOfTeams);
-    const { data: memberCount } = await getLeagueMemberCount(leagueId);
+    const { data: memberCount } = await count(leagueId);
 
     if (memberCount && memberCount >= maxTeams) {
-      await deactivateGenericInviteLinkByLeagueId(leagueId);
+      await deactivateGenericByLeagueId(leagueId);
     }
   }
 
   static async validateInviteToken(token: string, userId?: string) {
-    const { data: invite, error } = await getInviteByToken(token);
+    const { data: invite, error } = await findByToken(token);
 
     if (error) {
       return { validationResult: "error", error };
     }
 
     // Fetch the league to get the short code
-    const { data: league, error: leagueError } = await getLeague(
+    const { data: league, error: leagueError } = await findById(
       invite.league_id
     );
     if (leagueError || !league) {
@@ -255,7 +255,7 @@ export class InviteService {
     }
 
     if (invite.expires_at && new Date(invite.expires_at) < new Date()) {
-      const { error: deactivateError } = await deactivateGenericInviteLink(
+      const { error: deactivateError } = await deactivateById(
         invite.id
       );
       if (deactivateError) {
@@ -269,7 +269,7 @@ export class InviteService {
     }
 
     if (invite.max_uses && invite.current_uses >= invite.max_uses) {
-      const { error: deactivateError } = await deactivateGenericInviteLink(
+      const { error: deactivateError } = await deactivateById(
         invite.id
       );
       if (deactivateError) {
@@ -287,7 +287,7 @@ export class InviteService {
     
     // Check if user is already a member of this league
     if (userId) {
-      const { exists: isMember } = await checkMembershipExists(
+      const { exists: isMember } = await membershipExists(
         invite.league_id,
         userId
       );

@@ -1,6 +1,6 @@
 import { cache } from "react";
 import { createClient } from "@/lib/database/server";
-import { getProfileByAuthId } from "@/lib/database/queries/profiles_queries";
+import { findByAuthId } from "@/lib/database/queries/profiles_queries";
 import { Profile } from "@/lib/types/database_types";
 import { User } from "@supabase/supabase-js";
 
@@ -26,7 +26,7 @@ export const getCurrentUser = cache(async (): Promise<UserContextType> => {
     };
   }
 
-  const { data: profile, error: profileError } = await getProfileByAuthId(
+  const { data: profile, error: profileError } = await findByAuthId(
     user.id
   );
 

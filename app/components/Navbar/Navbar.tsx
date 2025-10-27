@@ -3,12 +3,14 @@ import React from "react";
 import { getCurrentUser } from "@/lib/contexts/UserContext";
 import DefaultLinks from "./components/DefaultLinks";
 import ProfileIcon from "./components/ProfileIcon";
-import { Profile } from "@/lib/types";
 import AuthButtons from "./components/AuthButtons";
-import { redirect } from "next/navigation";
 
-const Navbar = async () => {
+const Navbar = async ({ visible }: { visible: boolean }) => {
   const { user, profile } = await getCurrentUser();
+
+  if (!visible) {
+    return null;
+  }
 
   return (
     <div className="navbar bg-base-300 shadow-sm fixed top-0 left-0 right-0 z-50">

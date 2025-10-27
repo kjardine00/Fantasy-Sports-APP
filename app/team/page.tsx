@@ -48,12 +48,12 @@ const TeamPage = async ({ searchParams }: { searchParams: SearchParams }) => {
       <div className="container mx-auto px-4 py-8">
         <div className="flex flex-col gap-4 py-2">
           <TeamInfoCard
-            teamName={memberData?.team_name}
-            teamLogo={memberData?.team_icon}
-            teamManager={profileData?.name}
-            leagueName={leagueData?.name}
+            teamName={memberData?.team_name ?? ""}
+            teamLogo={memberData?.team_icon ?? ""}
+            teamManager={profileData?.name ?? ""}
+            leagueName={leagueData?.name ?? ""}
             leagueId={leagueId}
-            leagueShortCode={leagueData?.short_code}
+            leagueShortCode={leagueData?.short_code ?? ""}
           />
         </div>
         <div className="flex flex-col gap-4 py-2">

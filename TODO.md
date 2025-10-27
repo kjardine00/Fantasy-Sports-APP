@@ -22,3 +22,9 @@
 10/26/2025
 [] Invites when the league is full -1 the invite doesn't work. Need to fix this bug so the league can actually become full
 
+10/27/2025
+[] DraftInfo Card, Shows upcoming draft and if draft is soonish there needs to be a way to get into the draft waiting room
+[] League Settings Validation
+[] League Settings > Time Selector Validation, only let the valid times to be chosen
+[] League Settings Service to handle the league settings, draft settings, etc
+[] Setup a pathname detection to have the Navbar not show when in the /draft portion of the app

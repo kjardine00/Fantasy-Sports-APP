@@ -2,7 +2,7 @@ import { createClient } from "@/lib/database/server";
 import { TABLES } from "@/lib/database/tables";
 import { Invite } from "@/lib/types/database_types";
 
-export async function insertInvite({ invite }: { invite: Invite }) {
+export async function create({ invite }: { invite: Invite }) {
   const supabase = await createClient();
   const { data: createdInvite, error } = await supabase
     .from(TABLES.INVITES)
@@ -17,15 +17,18 @@ export async function insertInvite({ invite }: { invite: Invite }) {
   return { data: createdInvite, error: null };
 }
 
-export async function deleteInvite(inviteId: string) {
+// TODO: This function should return { data, error } but currently returns void
+export async function deleteById(inviteId: string) {
   const supabase = await createClient();
   const { error } = await supabase
     .from(TABLES.INVITES)
     .delete()
     .eq("id", inviteId);
+  
+  return { data: null, error };
 }
 
-export async function getGenericInviteLink(leagueId: string) {
+export async function findGenericByLeagueId(leagueId: string) {
   const supabase = await createClient();
 
   const { data: invite, error } = await supabase
@@ -43,7 +46,7 @@ export async function getGenericInviteLink(leagueId: string) {
   return { data: invite, error: null };
 }
 
-export async function createGenericInviteLink(
+export async function createGeneric(
   leagueId: string,
   invitedBy: string,
   maxUses: number | null
@@ -74,7 +77,8 @@ export async function createGenericInviteLink(
   return { data: invite, error: null };
 }
 
-export async function deactivateGenericInviteLink(leagueId: string) {
+//TODO: Turn this into an update function that accepts params
+export async function deactivateById(leagueId: string) {
   const supabase = await createClient();
 
   const { error } = await supabase
@@ -91,7 +95,7 @@ export async function deactivateGenericInviteLink(leagueId: string) {
   return { data: true, error: null };
 }
 
-export async function getInviteByToken(token: string) {
+export async function findByToken(token: string) {
   const supabase = await createClient();
 
   const { data, error } = await supabase
@@ -107,7 +111,7 @@ export async function getInviteByToken(token: string) {
   return { data, error: null };
 }
 
-export async function updateInviteUsage(inviteId: string, currentUses: number) {
+export async function updateUsage(inviteId: string, currentUses: number) {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from(TABLES.INVITES)
@@ -123,7 +127,7 @@ export async function updateInviteUsage(inviteId: string, currentUses: number) {
     return { data, error };
 }
 
-export async function updateInviteUsageKeepPending(inviteId: string, currentUses: number) {
+export async function updateUsageOnly(inviteId: string, currentUses: number) {
   const supabase = await createClient();
   const { data, error } = await supabase
   .from(TABLES.INVITES)
@@ -137,7 +141,7 @@ export async function updateInviteUsageKeepPending(inviteId: string, currentUses
   return { data, error };
 }
 
-export async function checkMembershipExists(leagueId: string, userId: string ) {
+export async function membershipExists(leagueId: string, userId: string ) {
   const supabase = await createClient();
   const { data, error } = await supabase
   .from(TABLES.LEAGUES_MEMBERS)
@@ -149,7 +153,8 @@ export async function checkMembershipExists(leagueId: string, userId: string ) {
   return { exists: !!data, error };
 }
 
-export async function deactivateGenericInviteLinkByLeagueId(leagueId: string) {
+//TODO: Turn this into an update function that accepts params
+export async function deactivateGenericByLeagueId(leagueId: string) {
   const supabase = await createClient();
   const { error } = await supabase
   .from(TABLES.INVITES)

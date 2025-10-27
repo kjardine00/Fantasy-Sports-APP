@@ -2,7 +2,7 @@ import { createClient } from "@/lib/database/server";
 import { TABLES } from "@/lib/database/tables";
 import { LeagueMember } from "@/lib/types/database_types";
 
-export async function getAllLeaguesMembers(league_id: string) {
+export async function findAllByLeagueId(league_id: string) {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from(TABLES.LEAGUES_MEMBERS)
@@ -12,7 +12,8 @@ export async function getAllLeaguesMembers(league_id: string) {
   return { data, error };
 }
 
-export async function getAllLeaguesMembersAndUserInfo(league_id: string) {
+// TODO: Break this down into a service because its doing more than CRUD
+export async function findManyWithProfilesByLeagueId(league_id: string) {
   const supabase = await createClient();
   
   // NOTE: Using two separate queries instead of JOIN because Supabase schema cache
@@ -66,7 +67,7 @@ export async function getAllLeaguesMembersAndUserInfo(league_id: string) {
   return { data: combinedData, error: null };
 }
 
-export async function insertLeagueMember(member: LeagueMember) {
+export async function create(member: LeagueMember) {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from(TABLES.LEAGUES_MEMBERS)
@@ -77,7 +78,7 @@ export async function insertLeagueMember(member: LeagueMember) {
   return { data, error };
 }
 
-export async function getMember(league_id: string, user_id: string) {
+export async function findOne(league_id: string, user_id: string) {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from(TABLES.LEAGUES_MEMBERS)
@@ -88,7 +89,7 @@ export async function getMember(league_id: string, user_id: string) {
   return { data, error };
 }
 
-export async function getMemberbyTeamId(leagueId: string, teamId: string) {
+export async function findByTeamId(leagueId: string, teamId: string) {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from(TABLES.LEAGUES_MEMBERS)
@@ -99,7 +100,7 @@ export async function getMemberbyTeamId(leagueId: string, teamId: string) {
   return { data, error };
 }
 
-export async function setLeagueComissioner(member: LeagueMember) {
+export async function createCommissioner(member: LeagueMember) {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from(TABLES.LEAGUES_MEMBERS)
@@ -110,7 +111,7 @@ export async function setLeagueComissioner(member: LeagueMember) {
   return { data, error };
 }
 
-export async function getDraftOrder(league_id: string) {
+export async function findAllDraftOrder(league_id: string) {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from(TABLES.LEAGUES_MEMBERS)
@@ -121,7 +122,7 @@ export async function getDraftOrder(league_id: string) {
   return { data, error };
 }
 
-export async function getLeagueMemberCount(leagueId: string) {
+export async function count(leagueId: string) {
   const supabase = await createClient();
   const { count, error } = await supabase
     .from(TABLES.LEAGUES_MEMBERS)
@@ -131,18 +132,19 @@ export async function getLeagueMemberCount(leagueId: string) {
   return { data: count || 0, error };
 }
 
-export async function addMemberToLeague(leagueId: string, userId: string, role: string = "member") {
+// TODO: Duplicate of Create but is currently being used
+export async function add(leagueId: string, userId: string, role: string = "member") {
   const supabase = await createClient();
   const { data, error } = await supabase
   .from(TABLES.LEAGUES_MEMBERS)
-  .insert({ league_id: leagueId, user_id: userId, role: role })
+  .insert({ league_id: leagueId, user_id: userId, role: role, status: "Joined"})
   .select()
   .single();
 
   return { data, error };
 }
 
-export async function getTeamCount(leagueId: string) {
+export async function countTeams(leagueId: string) {
   const supabase = await createClient();
   const { count: teamCount, error } = await supabase
   .from(TABLES.LEAGUES_MEMBERS)
@@ -152,7 +154,7 @@ export async function getTeamCount(leagueId: string) {
   return { data: teamCount, error: "No teams found in league" };
 }
 
-export async function getUsersDraftPickOrder(leagueId: string) {
+export async function findPickOrderByUser(leagueId: string) {
   const supabase = await createClient();
 
     const { data: members } = await supabase

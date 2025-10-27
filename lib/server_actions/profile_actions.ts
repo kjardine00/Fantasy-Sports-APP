@@ -1,11 +1,9 @@
 "use server";
 
-import { createClient } from "@/lib/database/server";
 import { Profile } from "@/lib/types/database_types";
-import { createProfile, getProfileByAuthId } from "@/lib/database/queries/profiles_queries";
+import { create, findByAuthId } from "@/lib/database/queries/profiles_queries";
 
 export async function createNewProfile(authId: string, email: string, name: string) {
-  const supabase = await createClient();
 
   const newProfile: Profile = {
     // id is created by the database
@@ -18,7 +16,7 @@ export async function createNewProfile(authId: string, email: string, name: stri
     updated_at: new Date().toISOString(),
   };
 
-  const { data, error } = await createProfile(newProfile as Profile);
+  const { data, error } = await create(newProfile as Profile);
   
   if (error) {
     // console.error("Profile creation error:", error);
@@ -30,10 +28,10 @@ export async function createNewProfile(authId: string, email: string, name: stri
 }
 
 export async function getProfile(authId: string) {
-  const { data, error } = await getProfileByAuthId(authId);
+  const { data, error } = await findByAuthId(authId);
 
   if (error) {
-    return { data: null, error: error.message };
+    return { data: null, error: error };
   }
 
   if (!data) {

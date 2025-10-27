@@ -2,7 +2,7 @@ import { createClient } from "@/lib/database/server";
 import { TABLES } from "@/lib/database/tables";
 import { League, LeagueSettings } from "@/lib/types/database_types";
 
-export async function insertLeague(league: League) {
+export async function create(league: League) {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from(TABLES.LEAGUES)
@@ -13,7 +13,7 @@ export async function insertLeague(league: League) {
   return { data, error };
 }
 
-export async function getLeague(leagueId: string) {
+export async function findById(leagueId: string) {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from(TABLES.LEAGUES)
@@ -23,7 +23,7 @@ export async function getLeague(leagueId: string) {
   return { data, error };
 }
 
-export async function getLeagueByShortCode(shortCode: string) {
+export async function findByShortCode(shortCode: string) {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from(TABLES.LEAGUES)
@@ -50,7 +50,7 @@ export async function getLeagueByShortCode(shortCode: string) {
   return { data, error };
 }
 
-export async function checkShortCodeExists(shortCode: string) {
+export async function existsByShortCode(shortCode: string) {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from(TABLES.LEAGUES)
@@ -60,7 +60,7 @@ export async function checkShortCodeExists(shortCode: string) {
   return { exists: !!data, error };
 }
 
-export async function getUsersLeagues(userId: string) {
+export async function findByUserId(userId: string) {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from(TABLES.LEAGUES_MEMBERS)
@@ -83,7 +83,7 @@ export async function getUsersLeagues(userId: string) {
   return { data, error };
 }
 
-export async function getLeagueSettings(leagueId: string) {
+export async function findSettings(leagueId: string) {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from(TABLES.LEAGUES)
@@ -93,7 +93,7 @@ export async function getLeagueSettings(leagueId: string) {
   return { data, error };
 }
 
-export async function updateLeagueAndSettings(
+export async function updateSettings(
   leagueId: string,
   leagueFields: Partial<League>,
   newSettings: Partial<LeagueSettings>

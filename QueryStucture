@@ -1,0 +1,16 @@
+find* = read operations
+  findById()
+  findByEmail()
+  findMany()
+
+create* = insert
+  create()
+
+update* = modify
+  update()
+
+delete* = remove
+  delete()
+
+count* = returns number
+  count()
