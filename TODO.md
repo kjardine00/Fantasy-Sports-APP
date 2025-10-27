@@ -18,3 +18,7 @@
 [] Create updateLeagueSettingsAction in leagues_actions.ts that fetches current settings, merges with new values using spread operator ({ ...currentSettings, ...updates }), and saves back to database.
 [] Add permission checking to ensure only commissioners/owners can update settings.
 [] Wire up the action to the Settings page by uncommenting the handleSave implementation and importing the new action.
+
+10/26/2025
+[] Invites when the league is full -1 the invite doesn't work. Need to fix this bug so the league can actually become full
+
