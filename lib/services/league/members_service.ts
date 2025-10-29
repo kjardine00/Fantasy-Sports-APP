@@ -1,34 +1,53 @@
-import { findManyWithProfilesByLeagueId, findOne, findByTeamId } from "@/lib/database/queries/leagues_members_queries";
-import { findSettings } from "@/lib/database/queries/leagues_queries";
+import { Result, success, failure } from "@/lib/types";
 import { MemberRow } from "@/lib/types/members_types";
+import { League, LeagueMember } from "@/lib/types/database_types";
+
+import { findAll, findByUserId, findOne } from "@/lib/database/queries/leagues_members_queries";
+import { findByAuthId } from "@/lib/database/queries/profiles_queries";
+import { TABLES } from "@/lib/database/tables";
+import { createClient } from "@/lib/database/server";
 
 export class MembersService {
-  static async getMembersTableData(leagueId: string, userId: string) {
-    const { data: leagueData, error: leagueError } =
-      await findSettings(leagueId);
-    if (leagueError) {
-      return { data: null, error: leagueError.message };
-    }
-    const leagueSettings = leagueData?.settings;
-    const numberOfTeams = leagueSettings?.numberOfTeams;
+  static async getLeagueMember(leagueId: string, userId: string) : Promise<Result<LeagueMember>> {
+    const result = await findByUserId(userId, leagueId);
 
+    if (result.error || !result.data) {
+      return failure(result.error || "League member not found");
+    }
+
+    return success(result.data);
+  }
+
+  static async getAllLeagueMembers(leagueId: string) : Promise<Result<LeagueMember[]>> {
+    const result = await findAll(leagueId);
+
+    if (result.error || !result.data) {
+      return failure(result.error || "Failed to get all league members");
+    }
+
+    return success(result.data);
+  }
+  
+  static async getMembersTable(leagueId: string, league: League, allMembers: LeagueMember[]) : Promise<Result<MemberRow[]>> {
+    const numberOfTeams = league.settings?.numberOfTeams;
     if (!numberOfTeams || numberOfTeams === 0) {
-      return { data: [], error: "No Number of Teams Found" };
+      return failure("No Number of Teams Found");
     }
-
-    const { data: membersData, error: membersError } =
-      await findManyWithProfilesByLeagueId(leagueId);
-
-    if (membersError) {
-      return { data: null, error: membersError.message };
-    }
-
-    if (!membersData) {
-      return { data: [], error: "No Members Found" };
-    }
-
-    const allMembers: MemberRow[] = membersData.map((member: any) => {
-      const managerName = member.profiles?.name || "Unknown User";
+    
+    // Fetch profiles for all members in parallel
+    const profilePromises = allMembers.map(member => findByAuthId(member.user_id));
+    const profileResults = await Promise.all(profilePromises);
+    
+    // Create a map of user_id to profile name for quick lookup
+    const profileMap = new Map<string, string>();
+    profileResults.forEach((result, index) => {
+      if (result.data) {
+        profileMap.set(allMembers[index].user_id, result.data.name || "Unknown User");
+      }
+    });
+    
+    const membersTable: MemberRow[] = allMembers.map((member) => {
+      const managerName = profileMap.get(member.user_id) || "Unknown User";
       
       return {
         league_number: member.league_number || 0,
@@ -41,62 +60,28 @@ export class MembersService {
       };
     });
 
-    const teamsToShow = numberOfTeams;
-
-    const membersTable: MemberRow[] = [];
-    
-    // Separate members into those with and without league_numbers
-    const membersWithNumbers = allMembers.filter(m => m.league_number && m.league_number > 0);
-    const membersWithoutNumbers = allMembers.filter(m => !m.league_number || m.league_number <= 0);
-    
-    // Track which positions are taken
-    const takenPositions = new Set(membersWithNumbers.map(m => m.league_number));
-    
-    // Fill in all positions (1 to teamsToShow) with either actual members or empty placeholders
-    let nextMemberWithoutNumber = 0;
-    
-    for (let i = 1; i <= teamsToShow; i++) {
-      const memberAtPosition = membersWithNumbers.find(
-        (member) => member.league_number === i
-      );
-
-      if (memberAtPosition) {
-        // Use member that has this league_number assigned
-        membersTable.push(memberAtPosition);
-      } else if (nextMemberWithoutNumber < membersWithoutNumbers.length) {
-        // Assign next member without a league_number to this position
-        const member = membersWithoutNumbers[nextMemberWithoutNumber];
-        membersTable.push({
-          ...member,
-          league_number: i
-        });
-        nextMemberWithoutNumber++;
-      } else {
-        // Create empty placeholder row
-        membersTable.push({
-          league_number: i,
-          abbreviation: `TM${i}`,
-          team_icon: "",
-          team_name: "Team " + i,
-          manager_name: "",
-          status: "empty",
-        });
-      }
-    }
-
-    return { data: membersTable, error: null };
+    return success(membersTable);
   }
+  
+  // ============== REFACTOR LINE ==============
 
   static async getMemberInfo(leagueId: string, userId: string) {
     const { data, error } = await findOne(leagueId, userId);
     if (error) {
-      return { data: null, error: error.message };
+      return { data: null, error: error };
     }
     return { data, error: null };
   }
 
   static async getMemberInfobyTeamId(leagueId: string, teamId: string) {
-    const { data, error } = await findByTeamId(leagueId, teamId);
+    const supabase = await createClient();
+    const { data, error } = await supabase
+      .from(TABLES.LEAGUES_MEMBERS)
+      .select("*")
+      .eq("league_id", leagueId)
+      .eq("league_number", teamId)
+      .single();
+    
     if (error) {
       return { data: null, error: error.message };
     }

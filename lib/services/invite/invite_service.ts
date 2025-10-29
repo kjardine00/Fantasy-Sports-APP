@@ -1,4 +1,7 @@
 import { Invite } from "@/lib/types/database_types";
+import { Result, success, failure } from "@/lib/types";
+import { findByLeagueId } from "@/lib/database/queries/invite_queries";
+
 import {
   create,
   deleteById,
@@ -15,10 +18,32 @@ import {
   add,
   count,
 } from "@/lib/database/queries/leagues_members_queries";
-import { findById } from "@/lib/database/queries/leagues_queries";
 import { sendLeagueInvite } from "@/lib/services/email/resend";
 
 export class InviteService {
+  static async createGenericInvite(leagueId: string, invitedBy: string, maxUses: number) : Promise<Result<Invite>> {
+
+    const genericInvite: Invite = {
+      league_id: leagueId,
+      email: "", // Target Email for generic links is empty
+      invited_by: invitedBy,
+      status: "pending",
+      invite_type: "general",
+      max_uses: maxUses,
+      current_uses: 0,
+      expires_at: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(), // 1 year from now
+    };
+
+    const newLink = await create(genericInvite);
+    if (newLink.error || !newLink.data) {
+      return failure(newLink.error || "Failed to create generic invite");
+    }
+
+    return success(newLink.data);
+  }
+
+
+// ============== REFACTOR LINE ==============
   static async createAndSendInvite(invite: Invite) {
     // Set default values for email invites
     const emailInvite: Invite = {
@@ -56,30 +81,6 @@ export class InviteService {
     }
 
     return { data: createdInvite, error: null };
-  }
-
-  static async createGenericInviteLink(
-    leagueId: string,
-    invitedBy: string,
-    maxUses: number | null = null
-  ) {
-    const { data: existingLink } = await findGenericByLeagueId(leagueId);
-
-    if (existingLink) {
-      return { data: existingLink, error: null };
-    }
-
-    const { data: invite, error } = await createGeneric(
-      leagueId,
-      invitedBy,
-      maxUses
-    );
-
-    if (error) {
-      return { data: null, error };
-    }
-
-    return { data: invite, error: null };
   }
 
   static async getGenericInviteLink(leagueId: string) {

@@ -1,14 +1,21 @@
 "use client";
 
 import React from "react";
-import { useLeague } from "../../LeagueContext";
-import MemberTableRow from "./MemberTableRow";
+import { useLeague } from "../LeagueContext";
 import { MemberRow } from "@/lib/types/members_types";
+import { getMembersTableData } from "@/lib/server_actions/member_actions";
+
 
 const MembersTable = () => {
-  const { membersTableData, membership, isCommissioner } = useLeague();
-  const userId = membership.user_id;
-  const members = membersTableData;
+  const { allMembers, leagueMember, league, isCommissioner } = useLeague();
+  const userId = leagueMember.user_id;
+  const members = allMembers;
+
+  try {
+    const membersTableData = await getMembersTableData(league.id!, userId)
+  } catch (error) {
+    console.error(error);
+  }
 
   return (
     <div>
@@ -24,7 +31,12 @@ const MembersTable = () => {
           </tr>
         </thead>
         <tbody>
-          {members?.map((member: MemberRow, index: number) => (
+          {allMembers?.map((member: LeagueMember, index: number) => (
+            <MemberTableRow key={index} member={}
+          )}
+
+
+          {allMembers?.map((member: MemberRow, index: number) => (
             <MemberTableRow key={index} member={member} userId={userId} isCommissioner={isCommissioner} />
           ))}
         </tbody>

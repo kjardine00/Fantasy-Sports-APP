@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { useLeague } from "../LeagueContext";
+import { useLeague } from "./LeagueContext";
 import MyTeamCard from "../components/MyTeamCard";
 import MainLeagueContentCard from "../components/MainLeagueContentCard";
 
@@ -16,6 +16,7 @@ const LeaguePage = () => {
           <div className="flex flex-col gap-4">
             <MyTeamCard />
 
+            {/* <QuickLinksCard /> */}
             <div className="card w-full lg:w-80 bg-base-100 shadow-lg">
               <div className="card-body">
                 <h2 className="card-title text-lg font-semibold">
@@ -32,6 +33,7 @@ const LeaguePage = () => {
           <div className="flex flex-col gap-4">
             <MainLeagueContentCard />
 
+            {/* <LeagueLog /> */}
             <div className="card w-full lg:w-200 bg-base-100 shadow-lg">
               <div className="card-body">
                 <h2 className="card-title text-xl font-bold">

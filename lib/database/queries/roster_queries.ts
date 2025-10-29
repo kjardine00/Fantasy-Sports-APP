@@ -1,32 +1,19 @@
 import { createClient } from '@/lib/database/server'
 import { TABLES } from '@/lib/database/tables'
 import { Roster, Player } from '@/lib/types/database_types'
+import { Result, failure, success } from '@/lib/types'
 
-export async function findByTeam(user_id: string, league_id: string) {
+export async function findByTeam(user_id: string, league_id: string): Promise<Result<Roster>> {
     const supabase = await createClient()
     const { data, error } = await supabase
         .from(TABLES.ROSTERS)
         .select('*')
         .eq('user_id', user_id)
         .eq('league_id', league_id)
-    return { data, error }
-}
+        .single()
 
-// TODO: Consider consolidating with findByTeam using optional include parameter
-export async function findByTeamWithPlayers(user_id: string, league_id: string) {
-    const supabase = await createClient()
-    const { data, error } = await supabase
-        .from(TABLES.ROSTERS)
-        .select(`
-            *,
-            players:player_id (
-                id,
-                name,
-                team,
-                points
-            )
-        `)
-        .eq('user_id', user_id)
-        .eq('league_id', league_id)
-    return { data, error }
+    if (error) {
+        return failure(error.message);
+    }
+    return success(data);
 }

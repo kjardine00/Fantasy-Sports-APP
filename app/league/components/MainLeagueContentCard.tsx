@@ -2,11 +2,11 @@
 
 import Link from "next/link";
 import React from "react";
-import { useLeague } from "../LeagueContext";
+import { useLeague } from "../[shortCode]/LeagueContext";
 import DraftInfoCard from "./DraftInfoCard";
 
 const MainLeagueContentCard = () => {
-  const { league, isCommissioner, members } = useLeague();
+  const { league, isCommissioner } = useLeague();
 
   return (
     <div className="flex flex-col gap-4">

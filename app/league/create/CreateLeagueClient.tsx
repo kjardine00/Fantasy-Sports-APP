@@ -2,8 +2,7 @@
 
 import React, { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
-import NumberOfTeamsSelector from "../../components/NumberOfTeamsSelector";
-import { createLeagueAction } from "@/lib/server_actions/leagues_actions";
+import { createLeagueAction, LeagueActionError } from "@/lib/server_actions/leagues_actions";
 import { AlertType } from "@/lib/types/alert_types";
 import { useAlert } from "@/app/components/Alert/AlertContext";
 import { useAuthModal } from "@/app/components/Auth/AuthModalContext";
@@ -15,15 +14,23 @@ const CreateLeagueClient = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const pendingFormDataRef = useRef<FormData | null>(null);
 
-  // Auth State Change Listener
   const handleSubmit = async (formData: FormData) => {
-    setIsSubmitting(true);
-
     try {
+      setIsSubmitting(true);
       const result = await createLeagueAction(formData);
 
-      if (result?.error) {
-        if (result.error === "You must be logged in to create a league") {
+      // Success - league created
+      addAlert({
+        message: "League created successfully",
+        type: AlertType.SUCCESS,
+        duration: 5000,
+      });
+      router.push(`/league/${result.league.short_code}`);
+
+    } catch (error) {
+      if (error instanceof LeagueActionError) {
+        if (error.code === "AUTH_REQUIRED") {
+          // User not logged in - open auth modal
           pendingFormDataRef.current = formData;
 
           openAuthModal("login", {
@@ -31,29 +38,31 @@ const CreateLeagueClient = () => {
             onAuthSuccess: async () => {
               try {
                 const retryResult = await createLeagueAction(pendingFormDataRef.current!);
-                
-                if (retryResult?.error) {
+
+                // Retry success
+                addAlert({
+                  message: "League created successfully",
+                  type: AlertType.SUCCESS,
+                  duration: 5000,
+                });
+                closeModal();
+                router.push(`/league/${retryResult.league.short_code}`);
+
+              } catch (retryError) {
+                // Handle retry errors
+                if (retryError instanceof LeagueActionError) {
                   addAlert({
-                    message: retryResult.error,
+                    message: retryError.message,
                     type: AlertType.ERROR,
                     duration: 5000,
                   });
-                  closeModal();
-                } else if (retryResult?.data) {
+                } else {
                   addAlert({
-                    message: "League created successfully",
-                    type: AlertType.SUCCESS,
+                    message: "Failed to create league after authentication",
+                    type: AlertType.ERROR,
                     duration: 5000,
                   });
-                  closeModal();
-                  router.push(`/league/${retryResult.data.short_code}`);
                 }
-              } catch (error) {
-                addAlert({
-                  message: "Failed to create league after authentication",
-                  type: AlertType.ERROR,
-                  duration: 5000,
-                });
                 closeModal();
               } finally {
                 pendingFormDataRef.current = null;
@@ -61,31 +70,24 @@ const CreateLeagueClient = () => {
               }
             }
           });
-          
+
           setIsSubmitting(false);
           return;
         }
-        
-        // Other errors
+        // Handle other LeagueActionError types (LEAGUE_CREATION_FAILED, INVITE_CREATION_FAILED, etc.)
         addAlert({
-          message: result.error,
+          message: error.message,
           type: AlertType.ERROR,
           duration: 5000,
         });
-      } else if (result?.data) {
+      } else {
+        // Handle unexpected errors
         addAlert({
-          message: "League created successfully",
-          type: AlertType.SUCCESS,
+          message: "An unexpected error occurred",
+          type: AlertType.ERROR,
           duration: 5000,
         });
-        router.push(`/league/${result.data.short_code}`);
       }
-    } catch (error) {
-      addAlert({
-        message: "An unexpected error occurred",
-        type: AlertType.ERROR,
-        duration: 5000,
-      });
     } finally {
       setIsSubmitting(false);
     }
@@ -111,7 +113,20 @@ const CreateLeagueClient = () => {
               />
 
               <h2 className="fieldset-legend">Number of Teams</h2>
-              <NumberOfTeamsSelector defaultValue="10" name="numberOfTeams" />
+              <div className="form-control">
+                <select
+                  className="select select-bordered w-full"
+                  defaultValue="10"
+                  name="numberOfTeams"
+                >
+                  <option disabled={true}>Number of Teams</option>
+                  <option value="4">4</option>
+                  <option value="6">6</option>
+                  <option value="8">8</option>
+                  <option value="10">10</option>
+                  <option value="12">12</option>
+                </select>
+              </div>
 
               <h2 className="fieldset-legend">Scoring</h2>
               <div className="form-control">

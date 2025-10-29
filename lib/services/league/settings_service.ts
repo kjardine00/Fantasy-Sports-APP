@@ -1,21 +1,45 @@
+import { Result, success, failure } from "@/lib/types";
+
 import { SettingsFormState } from "@/lib/types/settings_types";
 import { League, LeagueSettings } from "@/lib/types/database_types";
-import { findById } from "@/lib/database/queries/leagues_queries";
+import { findById, updateSettings } from "@/lib/database/queries/league_queries";
 
 export class SettingsService {
-  static async toDatabase(
-    leagueId: string,
-    form: SettingsFormState
-  ): Promise<{
-    data: {
-      leagueFields: Partial<Pick<League, "name">>;
-      settings: Partial<LeagueSettings>;
-    } | null;
-    error: string | null;
-  }> {
-    const leagueFields = {
-      name: form.leagueName,
-    };
+  static async getLeagueSettings(leagueId: string): Promise<Result<SettingsFormState>> {
+    const league : Result<League> = await findById(leagueId)
+
+    if (league.error || !league.data || !league.data.settings) {
+      console.error(league.error || "League or League Settingsnot Found");
+      return failure(league.error || "Failed to get league settings");
+    }
+
+    const settings : SettingsFormState = {
+      leagueName: league.data.name,
+      numberOfTeams: league.data.settings?.numberOfTeams ?? 10,
+      isPublic: league.data.is_public ?? false,
+      draftType: league.data.settings.draftType ?? "snake",
+      draftDate: league.data.settings.draftDate ?? "",
+      draftTime: league.data.settings.draftTime ?? "",
+      timePerPick: league.data.settings.timePerPick ?? 90,
+      rosterSize: league.data.settings.rosterSize ?? 10,
+      totalStartingPlayers: league.data.settings.totalStartingPlayers ?? 6,
+      allowDuplicatePicks: league.data.settings.allowDuplicatePicks ?? false,
+      numberOfDuplicates: league.data.settings.numberOfDuplicatePicks ?? 0,
+      useChemistry: league.data.settings.useChemistry ?? true,
+      chemistryMultiplier: league.data.settings.chemistryMultiplier ?? 1.5,
+      useBigPlays: league.data.settings.useBigPlays ?? false,
+      bigPlaysMultiplier: league.data.settings.bigPlaysMultiplier ?? 2,
+    }
+
+    return success(settings);
+  }
+
+  static async saveSettings(leagueId: string, form: SettingsFormState) : Promise<Result<League>> {
+    const league: Result<League> = await findById(leagueId)
+    if (league.error || !league.data) {
+      console.error(league.error || "League not found");
+      return failure(league.error || "League not found");
+    }
 
     const settings: Partial<LeagueSettings> = {
       numberOfTeams: form.numberOfTeams,
@@ -33,40 +57,13 @@ export class SettingsService {
       bigPlaysMultiplier: form.bigPlaysMultiplier,
     };
 
-    return {
-      data: { leagueFields, settings },
-      error: null,
-    };
-  }
-
-  static async fromDatabase(
-    leagueId: string
-  ): Promise<{ data: SettingsFormState | null; error: string | null }> {
-    const { data: leagueData, error: leagueError } = await findById(leagueId);
-
-    if (leagueError || !leagueData) {
-      return { data: null, error: "Failed to get league: " + leagueId };
+    const updatedLeague = await updateSettings(league.data.id!, settings)
+    if (updatedLeague.error || !updatedLeague.data) {
+      console.error(updatedLeague.error || "Failed to update league settings");
+      return failure(updatedLeague.error || "Failed to update league settings");
     }
 
-    const settings: SettingsFormState = {
-      leagueName: leagueData.name,
-      numberOfTeams: leagueData.settings?.numberOfTeams ?? 10,
-      isPublic: leagueData.settings?.isPublic ?? false,
-      draftType: leagueData.settings?.draftType ?? "snake",
-      draftDate: leagueData.settings?.draftDate ?? "",
-      draftTime: leagueData.settings?.draftTime ?? "",
-      timePerPick: leagueData.settings?.timePerPick ?? 90,
-      rosterSize: leagueData.settings?.rosterSize ?? 10,
-      totalStartingPlayers: leagueData.settings?.totalStartingPlayers ?? 6,
-      allowDuplicatePicks: leagueData.settings?.allowDuplicatePicks ?? false,
-      numberOfDuplicates: leagueData.settings?.numberOfDuplicatePicks ?? 0,
-      useChemistry: leagueData.settings?.useChemistry ?? true,
-      chemistryMultiplier: leagueData.settings?.chemistryMultiplier ?? 1.5,
-      useBigPlays: leagueData.settings?.useBigPlays ?? false,
-      bigPlaysMultiplier: leagueData.settings?.bigPlaysMultiplier ?? 2,
-    };
-
-    return { data: settings, error: null };
+    return success(updatedLeague.data);
   }
 
   static getDefaults(): SettingsFormState {

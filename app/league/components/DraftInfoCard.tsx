@@ -1,13 +1,13 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useLeague } from "../LeagueContext";
+import { useLeague } from "../[shortCode]/LeagueContext";
 import { getDraftByLeagueIDAction } from "@/lib/server_actions/draft_actions";
 import { Draft } from "@/lib/types/database_types";
 import CountdownTimer from "@/app/components/DraftCountdown/CountdownTimer";
 
 const DraftInfoCard = () => {
-  const { league, isCommissioner, members } = useLeague();
+  const { league, isCommissioner, allMembers } = useLeague();
   const [draft, setDraft] = useState<Draft | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -29,7 +29,7 @@ const DraftInfoCard = () => {
     fetchDraft();
   }, [league.id]);
 
-  const isLeagueFull = members.length >= league.settings.numberOfTeams!;
+  const isLeagueFull = allMembers.length >= league.settings.numberOfTeams!;
   let isDraftScheduled = draft?.scheduled_start ? true : false;
   const isDraftCompleted = league.draft_completed;
 
@@ -66,7 +66,7 @@ const DraftInfoCard = () => {
               Your League is not full
             </h2>
             <h3 className="card-subtitle text-md">
-              {members.length} out of {league.settings?.numberOfTeams} teams
+              {allMembers.length} out of {league.settings?.numberOfTeams} teams
               have managers
             </h3>
             <div className="card-actions justify-center py-4">

@@ -1,5 +1,5 @@
-import JoinALeagueCard from "./league/components/JoinALeagueCard";
-import CreateALeagueCard from "./league/components/CreateALeagueCard";
+import JoinALeagueCard from "./components/JoinALeagueCard";
+import CreateALeagueCard from "./components/CreateALeagueCard";
 
 export default function Home() {
   return (

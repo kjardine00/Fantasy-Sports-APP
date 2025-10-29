@@ -6,10 +6,9 @@ import { MemberRow } from "@/lib/types/members_types";
 
 interface LeagueContextType {
     league: League;
-    membership: LeagueMember;
+    leagueMember: LeagueMember;
     profile: Profile;
-    members: LeagueMember[];
-    membersTableData: MemberRow[];
+    allMembers: LeagueMember[];
     isCommissioner: boolean;
   }
 
@@ -18,30 +17,27 @@ const LeagueContext = createContext<LeagueContextType | undefined>(undefined);
 interface LeagueProviderProps {
     children: ReactNode;
     league: League;
-    membership: LeagueMember;
+    leagueMember: LeagueMember;
     profile: Profile;
-    members: LeagueMember[];
-    membersTableData: MemberRow[];
+    allMembers: LeagueMember[];
   }
 
   export const LeagueProvider: React.FC<LeagueProviderProps> = ({
     children,
     league,
-    membership,
+    leagueMember,
     profile,
-    members,
-    membersTableData,
+    allMembers,
   }) => {
-    const isCommissioner = membership.role === "commissioner";
+    const isCommissioner = leagueMember.role === "commissioner";
 
     return (
         <LeagueContext.Provider
           value={{
             league,
-            membership,
+            leagueMember,
             profile,
-            members,
-            membersTableData,
+            allMembers,
             isCommissioner,
           }}
         >

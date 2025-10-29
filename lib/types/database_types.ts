@@ -19,14 +19,17 @@ export interface League {
   draft_completed: boolean;
   short_code: string;
   created_at?: string;
+  updated_at?: string;
+  is_public: boolean;
   settings: Partial<LeagueSettings>;
 }
 
+// This is a subset of the League interface that is used to store the league settings
 export interface LeagueSettings {
   numberOfTeams: number;
   draftType: 'snake' | 'auction' | 'offline';
-  draftDate: string;
-  draftTime: string;
+  draftDate?: string;
+  draftTime?: string;
   timePerPick: number;
   rosterSize: number;
   totalStartingPlayers: number;

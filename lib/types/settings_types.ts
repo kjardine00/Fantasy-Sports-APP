@@ -15,3 +15,10 @@ export interface SettingsFormState {
     useBigPlays: boolean;
     bigPlaysMultiplier: number;
   }
+
+export interface CreateLeagueData {
+  name: string;
+  numberOfTeams: number;
+  useChemistry: boolean;
+  numOfDuplicatePlayers: number;
+}

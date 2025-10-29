@@ -1,10 +1,10 @@
 import React from "react";
 import { redirect } from "next/navigation";
 import { requireAuth } from "@/lib/contexts/UserContext";
-import { LeagueProvider } from "../LeagueContext";
+import { LeagueProvider } from "./LeagueContext";
 import { LeagueService } from "@/lib/services/league/leagues_service";
 import { MembersService } from "@/lib/services/league/members_service";
-import { Profile } from "@/lib/types/database_types";
+import { League, LeagueMember, Profile } from "@/lib/types/database_types";
 
 // Force dynamic rendering to prevent caching issues when members join
 export const dynamic = 'force-dynamic';
@@ -23,41 +23,32 @@ export default async function LeagueLayout({
   const { shortCode } = await params;
   const { user, profile } = await requireAuth();
 
-  const { data: league, error: leagueError } =
-    await LeagueService.getLeagueByShortCode(shortCode);
+  const league = await LeagueService.getLeagueByShortCode(shortCode);
+  if (league.error) {
+    //TODO: Throw an error or send to error page
+    console.error(league.error);
+    redirect("/")
+  }
+  const leagueId = league.data!.id!;
 
-  if (leagueError) {
+  const leagueMember = await MembersService.getLeagueMember(leagueId, user.id);
+  if (leagueMember.error) {
+    //TODO: Throw an error or send to error page
+    console.error(leagueMember.error);
     redirect("/");
   }
 
-  const { data: membership, error: membershipError } =
-    await LeagueService.validateLeagueMembership(league.id, user.id);
-
-  if (membershipError || !membership) {
-    redirect("/");
-  }
-
-  const { data: membersTableData, error: membersTableError } =
-    await MembersService.getMembersTableData(league.id, user.id);
-
-  if (membersTableError) {
-    console.error(membersTableError);
-  }
-
-  const { data: members, error: membersError } =
-    await LeagueService.getLeagueMembers(league.id);
-
-  if (membersError || !members) {
-    redirect("/");
+  const allMembers = await MembersService.getAllLeagueMembers(leagueId);
+  if (allMembers.error) {
+    console.error(allMembers.error);
   }
 
   return (
     <LeagueProvider
-      league={league}
-      membership={membership}
+      league={league.data as League}
+      leagueMember={leagueMember.data as LeagueMember}
       profile={profile as Profile}
-      members={members}
-      membersTableData={membersTableData || []}
+      allMembers={allMembers.data as LeagueMember[]}
     >
       {children}
     </LeagueProvider>

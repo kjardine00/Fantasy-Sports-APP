@@ -1,6 +1,6 @@
 import React from 'react'
 import { LeagueCard } from './LeagueCard';
-import { findByUserId } from '@/lib/database/queries/leagues_queries';
+import { findByUserId } from '@/lib/database/queries/leagues_queries_dep';
 import { requireAuth } from '@/lib/contexts/UserContext';
 
 const MyLeaguesPage = async () => {

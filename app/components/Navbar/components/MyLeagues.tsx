@@ -4,14 +4,13 @@ import { LeagueService } from "@/lib/services/league/leagues_service";
 import { League } from "@/lib/types/database_types";
 
 const MyLeagues = async ({ userId }: { userId: string }) => {
-  const { data: leagues, error: leagueError } =
-    await LeagueService.getLeagues(userId);
+  const leagues = await LeagueService.getAllLeaguesByUserId(userId);
 
-  if (leagueError) {
+  if (leagues.error) {
     return null;
   }
 
-  if (!leagues || leagues.length === 0) {
+  if (!leagues.data || leagues.data?.length === 0) {
     return (
       <Link href="/league/create" className="btn btn-primary">
         Create League
@@ -21,14 +20,14 @@ const MyLeagues = async ({ userId }: { userId: string }) => {
 
   return (
     <>
-      {leagues.map((league: League, index: number) => (
+      {leagues.data?.map((league: League, index: number) => (
         <li key={index}>
-          <Link href={`/league/${league.short_code}`}>
-            {league.name || "Unnamed League"}
-          </Link>
-        </li>
-      ))}
-    </>
+        <Link href={`/league/${league.short_code}`}>
+          {league.name || "Unnamed League"}
+        </Link>
+      </li> 
+    ))}
+  </>
   );
 };
 

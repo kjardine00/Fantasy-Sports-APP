@@ -1,17 +1,64 @@
-import { createClient } from "@/lib/database/server";
 import { TABLES } from "@/lib/database/tables";
 import { LeagueMember } from "@/lib/types/database_types";
+import { Result, success, failure } from "@/lib/types";
+import { createClient } from "@/lib/database/server";
 
-export async function findAllByLeagueId(league_id: string) {
+// Find, Create, Update, Delete, Exists, Count
+
+  // ============== FIND ==============
+  /**
+   * Finds a leagueMember by user_id and league_id.
+   * @param user_id - The ID of the user to find the leagueMember for.
+   * @param league_id - The ID of the league to find the leagueMember for.
+  */
+ export async function findByUserId(userId: string, leagueId: string) : Promise<Result<LeagueMember>> {
+   const supabase = await createClient();
+   const { data, error } = await supabase
+   .from(TABLES.LEAGUES_MEMBERS)
+   .select("*")
+   .eq("user_id", userId)
+   .eq("league_id", leagueId)
+   .single();
+   
+   if (error) {
+     return failure(error.message);
+    }
+    return success(data);
+  }
+
+  export async function findAll(leagueId: string) {
+    const supabase = await createClient();
+    const { data, error } = await supabase
+    .from(TABLES.LEAGUES_MEMBERS)
+    .select("*")
+    .eq("league_id", leagueId);
+    if (error) {
+      return failure(error.message);
+    }
+    return success(data);
+  }
+  
+  // ============== CREATE ==============
+  export async function create(member: LeagueMember) : Promise<Result<LeagueMember>> {
+    const supabase = await createClient();
+    const { data, error } = await supabase
+    .from(TABLES.LEAGUES_MEMBERS)
+    .insert(member)
+    .select()
+    .single();
+    
+    if (error) {
+      return failure(error.message);
+    }
+    return success(data);
+  }
+
+// ============== REFACTORED LINE ==============
+
+export async function findOne(user_id: string, league_id: string) : Promise<Result<LeagueMember>> {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from(TABLES.LEAGUES_MEMBERS)
-    .select("*")
-    .eq("league_id", league_id);
-
-  return { data, error };
-}
-
 // TODO: Break this down into a service because its doing more than CRUD
 export async function findManyWithProfilesByLeagueId(league_id: string) {
   const supabase = await createClient();
@@ -65,17 +112,6 @@ export async function findManyWithProfilesByLeagueId(league_id: string) {
   });
 
   return { data: combinedData, error: null };
-}
-
-export async function create(member: LeagueMember) {
-  const supabase = await createClient();
-  const { data, error } = await supabase
-    .from(TABLES.LEAGUES_MEMBERS)
-    .insert(member)
-    .select()
-    .single();
-
-  return { data, error };
 }
 
 export async function findOne(league_id: string, user_id: string) {

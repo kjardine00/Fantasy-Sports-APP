@@ -6,8 +6,8 @@ import { AlertType } from "@/lib/types/alert_types";
 import { generateGenericInviteUrl } from "@/lib/server_actions/invite_actions";
 
 const InviteLinkCard = ({ leagueId }: { leagueId: string }) => {
-  const [inviteLink, setInviteLink] = useState("");
   const { addAlert } = useAlert();
+  const [inviteLink, setInviteLink] = useState("");
   const [isLoading, setIsLoading] = useState(true);
 
   const copyToClipboard = async (text: string) => {

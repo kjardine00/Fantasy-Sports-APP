@@ -1,21 +1,56 @@
 import { createClient } from "@/lib/database/server";
 import { TABLES } from "@/lib/database/tables";
 import { Invite } from "@/lib/types/database_types";
+import { Result, success, failure } from "@/lib/types";
 
-export async function create({ invite }: { invite: Invite }) {
+// Find, Create, Update, Delete, Exists, Count
+
+// ============== FIND ==============
+export async function findById(inviteId: string) : Promise<Result<Invite>> {
   const supabase = await createClient();
-  const { data: createdInvite, error } = await supabase
+  const { data, error } = await supabase
+    .from(TABLES.INVITES)
+    .select("*")
+    .eq("id", inviteId)
+    .single();
+    
+  if (error) {
+    return failure(error.message);
+  }
+  return success(data);
+}
+
+export async function findByLeagueId(leagueId: string) : Promise<Result<Invite[]>> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from(TABLES.INVITES)
+    .select("*")
+    .eq("league_id", leagueId)
+    
+  if (error) {
+    return failure(error.message);
+  }
+  // Ensure data is always an array, even if Supabase returns null
+  return success(data ?? []);
+}
+
+// ============== CREATE ==============
+export async function create(invite: Invite) : Promise<Result<Invite>> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
     .from(TABLES.INVITES)
     .insert(invite)
     .select()
     .single();
-
+    
   if (error) {
-    return { data: null, error };
+    return failure(error.message);
   }
-
-  return { data: createdInvite, error: null };
+  return success(data);
 }
+
+// ============== REFACTOR LINE ==============
+
 
 // TODO: This function should return { data, error } but currently returns void
 export async function deleteById(inviteId: string) {

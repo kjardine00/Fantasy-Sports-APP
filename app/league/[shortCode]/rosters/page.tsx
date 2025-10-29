@@ -3,7 +3,7 @@
 import React from "react";
 import roster from "../../../../public/data/roster.json";
 import RosterCard from "../../components/RosterCard";
-import { useLeague } from "../../LeagueContext";
+import { useLeague } from "../LeagueContext";
 import { PageContainer, PageHeader, PageSection } from "@/app/components/Layout";
 
 const RostersPage = () => {
