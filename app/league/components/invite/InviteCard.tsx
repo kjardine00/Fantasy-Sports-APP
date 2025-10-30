@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from 'react'
-import { sendLeagueInvite } from '@/lib/server_actions/invite_actions';
+import { sendLeagueInviteAction } from '@/lib/server_actions/invite_actions';
 
 interface InviteCardProps {
     isVisible: boolean;
@@ -25,7 +25,7 @@ const InviteCard = ({ isVisible, onClose, leagueId, leagueName }: InviteCardProp
             formData.append('leagueId', leagueId);
 
             console.log('Sending invite to:', email, 'for league:', leagueId);
-            const result = await sendLeagueInvite(formData);
+            const result = await sendLeagueInviteAction(formData);
             console.log('Result:', result);
 
             if (result.error) {

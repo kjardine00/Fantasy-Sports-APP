@@ -1,11 +1,8 @@
 import { Result, success, failure } from "@/lib/types";
 import { MemberRow } from "@/lib/types/members_types";
 import { League, LeagueMember } from "@/lib/types/database_types";
-
-import { findAll, findByUserId, findOne } from "@/lib/database/queries/leagues_members_queries";
+import { findAll, findByUserId, findByTeamId, create } from "@/lib/database/queries/leagues_members_queries";
 import { findByAuthId } from "@/lib/database/queries/profiles_queries";
-import { TABLES } from "@/lib/database/tables";
-import { createClient } from "@/lib/database/server";
 
 export class MembersService {
   static async getLeagueMember(leagueId: string, userId: string) : Promise<Result<LeagueMember>> {
@@ -62,29 +59,37 @@ export class MembersService {
 
     return success(membersTable);
   }
-  
-  // ============== REFACTOR LINE ==============
 
-  static async getMemberInfo(leagueId: string, userId: string) {
-    const { data, error } = await findOne(leagueId, userId);
-    if (error) {
-      return { data: null, error: error };
+  static async getMemberInfobyTeamId(leagueId: string, teamId: string) : Promise<Result<LeagueMember>> {
+    const result = await findByTeamId(leagueId, teamId);
+    if (result.error || !result.data) {
+      return failure(result.error || "Failed to get member info by team id");
     }
-    return { data, error: null };
+    return success(result.data);
   }
 
-  static async getMemberInfobyTeamId(leagueId: string, teamId: string) {
-    const supabase = await createClient();
-    const { data, error } = await supabase
-      .from(TABLES.LEAGUES_MEMBERS)
-      .select("*")
-      .eq("league_id", leagueId)
-      .eq("league_number", teamId)
-      .single();
-    
-    if (error) {
-      return { data: null, error: error.message };
+  static async createMember(member: LeagueMember): Promise<Result<LeagueMember>> {
+    const leagueMembers = await this.getAllLeagueMembers(member.league_id);
+    if (leagueMembers.error || !leagueMembers.data) {
+      return failure(leagueMembers.error || "Failed to get league members");
     }
-    return { data, error: null };
+    const maxLeagueNumber = Math.max(...leagueMembers.data.map(member => member.league_number));
+    member.league_number = maxLeagueNumber + 1;
+    
+    const newMember : LeagueMember = {
+      league_id: member.league_id,
+      user_id: member.user_id,
+      role: member.role,
+      league_number: maxLeagueNumber + 1,
+      abbreviation: member.abbreviation,
+      team_name: member.team_name,
+      status: member.status,
+    }
+    
+    const result = await create(newMember);
+    if (result.error || !result.data) {
+      return failure(result.error || "Failed to create member");
+    }
+    return success(result.data);
   }
 }

@@ -1,20 +1,47 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useLeague } from "../LeagueContext";
 import { MemberRow } from "@/lib/types/members_types";
 import { getMembersTableData } from "@/lib/server_actions/member_actions";
-
+import { useAlert } from "@/app/components/Alert/AlertContext";
+import { AlertType } from "@/lib/types/alert_types";
+import MemberTableRow from "./MemberTableRow";
 
 const MembersTable = () => {
-  const { allMembers, leagueMember, league, isCommissioner } = useLeague();
+  const { addAlert } = useAlert();
+  const { leagueMember, league, isCommissioner } = useLeague();
   const userId = leagueMember.user_id;
-  const members = allMembers;
+  const [membersTableData, setMembersTableData] = useState<MemberRow[] | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  try {
-    const membersTableData = await getMembersTableData(league.id!, userId)
-  } catch (error) {
-    console.error(error);
+  useEffect(() => {
+    let isMounted = true;
+    (async () => {
+      try {
+        const data = await getMembersTableData(league.id!, league, userId);
+        if (isMounted) setMembersTableData(data);
+      } catch (error) {
+        addAlert({
+          message: String(error),
+          type: AlertType.ERROR,
+          duration: 3000,
+        });
+      } finally {
+        if (isMounted) setIsLoading(false);
+      }
+    })();
+    return () => {
+      isMounted = false;
+    };
+  }, [league.id, league, userId, addAlert]);
+
+  if (isLoading) {
+    return <div>Loading members…</div>;
+  }
+
+  if (!membersTableData) {
+    return <div>No members found.</div>;
   }
 
   return (
@@ -31,14 +58,9 @@ const MembersTable = () => {
           </tr>
         </thead>
         <tbody>
-          {allMembers?.map((member: LeagueMember, index: number) => (
-            <MemberTableRow key={index} member={}
-          )}
-
-
-          {allMembers?.map((member: MemberRow, index: number) => (
-            <MemberTableRow key={index} member={member} userId={userId} isCommissioner={isCommissioner} />
-          ))}
+          {membersTableData.map((member: MemberRow, index: number) => {
+            return <MemberTableRow key={index} member={member} userId={userId} isCommissioner={isCommissioner} />
+          })}
         </tbody>
       </table>
     </div>

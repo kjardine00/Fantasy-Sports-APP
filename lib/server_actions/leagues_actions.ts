@@ -3,21 +3,12 @@
 import { Result } from "@/lib/types"
 
 import { requireAuth } from "../contexts/UserContext";
-import { League, LeagueMember } from "@/lib/types/database_types";
 import { SettingsFormState } from "@/lib/types/settings_types";
+import { LeagueActionError, LeagueActionResult } from "@/lib/types/error_types";
+import { League, Invite } from "@/lib/types/database_types";
 import { LeagueService } from "../services/league/leagues_service";
 import { InviteService } from "../services/invite/invite_service";
 import { SettingsService } from "../services/league/settings_service";
-
-export class LeagueActionError extends Error {
-  constructor(
-    message: string,
-    public code: "AUTH_REQUIRED" | "LEAGUE_CREATION_FAILED" | "INVITE_CREATION_FAILED" | "LEAGUE_SETTINGS_UPDATE_FAILED"
-  ) {
-    super(message);
-    this.name = "LeagueActionError";
-  }
-}
 
 export async function fetchLeagueSettingsAction(leagueId: string): Promise<SettingsFormState> {
   const settings: Result<SettingsFormState> = await SettingsService.getLeagueSettings(leagueId);
@@ -30,12 +21,19 @@ export async function fetchLeagueSettingsAction(leagueId: string): Promise<Setti
   return settings.data;
 }
 
-export async function createLeagueAction(formData: FormData) {
+export async function createLeagueAction(formData: FormData): Promise<LeagueActionResult<{ league: League; genericInvite: Invite }>> {
   // 1. Require Auth
-  const { user } = await requireAuth();
-  if (!user) {
-    console.error("User not logged in");
-    throw new LeagueActionError("User not logged in", "AUTH_REQUIRED");
+  let user
+  try {
+    const { user: userResult } = await requireAuth();
+    user = userResult;
+  } catch (error) {
+    console.error("league_actions:User not logged in");
+    return { 
+      success: false, 
+      error: "User not logged in", 
+      errorCode: "AUTH_REQUIRED" 
+    };
   }
 
   // 2. Validate Form Data
@@ -51,7 +49,11 @@ export async function createLeagueAction(formData: FormData) {
   const newLeague = await LeagueService.createLeague(user.id, data);
   if (newLeague.error || !newLeague.data) {
     console.error("Failed to create league: ", newLeague.error);
-    throw new LeagueActionError(newLeague.error || "Failed to create league", "LEAGUE_CREATION_FAILED");
+    return { 
+      success: false, 
+      error: newLeague.error || "Failed to create league", 
+      errorCode: "LEAGUE_CREATION_FAILED" 
+    };
   }
 
   const league = newLeague.data!;
@@ -59,10 +61,14 @@ export async function createLeagueAction(formData: FormData) {
   const genericInvite = await InviteService.createGenericInvite(league.id!, user.id, data.numberOfTeams)
   if (genericInvite.error || !genericInvite.data) {
     console.error("Failed to create generic invite: ", genericInvite.error);
-    throw new LeagueActionError(genericInvite.error || "Failed to create generic invite", "INVITE_CREATION_FAILED");
+    return { 
+      success: false, 
+      error: genericInvite.error || "Failed to create generic invite", 
+      errorCode: "INVITE_CREATION_FAILED" 
+    };
   }
 
-  return { league, genericInvite };
+  return { success: true, data: { league, genericInvite: genericInvite.data } };
 }
 
 export async function updateLeagueSettingsAction(leagueId: string, settings: SettingsFormState) : Promise<void> {

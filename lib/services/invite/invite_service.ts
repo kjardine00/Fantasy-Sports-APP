@@ -1,28 +1,25 @@
-import { Invite } from "@/lib/types/database_types";
 import { Result, success, failure } from "@/lib/types";
-import { findByLeagueId } from "@/lib/database/queries/invite_queries";
-
-import {
-  create,
-  deleteById,
-  createGeneric,
-  findGenericByLeagueId,
-  deactivateById,
-  findByToken,
-  membershipExists,
-  updateUsage,
-  updateUsageOnly,
-  deactivateGenericByLeagueId,
-} from "@/lib/database/queries/invite_queries";
-import {
-  add,
-  count,
-} from "@/lib/database/queries/leagues_members_queries";
+import { Invite } from "@/lib/types/database_types";
+import { League } from "@/lib/types/database_types";
 import { sendLeagueInvite } from "@/lib/services/email/resend";
+import {
+  findById,
+  findByLeagueId,
+  findGenericByLeagueId,
+  findByToken,
+  create,
+  deactivateByLeagueId,
+  update,
+} from "@/lib/database/queries/invite_queries";
+import { findById as findLeagueById } from "@/lib/database/queries/league_queries";
+import { findByUserId as findMemberByUserId } from "@/lib/database/queries/leagues_members_queries";
 
 export class InviteService {
-  static async createGenericInvite(leagueId: string, invitedBy: string, maxUses: number) : Promise<Result<Invite>> {
-
+  static async createGenericInvite(
+    leagueId: string,
+    invitedBy: string,
+    maxUses: number
+  ): Promise<Result<Invite>> {
     const genericInvite: Invite = {
       league_id: leagueId,
       email: "", // Target Email for generic links is empty
@@ -31,7 +28,9 @@ export class InviteService {
       invite_type: "general",
       max_uses: maxUses,
       current_uses: 0,
-      expires_at: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(), // 1 year from now
+      expires_at: new Date(
+        Date.now() + 365 * 24 * 60 * 60 * 1000
+      ).toISOString(), // 1 year from now
     };
 
     const newLink = await create(genericInvite);
@@ -42,9 +41,7 @@ export class InviteService {
     return success(newLink.data);
   }
 
-
-// ============== REFACTOR LINE ==============
-  static async createAndSendInvite(invite: Invite) {
+  static async createAndSendInvite(invite: Invite): Promise<Result<Invite>> {
     // Set default values for email invites
     const emailInvite: Invite = {
       ...invite,
@@ -53,190 +50,47 @@ export class InviteService {
       current_uses: 0,
     };
 
-    const { data: createdInvite, error: createdInviteError } =
-      await create({ invite: emailInvite });
-
-    if (createdInviteError) {
-      return { data: null, error: createdInviteError };
+    const inviteResult = await create(emailInvite);
+    if (inviteResult.error || !inviteResult.data) {
+      return failure(inviteResult.error || "Failed to create invite");
     }
 
-    const { data: league, error: leagueError } = await findById(
-      createdInvite.league_id
-    );
-    if (leagueError) {
-      return { data: null, error: leagueError };
+    const league = await findLeagueById(inviteResult.data.league_id);
+    if (league.error || !league.data) {
+      return failure(league.error || "Failed to find league");
     }
 
-    const inviteLink = `${process.env.NEXT_PUBLIC_APP_URL}/invite/${createdInvite.token}`;
+    const inviteLink = `${process.env.NEXT_PUBLIC_APP_URL}/invite/${inviteResult.data.token}`;
     const { error: emailError } = await sendLeagueInvite({
-      email: createdInvite.email || "",
-      leagueName: league.name,
-      inviterName: createdInvite.invited_by,
+      email: inviteResult.data.email || "",
+      leagueName: league.data.name,
+      inviterName: inviteResult.data.invited_by,
       inviteLink: inviteLink,
     });
 
     if (emailError) {
-      await deleteById(createdInvite.id);
-      return { data: null, error: emailError };
+      return failure(String(emailError) || "Failed to send email");
     }
 
-    return { data: createdInvite, error: null };
+    return success(inviteResult.data);
   }
 
-  static async getGenericInviteLink(leagueId: string) {
-    const { data: invite, error } = await findGenericByLeagueId(leagueId);
-
-    if (error) {
-      return { data: null, error };
+  static async createGenericInviteURL(leagueId: string) {
+    const invite = await findGenericByLeagueId(leagueId);
+    if (invite.error || !invite.data) {
+      console.error("No generic invite link found", invite.error);
+      return failure(invite.error || "No generic invite link found");
     }
 
-    return { data: invite, error: null };
-  }
+    const inviteURL = `${process.env.NEXT_PUBLIC_APP_URL}/invite/${invite.data.token}`;
 
-  static async generateGenericInviteUrl(leagueId: string) {
-    const { data: invite, error } = await this.getGenericInviteLink(leagueId);
-
-    if (error || !invite) {
-      console.error("No generic invite link found", error);
-      return { data: null, error: "No generic invite link found" };
-    }
-
-    const inviteUrl = `${process.env.NEXT_PUBLIC_APP_URL}/invite/${invite.token}`;
-    return { data: inviteUrl, error: null };
-  }
-
-  static async checkLeagueCapacity(leagueId: string, maxTeams: number = 12) {
-    const { data: memberCount, error } = await count(leagueId);
-
-    if (error) {
-      return { data: null, error };
-    }
-
-    const isFull = memberCount >= maxTeams;
-    return { data: { memberCount, isFull, maxTeams }, error: null };
-  }
-
-  static async deactivateGenericLinkIfLeagueFull(
-    leagueId: string,
-    maxTeams: number = 12
-  ) {
-    const { data: capacityInfo, error } = await this.checkLeagueCapacity(
-      leagueId,
-      maxTeams
-    );
-
-    if (error) {
-      return { data: null, error };
-    }
-
-    if (capacityInfo.isFull) {
-      const { data: deactivated, error: deactivateError } =
-        await deactivateById(leagueId);
-
-      if (deactivateError) {
-        return { data: null, error: deactivateError };
-      }
-
-      return {
-        data: { deactivated: true, reason: "League is full" },
-        error: null,
-      };
-    }
-
-    return {
-      data: { deactivated: false, reason: "League has space" },
-      error: null,
-    };
-  }
-
-  static async acceptInvite(token: string, userId: string) {
-    // 1. Validate First
-    const validation = await this.validateInviteToken(token, userId);
-
-    if (validation.validationResult !== "valid") {
-      return {
-        data: null,
-        error: validation.error || { message: "Invalid invite" },
-      };
-    }
-
-    // 2. Get the invite
-    const { data: invite, error: inviteError } = await findByToken(token);
-    if (inviteError || !invite) {
-      return { data: null, error: { message: "Invite not found" } };
-    }
-
-    // 3. Double-check membership doesn't exist (in case of race condition)
-    const { exists: alreadyMember } = await membershipExists(
-      invite.league_id,
-      userId
-    );
-
-    if (alreadyMember) {
-      return { data: null, error: { message: "You are already a member of this league" } };
-    }
-
-    // 4. Add member to league
-    const { error: memberError } = await add(
-      invite.league_id,
-      userId,
-      "member"
-    );
-
-    if (memberError) {
-      console.error("Error adding member to league:", memberError);
-      // Check if it's a duplicate key error
-      if (memberError.code === "23505" || memberError.message?.includes("duplicate")) {
-        return { data: null, error: { message: "You are already a member of this league" } };
-      }
-      return { data: null, error: { message: `Failed to add member: ${memberError.message || "Unknown error"}` } };
-    }
-
-    // 5. Update invite usage
-    const newUseCount = (invite.current_uses || 0) + 1;
-    const shouldMarkAccepted =
-      invite.invite_type === "email" ||
-      (invite.max_uses && newUseCount >= invite.max_uses);
-
-    if (shouldMarkAccepted) {
-      await updateUsage(invite.id!, newUseCount);
-    } else {
-      await updateUsageOnly(invite.id!, newUseCount);
-    }
-
-    await this.deactivateIfLeagueFull(invite.league_id);
-
-    return { data: invite, error: null };
-  }
-
-  private static async deactivateIfLeagueFull(leagueId: string) {
-    const { data: league } = await findById(leagueId);
-    if (!league?.settings?.numberOfTeams) return;
-
-    const maxTeams = parseInt(league.settings.numberOfTeams);
-    const { data: memberCount } = await count(leagueId);
-
-    if (memberCount && memberCount >= maxTeams) {
-      await deactivateGenericByLeagueId(leagueId);
-    }
+    return success(inviteURL);
   }
 
   static async validateInviteToken(token: string, userId?: string) {
-    const { data: invite, error } = await findByToken(token);
-
-    if (error) {
-      return { validationResult: "error", error };
-    }
-
-    // Fetch the league to get the short code
-    const { data: league, error: leagueError } = await findById(
-      invite.league_id
-    );
-    if (leagueError || !league) {
-      return {
-        validationResult: "error",
-        error: { message: "League not found" },
-      };
+    const invite = await findByToken(token);
+    if (invite.error || !invite.data) {
+      return failure(invite.error || "Invite not found");
     }
 
     let validationResult:
@@ -247,60 +101,96 @@ export class InviteService {
       | "max_uses_reached"
       | "joined" = "loading";
 
-    if (invite.status !== "pending") {
+    if (invite.data.status !== "pending") {
       validationResult = "invalid";
-      return {
-        validationResult,
-        error: { message: "Invite is expired or already used" },
-      };
+      return failure("Invite is expired or already used");
     }
 
-    if (invite.expires_at && new Date(invite.expires_at) < new Date()) {
-      const { error: deactivateError } = await deactivateById(
-        invite.id
-      );
-      if (deactivateError) {
-        return {
-          validationResult: "error",
-          error: { message: "An error occurred deactivating the invite" },
-        };
+    if (
+      invite.data.expires_at &&
+      new Date(invite.data.expires_at) < new Date()
+    ) {
+      const expiredInvite = await deactivateByLeagueId(invite.data.league_id);
+      if (expiredInvite.error || !expiredInvite.data) {
+        console.error("Failed to deactivate invite", expiredInvite.error);
+        return failure(expiredInvite.error || "Failed to deactivate invite");
       }
       validationResult = "expired";
-      return { validationResult, error: { message: "Invite is expired" } };
+      return failure(validationResult);
     }
 
-    if (invite.max_uses && invite.current_uses >= invite.max_uses) {
-      const { error: deactivateError } = await deactivateById(
-        invite.id
-      );
-      if (deactivateError) {
-        return {
-          validationResult: "error",
-          error: { message: "An error occurred deactivating the invite" },
-        };
+    if (
+      invite.data.max_uses &&
+      (invite.data.current_uses ?? 0) >= invite.data.max_uses
+    ) {
+      const maxxedInvite = await deactivateByLeagueId(invite.data.league_id);
+      if (maxxedInvite.error || !maxxedInvite.data) {
+        console.error("Failed to deactivate invite", maxxedInvite.error);
+        return failure(maxxedInvite.error || "Failed to deactivate invite");
       }
       validationResult = "max_uses_reached";
-      return {
-        validationResult,
-        error: { message: "Invite has reached maximum uses" },
-      };
+      return failure(validationResult);
     }
-    
-    // Check if user is already a member of this league
-    if (userId) {
-      const { exists: isMember } = await membershipExists(
-        invite.league_id,
-        userId
-      );
 
-      if (isMember) {
+    if (userId) {
+      const member = await findMemberByUserId(userId, invite.data.league_id);
+      if (member.error) {
+        console.error("Failed to find member", member.error);
+        return failure(member.error || "Failed to find member");
+      }
+      if (member.data && member.data.status === "Joined") {
         validationResult = "joined";
-        return { validationResult, shortCode: league.short_code, error: null };
+        return failure(validationResult);
       }
     }
 
-    // If we got here, the invite is valid
     validationResult = "valid";
-    return { validationResult, shortCode: league.short_code, error: null };
+    return success(validationResult);
+  }
+
+  static async fetchShortCode(token: string): Promise<Result<League>> {
+    const invite = await findByToken(token);
+    if (invite.error || !invite.data) {
+      return failure(invite.error || "Invite not found");
+    }
+    const league = await findLeagueById(invite.data.league_id);
+    if (league.error || !league.data) {
+      return failure(league.error || "Failed to find league");
+    }
+    return success(league.data);
+  }
+
+  static async findByToken(token: string): Promise<Result<Invite>> {
+    const invite = await findByToken(token);
+    if (invite.error || !invite.data) {
+      return failure(invite.error || "Invite not found");
+    }
+    return success(invite.data);
+  }
+
+  static async incrementUsage(inviteId: string): Promise<Result<Invite>> {
+    const invite = await findById(inviteId);
+    if (invite.error || !invite.data) {
+      return failure(invite.error || "Invite not found");
+    }
+    const newUseCount = (invite.data.current_uses || 0) + 1;
+    const updatedInvite: Invite = {
+      ...invite.data,
+      current_uses: newUseCount,
+    };
+
+    const result = await update(updatedInvite);
+    if (result.error || !result.data) {
+      return failure(result.error || "Failed to update usage");
+    }
+    return success(result.data);
+  }
+
+  static async deactivateByLeagueId(leagueId: string): Promise<Result<Invite>> {
+    const result = await deactivateByLeagueId(leagueId);
+    if (result.error || !result.data) {
+      return failure(result.error || "Failed to deactivate invite");
+    }
+    return success(result.data);
   }
 }

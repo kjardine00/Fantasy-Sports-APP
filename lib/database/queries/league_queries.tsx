@@ -99,13 +99,27 @@ export async function update(league: League) : Promise<Result<League>> {
 
 export async function updateSettings(leagueId: string, settings: Partial<LeagueSettings>) : Promise<Result<League>> {
     const supabase = await createClient();
+
+    // Fetch current settings to merge with incoming partial
+    const { data: current, error: fetchError } = await supabase
+        .from(TABLES.LEAGUES)
+        .select("settings")
+        .eq("id", leagueId)
+        .single();
+
+    if (fetchError) {
+        return failure(fetchError.message);
+    }
+
+    const mergedSettings = { ...(current?.settings ?? {}), ...settings } as LeagueSettings;
+
     const { data, error } = await supabase
         .from(TABLES.LEAGUES)
-        .update(settings)
+        .update({ settings: mergedSettings })
         .eq("id", leagueId)
         .select()
         .single();
-        
+
     if (error) {
         return failure(error.message);
     }

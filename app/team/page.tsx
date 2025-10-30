@@ -20,40 +20,36 @@ const TeamPage = async ({ searchParams }: { searchParams: SearchParams }) => {
     console.error("League ID: " + leagueId + " or team ID: " + teamId + " is missing");
     return <div>Error loading team data</div>;
   }
-
-  const { data: memberData, error: memberError } =
-    await MembersService.getMemberInfobyTeamId(leagueId, teamId);
-  const { data: leagueData, error: leagueError } =
-    await LeagueService.getLeague(leagueId);
-  const { data: profileData, error: profileError } =
-    await ProfileService.getProfile(memberData?.user_id);
-
-    if (memberError) {
-      console.error(memberError);
-      return <div>Error loading team data</div>;
-    }
-    
-    if (leagueError) {
-      console.error(leagueError);
-      return <div>Error loading league data</div>;
-    }
-    
-    if (profileError) {
-      console.error(profileError);
-      return <div>Error loading profile data</div>;
-    }
-
+  
+  const member = await MembersService.getMemberInfobyTeamId(leagueId, teamId);
+  if (member.error || !member.data) {
+    console.error(member.error);
+    return <div>Error loading team data</div>;
+  }
+  
+  const league = await LeagueService.getLeague(leagueId);
+  if (league.error || !league.data) {
+    console.error(league.error);
+    return <div>Error loading league data</div>;
+  }
+  
+  const profile = await ProfileService.getProfile(member.data.user_id);
+  if (profile.error || !profile.data) {
+    console.error(profile.error);
+    return <div>Error loading profile data</div>;
+  }
+  
   return (
     <>
       <div className="container mx-auto px-4 py-8">
         <div className="flex flex-col gap-4 py-2">
           <TeamInfoCard
-            teamName={memberData?.team_name ?? ""}
-            teamLogo={memberData?.team_icon ?? ""}
-            teamManager={profileData?.name ?? ""}
-            leagueName={leagueData?.name ?? ""}
+            teamName={member.data?.team_name ?? ""}
+            teamLogo={member.data?.team_icon ?? ""}
+            teamManager={profile.data?.name ?? ""}
+            leagueName={league.data?.name ?? ""}
             leagueId={leagueId}
-            leagueShortCode={leagueData?.short_code ?? ""}
+            leagueShortCode={league.data?.short_code ?? ""}
           />
         </div>
         <div className="flex flex-col gap-4 py-2">

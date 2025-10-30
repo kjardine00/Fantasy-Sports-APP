@@ -2,7 +2,7 @@
 
 import React, { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { createLeagueAction, LeagueActionError } from "@/lib/server_actions/leagues_actions";
+import { createLeagueAction } from "@/lib/server_actions/leagues_actions";
 import { AlertType } from "@/lib/types/alert_types";
 import { useAlert } from "@/app/components/Alert/AlertContext";
 import { useAuthModal } from "@/app/components/Auth/AuthModalContext";
@@ -15,81 +15,63 @@ const CreateLeagueClient = () => {
   const pendingFormDataRef = useRef<FormData | null>(null);
 
   const handleSubmit = async (formData: FormData) => {
-    try {
-      setIsSubmitting(true);
-      const result = await createLeagueAction(formData);
+    setIsSubmitting(true);
+    
+    const result = await createLeagueAction(formData);
 
+    if (result.success) {
       // Success - league created
       addAlert({
         message: "League created successfully",
         type: AlertType.SUCCESS,
         duration: 5000,
       });
-      router.push(`/league/${result.league.short_code}`);
-
-    } catch (error) {
-      if (error instanceof LeagueActionError) {
-        if (error.code === "AUTH_REQUIRED") {
-          // User not logged in - open auth modal
-          pendingFormDataRef.current = formData;
-
-          openAuthModal("login", {
-            isDismissible: false,
-            onAuthSuccess: async () => {
-              try {
-                const retryResult = await createLeagueAction(pendingFormDataRef.current!);
-
-                // Retry success
-                addAlert({
-                  message: "League created successfully",
-                  type: AlertType.SUCCESS,
-                  duration: 5000,
-                });
-                closeModal();
-                router.push(`/league/${retryResult.league.short_code}`);
-
-              } catch (retryError) {
-                // Handle retry errors
-                if (retryError instanceof LeagueActionError) {
-                  addAlert({
-                    message: retryError.message,
-                    type: AlertType.ERROR,
-                    duration: 5000,
-                  });
-                } else {
-                  addAlert({
-                    message: "Failed to create league after authentication",
-                    type: AlertType.ERROR,
-                    duration: 5000,
-                  });
-                }
-                closeModal();
-              } finally {
-                pendingFormDataRef.current = null;
-                setIsSubmitting(false);
-              }
-            }
-          });
-
-          setIsSubmitting(false);
-          return;
-        }
-        // Handle other LeagueActionError types (LEAGUE_CREATION_FAILED, INVITE_CREATION_FAILED, etc.)
-        addAlert({
-          message: error.message,
-          type: AlertType.ERROR,
-          duration: 5000,
-        });
-      } else {
-        // Handle unexpected errors
-        addAlert({
-          message: "An unexpected error occurred",
-          type: AlertType.ERROR,
-          duration: 5000,
-        });
-      }
-    } finally {
+      router.push(`/league/${result.data.league.short_code}`);
       setIsSubmitting(false);
+    } else {
+      // Handle errors
+      if (result.errorCode === "AUTH_REQUIRED") {
+        // User not logged in - open auth modal
+        pendingFormDataRef.current = formData;
+
+        openAuthModal("login", {
+          isDismissible: false,
+          onAuthSuccess: async () => {
+            const retryResult = await createLeagueAction(pendingFormDataRef.current!);
+
+            if (retryResult.success) {
+              // Retry success
+              addAlert({
+                message: "League created successfully",
+                type: AlertType.SUCCESS,
+                duration: 5000,
+              });
+              closeModal();
+              router.push(`/league/${retryResult.data.league.short_code}`);
+            } else {
+              // Handle retry errors
+              addAlert({
+                message: retryResult.error,
+                type: AlertType.ERROR,
+                duration: 5000,
+              });
+              closeModal();
+            }
+            pendingFormDataRef.current = null;
+            setIsSubmitting(false);
+          }
+        });
+
+        setIsSubmitting(false);
+      } else {
+        // Handle other error types (LEAGUE_CREATION_FAILED, INVITE_CREATION_FAILED, etc.)
+        addAlert({
+          message: result.error,
+          type: AlertType.ERROR,
+          duration: 5000,
+        });
+        setIsSubmitting(false);
+      }
     }
   };
 

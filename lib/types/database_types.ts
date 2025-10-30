@@ -20,7 +20,7 @@ export interface League {
   short_code: string;
   created_at?: string;
   updated_at?: string;
-  is_public: boolean;
+  is_public?: boolean | null;
   settings: Partial<LeagueSettings>;
 }
 

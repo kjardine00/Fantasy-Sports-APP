@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation';
-import { validateInviteToken, handleAcceptInvite } from '@/lib/server_actions/invite_actions'
+import { validateTokenAction, acceptInviteAction } from '@/lib/server_actions/invite_actions'
 import { useAlert } from '@/app/components/Alert/AlertContext'
 import { AlertType } from '@/lib/types/alert_types';
 import { User } from '@supabase/supabase-js';
@@ -14,11 +14,11 @@ interface TokenValidatorProps {
 }
 
 const TokenValidator = ({ token, user }: TokenValidatorProps) => {
+    const { addAlert } = useAlert();
     const router = useRouter();
     const [tokenStatus, setTokenStatus] = useState<'loading' | 'valid' | 'invalid' | 'expired' | 'max_uses_reached' | 'joined'>('loading');
     const [shortCode, setShortCode] = useState<string | null>(null);
     const [isJoining, setIsJoining] = useState(false);
-    const { addAlert } = useAlert();
 
     useEffect(() => {
         validateToken(token);
@@ -26,16 +26,18 @@ const TokenValidator = ({ token, user }: TokenValidatorProps) => {
 
     const validateToken = async (token: string) => {
         try {
-            const { validationResult, shortCode, error } = await validateInviteToken(token, user.id);
-            
-            if (shortCode) {
-                setShortCode(shortCode);
+            const result = await validateTokenAction(token, user.id);
+            if (result.shortCode) {
+                setShortCode(result.shortCode);
             }
+
+            if (result.validationResult.data === 'valid') {
+                setTokenStatus('valid');
+            }
+        } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : String(error);
             
-            switch (validationResult) {
-                case 'valid':
-                    setTokenStatus('valid');
-                    break;
+            switch (errorMessage) {
                 case 'joined':
                     setTokenStatus('joined');
                     addAlert({
@@ -43,6 +45,7 @@ const TokenValidator = ({ token, user }: TokenValidatorProps) => {
                         type: AlertType.INFO,
                         duration: 3000,
                     });
+                    router.push(`/league/${shortCode}`);
                     break;
                 case 'invalid':
                     setTokenStatus('invalid');
@@ -63,13 +66,14 @@ const TokenValidator = ({ token, user }: TokenValidatorProps) => {
                 case 'max_uses_reached':
                     setTokenStatus('max_uses_reached');
                     addAlert({
-                        message: "This league if full",
+                        message: "This league is full",
                         type: AlertType.WARNING,
                         duration: 3000,
                     });
                     break;
-                case 'error':
-                    console.log(error);
+                default:
+                    console.error('Error validating invite token:', error);
+                    setTokenStatus('invalid');
                     addAlert({
                         message: "An error occurred validating the invite token",
                         type: AlertType.ERROR,
@@ -77,49 +81,25 @@ const TokenValidator = ({ token, user }: TokenValidatorProps) => {
                     });
                     break;
             }
-        } catch (error) {
-            console.log(error);
-            addAlert({
-                message: error as string || "An error occurred validating the invite token",
-                type: AlertType.ERROR,
-                duration: 10000,
-            });
         }
     }
 
     const handleJoinLeague = async () => {
         setIsJoining(true);
         try {
-            const result = await handleAcceptInvite(token, user.id);
-            
-            if (result?.error) {
-                addAlert({
-                    message: result.error,
-                    type: AlertType.ERROR,
-                    duration: 4000,
-                });
-                setIsJoining(false);
-            } else if (result?.shortCode) {
-                addAlert({
-                    message: "Successfully joined the league!",
-                    type: AlertType.SUCCESS,
-                    duration: 3000,
-                });
-                router.push(`/league/${result.shortCode}`);
-            } else {
-                addAlert({
-                    message: "An unexpected error occurred",
-                    type: AlertType.ERROR,
-                    duration: 4000,
-                });
-                setIsJoining(false);
-            }
+            const result = await acceptInviteAction(token, user.id);
+            router.push(`/league/${result.shortCode}`);
+            addAlert({
+                message: "Successfully joined the league!",
+                type: AlertType.SUCCESS,
+                duration: 3000,
+            });
         } catch (error) {
-            console.error('Error joining league:', error);
+            console.error('Error joining league:', error instanceof Error ? error.message : String(error));
             addAlert({
                 message: "An error occurred joining the league",
                 type: AlertType.ERROR,
-                duration: 4000,
+                duration: 3000,
             });
             setIsJoining(false);
         }

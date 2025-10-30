@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useAlert } from "@/app/components/Alert/AlertContext";
 import { AlertType } from "@/lib/types/alert_types";
-import { generateGenericInviteUrl } from "@/lib/server_actions/invite_actions";
+import { fetchInviteLinkAction } from "@/lib/server_actions/invite_actions";
 
 const InviteLinkCard = ({ leagueId }: { leagueId: string }) => {
   const { addAlert } = useAlert();
@@ -30,18 +30,28 @@ const InviteLinkCard = ({ leagueId }: { leagueId: string }) => {
   useEffect(() => {
     const fetchInviteLink = async () => {
       setIsLoading(true);
-      const result = await generateGenericInviteUrl(leagueId);
-      if (result.error) {
+      try {
+        const link = await fetchInviteLinkAction(leagueId);
+        if (link) {
+          setInviteLink(link as string);
+        } else {
+          setInviteLink("Invite link is unavailable");
+          addAlert({
+            message: "Invite link is unavailable",
+            type: AlertType.WARNING,
+            duration: 3000,
+          });
+        }
+      } catch (error) {
         addAlert({
-          message: result.error,
+          message: String(error),
           type: AlertType.ERROR,
           duration: 3000,
         });
-        setInviteLink("No Generic Invite Link Available");
-      } else {
-        setInviteLink(result.data || "No Generic Invite Link Available");
+        setInviteLink("Invite link is unavailable");
+      } finally {
+        setIsLoading(false);
       }
-      setIsLoading(false);
     };
     fetchInviteLink();
   }, [leagueId]);

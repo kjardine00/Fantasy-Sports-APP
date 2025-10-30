@@ -3,14 +3,14 @@
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/database/server";
 import { DraftService } from "@/lib/services/draft/draft_service";
-import { findOne } from "@/lib/database/queries/leagues_members_queries";
+import { MembersService } from "@/lib/services/league/members_service";
+
 import {
   findById,
   findReadyToStart,
   updateScheduledStart,
   findByLeagueId,
 } from "@/lib/database/queries/draft_queries";
-import { removePlayerFromAllQueues } from "../database/queries/draft_queue_queries";
 
 export async function getDraftByLeagueIDAction(leagueId: string) {
   const { data, error } = await findByLeagueId(leagueId);
@@ -40,9 +40,9 @@ export async function createDraftActions(
     return { error: "You must be logged in to create a draft" };
   }
 
-  const { data: member } = await findOne(leagueId, user.id);
+  const member = await MembersService.getLeagueMember(leagueId, user.id);
 
-  if (!member || member.role !== "commissioner") {
+  if (!member.data || member.data.role !== "commissioner") {
     return { error: "You must be a commissioner to create a draft" };
   }
 
@@ -70,7 +70,7 @@ export async function startDraftNowAction(draftId: string) {
     return { error: "You must be logged in to start a draft" };
   }
 
-  const { data: member } = await findOne(draftId, user.id);
+  const { data: member } = await MembersService.getLeagueMember(draftId, user.id);
   const { data: draftData, error: draftError } = await findById(draftId);
 
   if (!draftData || draftError) {
