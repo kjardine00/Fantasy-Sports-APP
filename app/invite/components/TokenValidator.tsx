@@ -45,7 +45,9 @@ const TokenValidator = ({ token, user }: TokenValidatorProps) => {
                         type: AlertType.INFO,
                         duration: 3000,
                     });
+                if (shortCode) {
                     router.push(`/league/${shortCode}`);
+                }
                     break;
                 case 'invalid':
                     setTokenStatus('invalid');

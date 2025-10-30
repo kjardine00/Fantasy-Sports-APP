@@ -4,7 +4,7 @@ import Dropdown from "./Dropdown";
 
 const ProfileIcon = ({ profile, userId }: { profile: Profile | null, userId: string }) => {
   return (
-    <div className="dropdown dropdown-end mr-2">
+    <div className="dropdown dropdown-end">
       <div
         tabIndex={0}
         role="button"

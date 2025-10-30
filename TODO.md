@@ -28,3 +28,8 @@
 [] League Settings > Time Selector Validation, only let the valid times to be chosen
 [] League Settings Service to handle the league settings, draft settings, etc
 [] Setup a pathname detection to have the Navbar not show when in the /draft portion of the app
+
+10/29/2025
+[] If the user is not the commissioner then they shouldn't see the invite link on members page
+[] Create a Schedule Draft Modal to pop up when the comissioner clicks on the schedule draft btn
+[] Create a modal for inviting members by email

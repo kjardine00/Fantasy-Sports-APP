@@ -2,7 +2,7 @@ import { Result, success, failure } from "@/lib/types";
 
 import { SettingsFormState } from "@/lib/types/settings_types";
 import { League, LeagueSettings } from "@/lib/types/database_types";
-import { findById, updateSettings } from "@/lib/database/queries/league_queries";
+import { findById, update, updateSettings } from "@/lib/database/queries/league_queries";
 
 export class SettingsService {
   static async getLeagueSettings(leagueId: string): Promise<Result<SettingsFormState>> {
@@ -55,15 +55,26 @@ export class SettingsService {
       chemistryMultiplier: form.chemistryMultiplier,
       useBigPlays: form.useBigPlays,
       bigPlaysMultiplier: form.bigPlaysMultiplier,
+      // Not used here from SettingsFormState:
+      // leagueName
+      // isPublic
     };
 
-    const updatedLeague = await updateSettings(league.data.id!, settings)
+    league.data!.name = form.leagueName;
+
+    const updatedLeague = await update(league.data!)
     if (updatedLeague.error || !updatedLeague.data) {
-      console.error(updatedLeague.error || "Failed to update league settings");
-      return failure(updatedLeague.error || "Failed to update league settings");
+      console.error(updatedLeague.error || "Failed to update league");
+      return failure(updatedLeague.error || "Failed to update league");
     }
 
-    return success(updatedLeague.data);
+    const updatedLeagueSettings = await updateSettings(league.data.id!, settings)
+    if (updatedLeagueSettings.error || !updatedLeagueSettings.data) {
+      console.error(updatedLeagueSettings.error || "Failed to update league settings");
+      return failure(updatedLeagueSettings.error || "Failed to update league settings");
+    }
+
+    return success(updatedLeagueSettings.data);
   }
 
   static getDefaults(): SettingsFormState {

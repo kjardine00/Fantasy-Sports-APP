@@ -15,7 +15,8 @@ const RegisterForm = () => {
         setIsExecutingCallback(true);
         Promise.resolve(onAuthSuccess())
         .then(() => {
-
+          closeModal();
+          setIsExecutingCallback(false);
         })
         .catch((error) => {
           console.error("Error in onAuthSuccess callback:", error);

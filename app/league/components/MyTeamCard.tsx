@@ -11,7 +11,10 @@ const MyTeamCard = () => {
     <div className="sidebar-container card w-full lg:w-80 bg-base-100 shadow-lg">
       <div className="card-body">
         <div className="flex justify-between items-center">
-          <h3 className="card-title text-lg font-semibold">My Team</h3>
+          <div className="flex items-center gap-3">
+            <div className="w-1 h-8 bg-gradient-to-b from-primary to-secondary rounded-full"></div>
+            <h3 className="card-title text-lg font-semibold">My Team</h3>
+          </div>
           <Link href="/team/settings">
             <img
               src="/icons/setting-gear-icon.svg"
