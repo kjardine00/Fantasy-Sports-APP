@@ -3,8 +3,7 @@ export interface SettingsFormState {
     numberOfTeams: number;
     isPublic: boolean;
     draftType: "snake" | "auction" | "offline";
-    draftDate: string;
-    draftTime: string;
+    scheduledStart: string;
     timePerPick: number;
     rosterSize: number;
     totalStartingPlayers: number;

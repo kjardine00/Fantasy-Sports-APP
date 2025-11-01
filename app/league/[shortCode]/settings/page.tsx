@@ -22,13 +22,13 @@ const SettingsPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
   const [originalSettings, setOriginalSettings] = useState<SettingsFormState>();
+  const [draftDateLocal, setDraftDateLocal] = useState<string>("");
   const [settings, setSettings] = useState<SettingsFormState>({
     leagueName: league.name,
     numberOfTeams: 10,
     isPublic: false,
     draftType: "snake",
-    draftDate: "",
-    draftTime: "",
+    scheduledStart: "",
     timePerPick: 90,
     rosterSize: 10,
     totalStartingPlayers: 6,
@@ -47,9 +47,20 @@ const SettingsPage = () => {
 
       try {
         setIsLoading(true);
-        const currentSettings = await fetchLeagueSettingsAction(
+        let currentSettings = await fetchLeagueSettingsAction(
           league.id
         );
+
+        // Normalize scheduledStart to HH:MM and extract date (if ISO-like)
+        if (currentSettings.scheduledStart && currentSettings.scheduledStart.includes("T")) {
+          const [datePart, timePartFull] = currentSettings.scheduledStart.split("T");
+          const [hh, mm] = (timePartFull || "").split(":");
+          const timeOnly = hh && mm ? `${hh}:${mm}` : "";
+          setDraftDateLocal(datePart || "");
+          currentSettings = { ...currentSettings, scheduledStart: timeOnly };
+        } else {
+          setDraftDateLocal("");
+        }
 
         setSettings(currentSettings);
         setOriginalSettings(currentSettings);
@@ -301,15 +312,13 @@ const SettingsPage = () => {
                   {isEditing ? (
                     <input
                       type="date"
-                      value={settings.draftDate}
-                      onChange={(e) =>
-                        handleInputChange("draftDate", e.target.value)
-                      }
+                      value={draftDateLocal}
+                      onChange={(e) => setDraftDateLocal(e.target.value)}
                       className="input input-bordered input-md w-full max-w-xs focus:input-primary transition-all"
                     />
                   ) : (
                     <span className="text-base-content font-medium">
-                      {settings.draftDate || <span className="text-base-content/50 italic">Not set</span>}
+                      {draftDateLocal || <span className="text-base-content/50 italic">Not set</span>}
                     </span>
                   )}
                 </td>
@@ -321,9 +330,9 @@ const SettingsPage = () => {
                   {isEditing ? (
                     <div className="form-control">
                       <select
-                        value={settings.draftTime}
+                        value={settings.scheduledStart}
                         onChange={(e) =>
-                          handleInputChange("draftTime", e.target.value)
+                          handleInputChange("scheduledStart", e.target.value)
                         }
                         className="select select-bordered w-full max-w-xs focus:select-primary transition-all"
                       >
@@ -428,8 +437,8 @@ const SettingsPage = () => {
                     </div>
                   ) : (
                     <span className="text-base-content font-medium">
-                      {settings.draftTime ? (() => {
-                        const [hours, minutes] = settings.draftTime.split(':');
+                      {settings.scheduledStart ? (() => {
+                        const [hours, minutes] = settings.scheduledStart.split(':');
                         const hour = parseInt(hours);
                         const period = hour >= 12 ? 'PM' : 'AM';
                         const displayHour = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;

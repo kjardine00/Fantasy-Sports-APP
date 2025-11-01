@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/database/server";
 import { TABLES } from "@/lib/database/tables";
+import { Result, success, failure } from "@/lib/types";
 import { Draft } from "@/lib/types/database_types";
 
 // ==========================================
@@ -41,7 +42,7 @@ export async function findReadyToStart() {
     return { draftsToStart, error };
 }
 
-export async function findByLeagueId(leagueId: string) {
+export async function findByLeagueId(leagueId: string) : Promise<Result<Draft>> {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from(TABLES.DRAFTS)
@@ -49,7 +50,13 @@ export async function findByLeagueId(leagueId: string) {
     .eq("league_id", leagueId)
     .maybeSingle();
 
-  return { data, error };
+  if (error) {
+    return failure(error.message);
+  }
+  if (!data) {
+    return failure("Draft not found");
+  }
+  return success(data);
 }
 
 export async function findActive(leagueId: string) {

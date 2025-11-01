@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/database/server";
 import { Draft, DraftPick, DraftQueue } from "@/lib/types/database_types";
+import { Result, success, failure } from "@/lib/types";
 import {
   create,
   findById,
@@ -43,9 +44,10 @@ export class DraftService {
       return { data: null, error: "User not authenticated" };
     }
 
-    const { data: existingDraft } = await findByLeagueId(leagueId);
-    if (existingDraft) {
-      return { data: null, error: "Draft already exists for this league" };
+    const existingDraft: Result<Draft> = await findByLeagueId(leagueId);
+    if (existingDraft.error || !existingDraft.data) {
+      console.error(existingDraft.error || "Draft not found");
+      return failure(existingDraft.error || "Draft not found");
     }
 
     const newDraft: Draft = {

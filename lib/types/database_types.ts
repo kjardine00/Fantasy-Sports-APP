@@ -28,7 +28,6 @@ export interface League {
 export interface LeagueSettings {
   numberOfTeams: number;
   draftType: 'snake' | 'auction' | 'offline';
-  draftDate?: string;
   draftTime?: string;
   timePerPick: number;
   rosterSize: number;

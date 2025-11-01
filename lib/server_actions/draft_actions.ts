@@ -1,10 +1,11 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { Result } from "@/lib/types";
+import { Draft } from "@/lib/types/database_types";
 import { createClient } from "@/lib/database/server";
 import { DraftService } from "@/lib/services/draft/draft_service";
 import { MembersService } from "@/lib/services/league/members_service";
-
 import {
   findById,
   findReadyToStart,
@@ -12,18 +13,16 @@ import {
   findByLeagueId,
 } from "@/lib/database/queries/draft_queries";
 
+
+// TODO: Refactor all these functions to throw an error and the draft to use a try catch block
 export async function getDraftByLeagueIDAction(leagueId: string) {
-  const { data, error } = await findByLeagueId(leagueId);
-  if (error) {
-    return { data: null, error: error };
+  const draft: Result<Draft> = await findByLeagueId(leagueId);
+  if (draft.error || !draft.data) {
+    console.error(draft.error || "Draft not found");
+    return { data: null, error: draft.error || "Draft not found" };
   }
 
-  if (!data) {
-    return { data: null, error: "Draft not found" };
-  }
-
-
-  return { data, error: null };
+  return { data: draft.data, error: null };
 }
 
 export async function createDraftActions(
