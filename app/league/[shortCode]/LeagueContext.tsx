@@ -2,7 +2,6 @@
 
 import React, { createContext, useContext, ReactNode } from "react";
 import { League, LeagueMember, Profile } from "@/lib/types/database_types";
-import { MemberRow } from "@/lib/types/members_types";
 
 interface LeagueContextType {
     league: League;
