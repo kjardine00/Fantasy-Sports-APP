@@ -20,7 +20,7 @@ export default function StartDraftButton({
   const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
-  const { startDraft, isStarting } = useDraftStart({
+  const { startDraft, isStarting, error } = useDraftStart({
     draftId,
     leagueId,
     leagueShortCode,
@@ -32,17 +32,25 @@ export default function StartDraftButton({
     },
   });
 
+  // Clear error when modal closes (hook will reset on next attempt)
+
   return (
     <>
       <ConfirmationModal
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        onClose={() => {
+          setIsModalOpen(false);
+        }}
         onConfirm={startDraft}
         title="Start Draft Early?"
-        description="This will start the draft early. Are you sure you want to do this?"
+        description={
+          error
+            ? `Error: ${error}. Please try again.`
+            : "This will start the draft early. Are you sure you want to do this?"
+        }
         confirmText="Start Draft"
         cancelText="Cancel"
-        variant="primary"
+        variant={error ? "error" : "primary"}
         isLoading={isStarting}
         showIcon={true}
       />

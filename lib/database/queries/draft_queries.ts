@@ -90,14 +90,16 @@ export async function update(draftId: string, updates: Partial<Draft>) {
 // TODO: This is business logic, consider moving to service layer
 export async function start(draftId: string, firstUserId: string, pickDeadline: string) {
   const supabase = await createClient();
+  const now = new Date().toISOString();
   const { data, error } = await supabase
     .from(TABLES.DRAFTS)
     .update({
       is_active: true,
-      started_at: new Date().toISOString(),
+      scheduled_start: now, // Update scheduled_start to current time when starting early (satisfies valid_times constraint: started_at >= scheduled_start)
+      started_at: now, // Set started_at to current time
       current_user_id: firstUserId,
       pick_deadline: pickDeadline,
-      updated_at: new Date().toISOString(),
+      updated_at: now,
     })
     .eq("id", draftId)
     .select()

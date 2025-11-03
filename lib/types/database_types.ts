@@ -124,6 +124,7 @@ export interface Draft {
   league_id: string;
   is_active: boolean;
   scheduled_start?: string;
+  started_at?: string;
   ended_at?: string;
   current_pick: number;
   current_user_id?: string;

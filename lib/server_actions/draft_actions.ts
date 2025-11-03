@@ -69,7 +69,7 @@ export async function startDraftNowAction(draftId: string) {
     return { error: "You must be logged in to start a draft" };
   }
 
-  const { data: member } = await MembersService.getLeagueMember(draftId, user.id);
+  // Fetch draft first to get league_id
   const { data: draftData, error: draftError } = await findById(draftId);
 
   if (!draftData || draftError) {
@@ -80,7 +80,14 @@ export async function startDraftNowAction(draftId: string) {
     return { data: null, error: "Draft already started" };
   }
 
-  if (!member || member.role !== "commissioner") {
+  // Now get the league member using the correct league_id
+  const memberResult = await MembersService.getLeagueMember(draftData.league_id, user.id);
+  
+  if (memberResult.error || !memberResult.data) {
+    return { data: null, error: memberResult.error || "Failed to verify league membership" };
+  }
+
+  if (memberResult.data.role !== "commissioner") {
     return { error: "You must be a commissioner to start a draft" };
   }
 
