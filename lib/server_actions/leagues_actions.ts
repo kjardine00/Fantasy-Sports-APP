@@ -86,3 +86,19 @@ export async function updateLeagueSettingsAction(leagueId: string, settings: Set
 
   return;
 }
+
+export async function scheduleDraftAction(leagueId: string, settings: SettingsFormState) : Promise<void> {
+  const { user } = await requireAuth();
+  if (!user) {
+    console.error("User not logged in");
+    throw new LeagueActionError("User not logged in", "AUTH_REQUIRED");
+  }
+
+  const updatedLeague = await SettingsService.saveDraftSettings(leagueId, settings)
+  if (updatedLeague.error) {
+    console.error(updatedLeague.error || "Failed to schedule draft");
+    throw new LeagueActionError(updatedLeague.error || "Failed to schedule draft", "DRAFT_SCHEDULE_FAILED");
+  }
+
+  return;
+}

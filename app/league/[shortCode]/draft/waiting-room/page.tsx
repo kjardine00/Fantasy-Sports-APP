@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useLeague } from "../../LeagueContext";
 import {
   PageContainer,
@@ -10,6 +10,7 @@ import ActiveMemberIndicator from "./ActiveMemberIndicator";
 import { getMembersTableData } from "@/lib/server_actions/member_actions";
 import { MemberRow } from "@/lib/types/members_types";
 import { useWaitingRoomPresence } from "@/lib/hooks/useWaitingRoomPresence";
+import ConfirmationModal from "@/app/components/ConfirmationModal/ConfirmationModal";
 
 interface WaitingRoomMember extends MemberRow {
   isCurrentUser: boolean;
@@ -17,16 +18,29 @@ interface WaitingRoomMember extends MemberRow {
 }
 
 const WaitingRoomPage = () => {
-  const { league, leagueMember, isCommissioner, allMembers, profile } = useLeague();
+  const { league, leagueMember, isCommissioner, profile } = useLeague();
   const [membersData, setMembersData] = useState<WaitingRoomMember[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isStarting, setIsStarting] = useState<boolean>(false);
 
-  // Initialize presence tracking
+  const handleStartDraft = () => {
+    console.log("Starting draft");
+  };
+
   const presence = useWaitingRoomPresence(
     league.id!,
     leagueMember.user_id,
-    profile.name || "Unknown Manager",
-    leagueMember.team_name || "Unknown Team"
+    profile.name || "Team Manager",
+    leagueMember.team_name || "Team Name"
+  );
+
+  // Convert Set to sorted array for stable dependency comparison
+  // Use presenceCount to trigger recalculation, then create a stable array
+  const presentUserIdsArray = useMemo(
+    () => Array.from(presence.presentUserIds).sort(),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [presence.presenceCount]
   );
 
   useEffect(() => {
@@ -46,10 +60,12 @@ const WaitingRoomPage = () => {
           (member) => {
             const isCurrentUser = member.user_id === leagueMember.user_id;
             // Use real-time presence to determine status
-            const isPresent = member.user_id 
+            const isPresent = member.user_id
               ? presence.presentUserIds.has(member.user_id)
               : false;
-            const status: "active" | "inactive" = isPresent ? "active" : "inactive";
+            const status: "active" | "inactive" = isPresent
+              ? "active"
+              : "inactive";
 
             return {
               ...member,
@@ -66,7 +82,7 @@ const WaitingRoomPage = () => {
           if (!a.isCurrentUser && b.isCurrentUser) return 1;
 
           // If both or neither are current user, sort by status
-          const statusOrder = { active: 0, inactive: 1, absent: 2 };
+          const statusOrder = { active: 0, inactive: 1 };
           const statusDiff = statusOrder[a.status] - statusOrder[b.status];
           if (statusDiff !== 0) return statusDiff;
 
@@ -85,14 +101,14 @@ const WaitingRoomPage = () => {
     return () => {
       isMounted = false;
     };
-  }, [league.id, league, leagueMember.user_id, presence.presentUserIds]);
+  }, [league.id, league, leagueMember.user_id, presentUserIdsArray]);
 
   // Update member status when presence changes
   useEffect(() => {
     setMembersData((prevMembers) => {
       return prevMembers.map((member) => {
-        const isPresent = member.user_id 
-          ? presence.presentUserIds.has(member.user_id)
+        const isPresent = member.user_id
+          ? presentUserIdsArray.includes(member.user_id)
           : false;
         return {
           ...member,
@@ -100,7 +116,7 @@ const WaitingRoomPage = () => {
         };
       });
     });
-  }, [presence.presentUserIds]);
+  }, [presentUserIdsArray]);
 
   if (isLoading) {
     return (
@@ -117,7 +133,31 @@ const WaitingRoomPage = () => {
 
   return (
     <PageContainer>
-      <PageHeader title={`${league.name}'s Draft Waiting Room`} />
+      {/* Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onConfirm={handleStartDraft}
+        title="Start Draft Early?"
+        description="This will start the draft early. Are you sure you want to do this?"
+        confirmText="Start Draft"
+        cancelText="Cancel"
+        variant="primary"
+        isLoading={isStarting}
+        showIcon={true}
+      />
+
+      <PageHeader
+        title={`${league.name}'s Draft Waiting Room`}
+        breadcrumb={{
+          label: `${league.name} page`,
+          href: `/league/${league.short_code}`,
+        }}
+      />
+
+      {/* TODO: Add Countdown Timer */}
+
+      {/* Member status sections */}
       <PageSection title="Ready">
         {activeMembers.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
@@ -156,9 +196,14 @@ const WaitingRoomPage = () => {
           </div>
         )}
       </PageSection>
+
+      {/* Start Draft Button */}
       {isCommissioner && (
         <div className="flex justify-end mx-6 mb-6">
-          <button className="btn btn-primary rounded-full shadow-lg text-xl">
+          <button
+            className="btn btn-primary rounded-full shadow-lg text-xl"
+            onClick={() => setIsModalOpen(true)}
+          >
             Start Draft
           </button>
         </div>

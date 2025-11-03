@@ -27,9 +27,6 @@ export interface League {
 // This is a subset of the League interface that is used to store the league settings
 export interface LeagueSettings {
   numberOfTeams: number;
-  draftType: 'snake' | 'auction' | 'offline';
-  draftTime?: string;
-  timePerPick: number;
   rosterSize: number;
   totalStartingPlayers: number;
   allowDuplicatePicks: boolean;
