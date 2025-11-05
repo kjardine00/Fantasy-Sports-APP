@@ -11,6 +11,14 @@
 #Player
 - Player Name
 - Player Team (Foreign Key to Team)?
-- 
+- Icon?
 
 # Player_weekly 
+- id
+- player_id fk to player
+- week number
+- batting_stats
+- pitching stats
+- fielding stats
+- calc_pts
+- created at
