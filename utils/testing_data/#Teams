@@ -1,0 +1,16 @@
+#Teams
+- Team Name
+- Team Manager
+- Team Twitch Link
+- Team Logo 
+- Team Jersey
+- Team API Username
+- Stadium
+
+
+#Player
+- Player Name
+- Player Team (Foreign Key to Team)?
+- 
+
+# Player_weekly 
