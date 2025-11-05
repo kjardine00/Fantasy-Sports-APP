@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import Banner from "./components/Banner";
 import DraftOrder from "./components/DraftOrder/DraftOrder";
@@ -5,8 +7,11 @@ import PickQueue from "./components/Roster&Queue/PickQueue";
 import Roster from "./components/Roster&Queue/Roster";
 import DraftablePlayers from "./components/MainSection/DraftablePlayers";
 import PickHistory from "./components/PickHistory/PickHistory";
+import { useDraftChannel } from "./hooks/useDraftChannel";
 
 const DraftPage = () => {
+  useDraftChannel();
+
   return (
     <div>
       <Banner />

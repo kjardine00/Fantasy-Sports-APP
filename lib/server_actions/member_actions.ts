@@ -23,3 +23,13 @@ export async function getMembersTableData(leagueId: string, league: League, user
     
     return membersTable.data;
 }
+
+export async function getAllLeagueMembersAction(leagueId: string) {
+    const result = await MembersService.getAllLeagueMembers(leagueId);
+
+    if (result.error || !result.data) {
+        throw new Error(result.error || "Failed to get all league members");
+    }
+
+    return result.data;
+}

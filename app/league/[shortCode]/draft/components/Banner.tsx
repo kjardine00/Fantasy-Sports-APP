@@ -2,20 +2,20 @@
 
 import Link from 'next/link'
 import React, { useState } from 'react'
+import { useLeague } from '../../LeagueContext'
 
 interface BannerProps {
     draftAppName?: string
-    leagueName?: string
     soundOn?: boolean
     onSoundToggle?: () => void
 }
 
-const Banner: React.FC<BannerProps> = ({
+const Banner = ({
     draftAppName = "Fantasy Sports Draft",
-    leagueName = "League Name",
     soundOn: externalSoundOn,
     onSoundToggle: externalOnSoundToggle
-}) => {
+}: BannerProps) => {
+    const { league } = useLeague();
     const [internalSoundOn, setInternalSoundOn] = useState(false)
 
     const soundOn = externalSoundOn !== undefined ? externalSoundOn : internalSoundOn
@@ -24,7 +24,7 @@ const Banner: React.FC<BannerProps> = ({
     return (
         <div className="navbar bg-primary text-primary-content flex flex-row justify-between items-center min-h-0 py-2">
             <div className="flex flex-row items-center gap-2 px-4">
-                <h1 className="text-md font-bold">{draftAppName} - Draft for {leagueName}</h1>
+                <h1 className="text-md font-bold">{draftAppName} - Draft for {league?.name}</h1>
             </div>
 
             <div className="flex flex-row items-center align-end gap-2 px-4">

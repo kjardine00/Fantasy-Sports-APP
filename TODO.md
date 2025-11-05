@@ -33,3 +33,12 @@
 [] If the user is not the commissioner then they shouldn't see the invite link on members page
 [] Create a Schedule Draft Modal to pop up when the comissioner clicks on the schedule draft btn
 [] Create a modal for inviting members by email
+
+11/3/2025
+[] CountDownTimer shouldn't show zeroed values like hours or days if there is only minutes left. DraftInfoCard and Waiting Room and Teams Page
+[] Draft page are you sure if you want to navigate away from this page before letting you leave the current page
+
+
+11/5/2025
+[] Remove Player from queue PickQueue.tsx
+[] Reorder Queue PickQueue.tsx

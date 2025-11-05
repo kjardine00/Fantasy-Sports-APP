@@ -378,16 +378,17 @@ export async function makeDraftPickAction(
     } = await supabase.auth.getUser();
   
     if (!user) {
-      return { data: null, error: "You must be logged in" };
+      throw new Error("You must be logged in");
     }
   
     const { data, error } = await DraftService.getUserQueue(draftId, user.id);
   
-    if (error) {
-      return { data: null, error };
+    if (error || !data) {
+      console.error(error);
+      throw new Error(error || "Failed to get user queue");
     }
   
-    return { data, error: null };
+    return data;
   }
   
   /**
