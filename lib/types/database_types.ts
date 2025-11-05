@@ -119,7 +119,8 @@ export interface Player {
 export interface PlayerWeekly {
   id?: string; // DB generated
   player_id: string; // FK to Player.id
-
+  week_number: number;
+  stats: Record<string, number>;
 }
 
 export interface RealTeams {
@@ -145,8 +146,8 @@ export interface Matchup {
   user1_score: number | null; // numeric in DB
   user2_score: number | null; // numeric in DB
   winner_id: string | null;
-  created_at: string | null;
-  updated_at: string | null;
+  created_at?: string | null;
+  updated_at?: string | null;
 }
 
 // Roster interface
@@ -158,8 +159,8 @@ export interface Roster {
   slot_role: string;
   slot_number: number;
   locked: boolean | null;
-  created_at: string | null;
-  updated_at: string | null;
+  created_at?: string | null;
+  updated_at?: string | null;
 }
 
 // Trade interface
@@ -170,6 +171,6 @@ export interface Trade {
   to_user_id: string;
   player_id: string;
   status: string | null;
-  created_at: string | null;
-  completed_at: string | null;
+  created_at?: string | null;
+  completed_at?: string | null;
 }
