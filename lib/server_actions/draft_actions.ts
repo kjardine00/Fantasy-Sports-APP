@@ -6,12 +6,33 @@ import { Draft } from "@/lib/types/database_types";
 import { createClient } from "@/lib/database/server";
 import { DraftService } from "@/lib/services/draft/draft_service";
 import { MembersService } from "@/lib/services/league/members_service";
+import { PlayerService } from "@/lib/services/draft/player_service";
 import {
   findById,
   findReadyToStart,
   updateScheduledStart,
   findByLeagueId,
 } from "@/lib/database/queries/draft_queries";
+
+export async function fetchDraftablePlayersAction(draftId: string) {
+  const draftablePlayers = await DraftService.getDraftablePlayers(draftId)
+  const realTeams = await PlayerService.getAllRealTeams();
+
+  if (draftablePlayers.error || !draftablePlayers.data) {
+    console.error(draftablePlayers.error || "Failed to fetch draftable players");
+    throw new Error (draftablePlayers.error || "Failed to fetch draftable players");
+  }
+
+  if (realTeams.error || !realTeams.data) {
+    console.error(realTeams.error || "Failed to fetch real teams");
+    throw new Error (realTeams.error || "Failed to fetch real teams");
+  }
+
+  return { players: draftablePlayers.data, realTeams: realTeams.data };
+}
+
+// ===================Functions Above are implemented======================
+
 
 
 // TODO: Refactor all these functions to throw an error and the draft to use a try catch block

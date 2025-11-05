@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/database/server";
 import { Draft, DraftPick, DraftQueue } from "@/lib/types/database_types";
+import { Player } from "@/lib/types/database_types";
 import { Result, success, failure } from "@/lib/types";
 import {
   create,
@@ -15,6 +16,7 @@ import {
   findManyWithPlayers as getDraftPicksWithPlayers,
   draftedExists as isPlayerDrafted,
   findDraftedPlayerIds as getDraftedPlayerIds,
+  findManyById as findDraftPicksById,
 } from "@/lib/database/queries/draft_picks_queries";
 import {
   add as addToQueue,
@@ -25,6 +27,8 @@ import {
   removePlayerFromAll as removePlayerFromAllQueues,
 } from "@/lib/database/queries/draft_queue_queries";
 import { countTeams, findPickOrderByUser } from "@/lib/database/queries/leagues_members_queries";
+import { findAll as findAllPlayers } from "@/lib/database/queries/players_queries";
+import { findAll as findAllRealTeams } from "@/lib/database/queries/real_teams_queries";
 
 export class DraftService {
   // ==========================================
@@ -126,6 +130,26 @@ export class DraftService {
   // ==========================================
   // DRAFT PICK LOGIC
   // ==========================================
+  static async getDraftablePlayers(draftId: string) : Promise<Result<Player[]>> {
+    const { data: allPlayers, error: playersError } = await findAllPlayers();
+    const { data: draftPicks, error: draftPicksError } = await findDraftPicksById(draftId);
+
+    if ( playersError || !allPlayers) {
+      return failure(playersError || "Failed to fetch players");
+    }
+    
+    if ( draftPicksError || !draftPicks) {
+      return failure(draftPicksError || "Failed to fetch draft picks");
+    }
+
+    const draftablePlayers = allPlayers.filter((player) => {
+      return !draftPicks.some((pick) => pick.player_id === player.id)
+    })
+
+    return success(draftablePlayers);
+  }
+
+
   static async makePick(draftId: string, userId: string, playerId: string) {
     const { data: draft, error: draftError } = await findById(draftId);
     if (draftError || !draft) {
@@ -152,7 +176,7 @@ export class DraftService {
     );
 
     if (countError || !teamCount) {
-        return { data: null, error: "Could not determine team count" };
+      return { data: null, error: "Could not determine team count" };
     }
 
     const pickOrder = ((draft.current_round - 1) % teamCount) + 1;
@@ -202,68 +226,68 @@ export class DraftService {
   // QUEUE MANAGEMENT
   // ==========================================
   static async addToQueue(
-    draftId: string, 
+    draftId: string,
     leagueId: string,
     userId: string,
     playerId: string,
     rank: number
   ) {
-    const {exists } = await isPlayerDrafted(draftId, playerId);
+    const { exists } = await isPlayerDrafted(draftId, playerId);
     if (exists) {
-        return { data: null, error: "This player has already been drafted" };
+      return { data: null, error: "This player has already been drafted" };
     }
 
     const queueItem: DraftQueue = {
-        draft_id: draftId,
-        league_id: leagueId,
-        user_id: userId,
-        player_id: playerId,
-        rank: rank
-  }
+      draft_id: draftId,
+      league_id: leagueId,
+      user_id: userId,
+      player_id: playerId,
+      rank: rank
+    }
 
-  const { data, error } = await addToQueue(queueItem);
-
-  if (error) {
-    return { data: null, error: error.message };
-  }
-
-  return { data, error: null };
-}
-
-static async getUserQueue(draftId: string, userId: string) {
-    const { data, error } = await getUserQueueWithPlayers(draftId, userId);
+    const { data, error } = await addToQueue(queueItem);
 
     if (error) {
-        return { data: null, error: error.message };
+      return { data: null, error: error.message };
     }
 
     return { data, error: null };
-}
+  }
 
-static async removeFromQueue(draftId: string, userId: string, playerId: string) {
+  static async getUserQueue(draftId: string, userId: string) {
+    const { data, error } = await getUserQueueWithPlayers(draftId, userId);
+
+    if (error) {
+      return { data: null, error: error.message };
+    }
+
+    return { data, error: null };
+  }
+
+  static async removeFromQueue(draftId: string, userId: string, playerId: string) {
     const { error } = await removePlayerFromQueue(draftId, userId, playerId);
 
     if (error) {
-        return { data: null, error: error.message };
+      return { data: null, error: error.message };
     }
 
     return { data: null, error: null };
-}
+  }
 
-static async reorderQueue(
-    draftId: string, 
-    userId: string, 
-    queueId: string, 
+  static async reorderQueue(
+    draftId: string,
+    userId: string,
+    queueId: string,
     newRank: number
-) {
+  ) {
     const { error } = await updateQueueRank(queueId, newRank);
 
     if (error) {
-        return { data: null, error: error.message };
+      return { data: null, error: error.message };
     }
 
     return { data: null, error: null };
-}
+  }
 
   // ==========================================
   // HELPER METHODS
@@ -272,81 +296,81 @@ static async reorderQueue(
   static async getNextAvailableFromQueue(draftId: string, userId: string) {
     const { data: queue } = await getUserQueue(draftId, userId);
     if (!queue || queue.length === 0) {
-        return { data: null, error: "No players in queue" };
+      return { data: null, error: "No players in queue" };
     }
-    
+
     const { data: draftedIds } = await getDraftedPlayerIds(draftId);
     if (!draftedIds) return null;
-    
+
     for (const queueItem of queue) {
-        if (!draftedIds.includes(queueItem.player_id)) {
-            return queueItem.player_id;
-        }
-    } 
-
-    return null;     
+      if (!draftedIds.includes(queueItem.player_id)) {
+        return queueItem.player_id;
+      }
     }
 
-    static async calculatePickingUser(
-        leagueId: string, 
-        pickNumber: number, 
-        draftOrderType: "snake" | "auction"
-    ) {
-        const { data: members, error: orderError } = await findPickOrderByUser(leagueId);
+    return null;
+  }
 
-        if (!members || members.length === 0) return null;
+  static async calculatePickingUser(
+    leagueId: string,
+    pickNumber: number,
+    draftOrderType: "snake" | "auction"
+  ) {
+    const { data: members, error: orderError } = await findPickOrderByUser(leagueId);
 
-        const teamCount = members.length;
-        const round = Math.ceil(pickNumber / teamCount);
-        const pickInRound = ((pickNumber - 1) % teamCount) + 1;
+    if (!members || members.length === 0) return null;
 
-        let pickIndex: number;
+    const teamCount = members.length;
+    const round = Math.ceil(pickNumber / teamCount);
+    const pickInRound = ((pickNumber - 1) % teamCount) + 1;
 
-        if (draftOrderType === "snake" && round % 2 === 0) {
-            // Even rounds go in reverse for snake draft
-            pickIndex = teamCount - pickInRound;
-        } else {
-            // Odd rounds
-            pickIndex = pickInRound - 1;
-        }
+    let pickIndex: number;
 
-        return members[pickIndex].user_id || null;
+    if (draftOrderType === "snake" && round % 2 === 0) {
+      // Even rounds go in reverse for snake draft
+      pickIndex = teamCount - pickInRound;
+    } else {
+      // Odd rounds
+      pickIndex = pickInRound - 1;
     }
 
-    private static async advancePick(draft: Draft, teamCount: number) {
-        const nextPickNumber = draft.current_pick + 1;
-        const totalPicks = draft.total_rounds * teamCount; 
+    return members[pickIndex].user_id || null;
+  }
 
-        if (nextPickNumber > totalPicks) {
-            await endDraftQuery(draft.id!);
-            return;
-        }
+  private static async advancePick(draft: Draft, teamCount: number) {
+    const nextPickNumber = draft.current_pick + 1;
+    const totalPicks = draft.total_rounds * teamCount;
 
-        const nextRound = Math.ceil(nextPickNumber / teamCount);
-        const nextUserId = await this.calculatePickingUser(
-            draft.league_id,
-            nextPickNumber,
-            draft.draft_order_type
-        );
-
-        const nextDeadline = new Date(
-            Date.now() + draft.pick_time_limit_seconds * 1000
-        ).toISOString();
-
-        await updateDraftQuery(draft.id!, {
-            current_pick: nextPickNumber,
-            current_round: nextRound,
-            current_user_id: nextUserId,
-            pick_deadline: nextDeadline
-        });
+    if (nextPickNumber > totalPicks) {
+      await endDraftQuery(draft.id!);
+      return;
     }
 
-    private static async removePlayerFromAllQueues(draftId: string, playerId: string) {
-        const { success, error } = await removePlayerFromAllQueues(draftId, playerId);
-        if (error) {
-            return { success: false, error: error };
-        }
+    const nextRound = Math.ceil(nextPickNumber / teamCount);
+    const nextUserId = await this.calculatePickingUser(
+      draft.league_id,
+      nextPickNumber,
+      draft.draft_order_type
+    );
 
-        return { success: true, error: null };
+    const nextDeadline = new Date(
+      Date.now() + draft.pick_time_limit_seconds * 1000
+    ).toISOString();
+
+    await updateDraftQuery(draft.id!, {
+      current_pick: nextPickNumber,
+      current_round: nextRound,
+      current_user_id: nextUserId,
+      pick_deadline: nextDeadline
+    });
+  }
+
+  private static async removePlayerFromAllQueues(draftId: string, playerId: string) {
+    const { success, error } = await removePlayerFromAllQueues(draftId, playerId);
+    if (error) {
+      return { success: false, error: error };
     }
+
+    return { success: true, error: null };
+  }
 }

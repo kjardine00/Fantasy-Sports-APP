@@ -40,8 +40,7 @@ export async function findByUserWithPlayers(draftId: string, userId: string) {
         players:player_id (
           id,
           name,
-          team,
-          points
+          team
         )
       `
     )

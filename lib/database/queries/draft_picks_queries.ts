@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/database/server";
 import { TABLES } from "@/lib/database/tables";
+import { Result, success, failure } from "@/lib/types";
 import { DraftPick } from "@/lib/types/database_types";
 
 // ==========================================
@@ -17,7 +18,7 @@ export async function create(pick: DraftPick) {
   return { data, error };
 }
 
-export async function findMany(draftId: string) {
+export async function findManyById(draftId: string) : Promise<Result<DraftPick[]>> {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from(TABLES.DRAFT_PICKS)
@@ -25,7 +26,10 @@ export async function findMany(draftId: string) {
     .eq("draft_id", draftId)
     .order("pick_number", { ascending: true });
 
-  return { data, error };
+  if (error) {
+    return failure(error.message);
+  }
+  return success(data);
 }
 
 // TODO: Consider consolidating with findMany using optional include parameter
@@ -39,8 +43,7 @@ export async function findManyWithPlayers(draftId: string) {
         players:player_id (
           id,
           name,
-          team,
-          points
+          team_id
         )
       `
     )

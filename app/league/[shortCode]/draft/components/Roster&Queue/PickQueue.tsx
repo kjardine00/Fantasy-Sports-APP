@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-import { getPlayerIcon } from "@/lib/assets";
-import { getJerseyIcon } from "@/lib/assets";
 import PlayerCard from "../PlayerCard";
 import { usePickQueue } from "../../hooks/usePickQueue";
 import { DraftQueue } from "@/lib/types/database_types";
