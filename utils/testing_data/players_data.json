@@ -1,0 +1,702 @@
+[
+  {
+    "id": "e1606578-2fc1-4629-8947-4533a7364f3b",
+    "name": "Monty",
+    "team": "Vswed Bombers",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "5abfc3f5-c63d-4e54-a89a-558d66652010"
+  },
+  {
+    "id": "ee56b466-97a4-42d7-a618-32c790e191e6",
+    "name": "Yoshi",
+    "team": "Lightorious Swingers",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "fe58bf16-07b6-470b-b3cf-39f6d8ad448c"
+  },
+  {
+    "id": "7717ebc6-1303-490e-94ab-83756c23ce3b",
+    "name": "Magikoopa(G)",
+    "team": "Lightorious Swingers",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "fe58bf16-07b6-470b-b3cf-39f6d8ad448c"
+  },
+  {
+    "id": "dd4f32db-7b39-479a-a9aa-19874c4964c5",
+    "name": "Waluigi",
+    "team": "Lightorious Swingers",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "fe58bf16-07b6-470b-b3cf-39f6d8ad448c"
+  },
+  {
+    "id": "d3e4ecf0-7d24-4edc-9c97-a188229a7acd",
+    "name": "Wario",
+    "team": "Lightorious Swingers",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "fe58bf16-07b6-470b-b3cf-39f6d8ad448c"
+  },
+  {
+    "id": "0905d0c8-6ff7-4803-a4ae-16099dbeb81b",
+    "name": "Diddy",
+    "team": "Lightorious Swingers",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "fe58bf16-07b6-470b-b3cf-39f6d8ad448c"
+  },
+  {
+    "id": "56bb2200-ad94-4feb-b3e5-46fbdd54c5d1",
+    "name": "Monty\r\n",
+    "team": "Wishlist Curiousity BC",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "1c03406b-1941-4e47-9b02-396d42164499"
+  },
+  {
+    "id": "d9416529-77a8-4c16-b7e4-c8daf61c6e2a",
+    "name": "Bowser",
+    "team": "Moarf23 Lobsters",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "29a9f98b-291e-4633-a9ad-686d22bb6ae5"
+  },
+  {
+    "id": "47af4129-20d4-480c-93ce-74f8eedf1e73",
+    "name": "Magikoopa(R)",
+    "team": "Moarf23 Lobsters",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "29a9f98b-291e-4633-a9ad-686d22bb6ae5"
+  },
+  {
+    "id": "d8f8cfa2-2123-49b8-99d1-99c125bfb538",
+    "name": "Luigi",
+    "team": "Moarf23 Lobsters",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "29a9f98b-291e-4633-a9ad-686d22bb6ae5"
+  },
+  {
+    "id": "281b0d67-dcc0-4195-abe7-b2aefde3f509",
+    "name": "Bowser Jr.",
+    "team": "Moarf23 Lobsters",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "29a9f98b-291e-4633-a9ad-686d22bb6ae5"
+  },
+  {
+    "id": "74914cdf-727d-48d4-a570-a46a58a04c6c",
+    "name": "Diddy",
+    "team": "Moarf23 Lobsters",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "29a9f98b-291e-4633-a9ad-686d22bb6ae5"
+  },
+  {
+    "id": "4d8847c9-71ac-4995-aee9-a2af61e78b63",
+    "name": "Peach",
+    "team": "Moarf23 Lobsters",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "29a9f98b-291e-4633-a9ad-686d22bb6ae5"
+  },
+  {
+    "id": "087ae226-ae77-4354-b744-5a95a70d1185",
+    "name": "Dry Bones(R)",
+    "team": "Moarf23 Lobsters",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "29a9f98b-291e-4633-a9ad-686d22bb6ae5"
+  },
+  {
+    "id": "b1113326-f667-4077-840e-d561e2d634d5",
+    "name": "Dixie",
+    "team": "Moarf23 Lobsters",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "29a9f98b-291e-4633-a9ad-686d22bb6ae5"
+  },
+  {
+    "id": "6dd62d96-cec4-42ce-9e97-3f1c2f09b2bd",
+    "name": "Diddy",
+    "team": "Moarf23 Lobsters",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "29a9f98b-291e-4633-a9ad-686d22bb6ae5"
+  },
+  {
+    "id": "4c48ebcb-1686-496a-9b71-df5410e96e50",
+    "name": "Baby Luigi",
+    "team": "DGR Dingers",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "0a2f4148-c85d-4b81-86d1-07950de1ce1f"
+  },
+  {
+    "id": "cd082b7e-7fa2-4d27-9089-a74b7dea79f4",
+    "name": "Magikoopa(Y)",
+    "team": "Moarf23 Lobsters",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "29a9f98b-291e-4633-a9ad-686d22bb6ae5"
+  },
+  {
+    "id": "a971d1bc-298a-4df3-b32e-6a05ab504210",
+    "name": "Monty",
+    "team": "Andy's Fandys",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "e69658bc-d195-4d81-939b-7eb3de5f9c1a"
+  },
+  {
+    "id": "4dd87e36-3db1-445f-a2e2-f5048ef923f7",
+    "name": "Dry Bones(B)",
+    "team": "Lightorious Swingers",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "fe58bf16-07b6-470b-b3cf-39f6d8ad448c"
+  },
+  {
+    "id": "adf5df1d-4b9b-40a5-b735-c28f866815d2",
+    "name": "Koopa(R)",
+    "team": "Andy's Fandys",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "e69658bc-d195-4d81-939b-7eb3de5f9c1a"
+  },
+  {
+    "id": "42448919-19e2-4aee-a922-990b52f19c1b",
+    "name": "Waluigi",
+    "team": "Andy's Fandys",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "e69658bc-d195-4d81-939b-7eb3de5f9c1a"
+  },
+  {
+    "id": "89503631-c62f-4880-b9c1-12f7bea0916a",
+    "name": "Toadsworth",
+    "team": "Andy's Fandys",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "e69658bc-d195-4d81-939b-7eb3de5f9c1a"
+  },
+  {
+    "id": "527da4dd-e7f5-4297-89fe-2441e8250854",
+    "name": "Toadette",
+    "team": "Andy's Fandys",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "e69658bc-d195-4d81-939b-7eb3de5f9c1a"
+  },
+  {
+    "id": "f7740526-b0be-4cd1-b91a-e09ce26d125c",
+    "name": "Petey",
+    "team": "Andy's Fandys",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "e69658bc-d195-4d81-939b-7eb3de5f9c1a"
+  },
+  {
+    "id": "23e366a4-fd4f-4ab6-942d-85824936df7f",
+    "name": "Magikoopa(B)",
+    "team": "Phillie Cheesesteaks",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "039efa95-cf20-4aab-9952-f0e2e3526fad"
+  },
+  {
+    "id": "e3d9d87e-ed25-4147-98fc-9f2e13a387b0",
+    "name": "Wario",
+    "team": "Phillie Cheesesteaks",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "039efa95-cf20-4aab-9952-f0e2e3526fad"
+  },
+  {
+    "id": "d41deeaf-bd84-4fa8-ae89-efd500041eb3",
+    "name": "Luigi",
+    "team": "Phillie Cheesesteaks",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "039efa95-cf20-4aab-9952-f0e2e3526fad"
+  },
+  {
+    "id": "23f98df7-63d7-4c45-b79a-00f26ce1786b",
+    "name": "Toad(R)",
+    "team": "Phillie Cheesesteaks",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "039efa95-cf20-4aab-9952-f0e2e3526fad"
+  },
+  {
+    "id": "215ade7a-2c56-4609-9f39-e15091ccd609",
+    "name": "Paratroopa(G)",
+    "team": "Andy's Fandys",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "e69658bc-d195-4d81-939b-7eb3de5f9c1a"
+  },
+  {
+    "id": "513cb1ba-4e89-4d0b-83d1-1105ebb7a151",
+    "name": "Toadette",
+    "team": "Phillie Cheesesteaks",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "039efa95-cf20-4aab-9952-f0e2e3526fad"
+  },
+  {
+    "id": "147557d0-89f9-4891-a416-0ee60287593c",
+    "name": "Shy Guy(R)",
+    "team": "Andy's Fandys",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "e69658bc-d195-4d81-939b-7eb3de5f9c1a"
+  },
+  {
+    "id": "f1c1f964-9408-4628-8fa6-b02a5241625c",
+    "name": "Shy Guy(Y)",
+    "team": "Phillie Cheesesteaks",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "039efa95-cf20-4aab-9952-f0e2e3526fad"
+  },
+  {
+    "id": "43b9a74c-d1ae-44d7-b77f-4663fff86446",
+    "name": "King Boo",
+    "team": "Virgins",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "1a7a543f-7509-4dc8-9be0-4423fc8f6eb6"
+  },
+  {
+    "id": "a9a3dfef-3d71-47f8-a0cb-1774e0876413",
+    "name": "Magikoopa(R)",
+    "team": "Virgins",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "1a7a543f-7509-4dc8-9be0-4423fc8f6eb6"
+  },
+  {
+    "id": "6c1a127d-9cb1-47c6-b4fd-d909673e7819",
+    "name": "Boo",
+    "team": "Virgins",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "1a7a543f-7509-4dc8-9be0-4423fc8f6eb6"
+  },
+  {
+    "id": "38bf7f6a-1d7b-429f-b49c-8285478179a6",
+    "name": "Boo",
+    "team": "Virgins",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "1a7a543f-7509-4dc8-9be0-4423fc8f6eb6"
+  },
+  {
+    "id": "1d1bc79d-77ae-4c50-adbd-311acd128c39",
+    "name": "Wario",
+    "team": "Virgins",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "1a7a543f-7509-4dc8-9be0-4423fc8f6eb6"
+  },
+  {
+    "id": "4ce0d8b3-6669-46d6-8080-3bb9e5cc6ae3",
+    "name": "Shy Guy(R)",
+    "team": "Virgins",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "1a7a543f-7509-4dc8-9be0-4423fc8f6eb6"
+  },
+  {
+    "id": "72b5ad62-3956-4d00-b91f-c522ad55706d",
+    "name": "Shy Guy(G)",
+    "team": "Virgins",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "1a7a543f-7509-4dc8-9be0-4423fc8f6eb6"
+  },
+  {
+    "id": "cccf4aaf-64de-4fa1-8b15-0aae18721e99",
+    "name": "Shy Guy(B)",
+    "team": "Virgins",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "1a7a543f-7509-4dc8-9be0-4423fc8f6eb6"
+  },
+  {
+    "id": "29d83094-f9c3-4523-b9c2-0c6ee7cd3dc6",
+    "name": "Toad(B)",
+    "team": "Virgins",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "1a7a543f-7509-4dc8-9be0-4423fc8f6eb6"
+  },
+  {
+    "id": "29dea475-bf80-474f-bad2-b77ddabf6452",
+    "name": "Noki(B)",
+    "team": "Virgins",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "1a7a543f-7509-4dc8-9be0-4423fc8f6eb6"
+  },
+  {
+    "id": "3c90b9f2-bff0-4e6b-b1d4-eb3165a09e6e",
+    "name": "Bowser",
+    "team": "Vswed Bombers",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "5abfc3f5-c63d-4e54-a89a-558d66652010"
+  },
+  {
+    "id": "476e7347-0f14-4412-86de-1235060a96cf",
+    "name": "Bro(F)",
+    "team": "Oogy Gooners",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "e8dae15e-f3f6-4160-ace6-91c1ef5074af"
+  },
+  {
+    "id": "dead2671-ddd0-4e11-a94c-aba49bc0b140",
+    "name": "Magikoopa(G)",
+    "team": "Oogy Gooners",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "e8dae15e-f3f6-4160-ace6-91c1ef5074af"
+  },
+  {
+    "id": "22d63830-0005-451e-8b57-75871fe42691",
+    "name": "DK",
+    "team": "Andy's Fandys",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "e69658bc-d195-4d81-939b-7eb3de5f9c1a"
+  },
+  {
+    "id": "e30cf958-ac8f-4db4-a833-d29003ec1c11",
+    "name": "Mario",
+    "team": "Oogy Gooners",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "e8dae15e-f3f6-4160-ace6-91c1ef5074af"
+  },
+  {
+    "id": "237a1252-79f9-4a23-a108-8db275644464",
+    "name": "Waluigi",
+    "team": "Oogy Gooners",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "e8dae15e-f3f6-4160-ace6-91c1ef5074af"
+  },
+  {
+    "id": "365f0bdd-557b-4c9e-bc9b-4cb24742de75",
+    "name": "Peach",
+    "team": "Oogy Gooners",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "e8dae15e-f3f6-4160-ace6-91c1ef5074af"
+  },
+  {
+    "id": "87713844-03b8-4229-9ca1-db04be96cec4",
+    "name": "Noki(R)",
+    "team": "Oogy Gooners",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "e8dae15e-f3f6-4160-ace6-91c1ef5074af"
+  },
+  {
+    "id": "298fe0bc-9f4f-4c28-9cc1-d0720b0c15f0",
+    "name": "Birdo",
+    "team": "Wet Blankets",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "d9e6343b-0f72-4e31-adf3-764f32555719"
+  },
+  {
+    "id": "00371911-a3fe-4f37-81d5-67cac82864d3",
+    "name": "Magikoopa(G)",
+    "team": "Wet Blankets",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "d9e6343b-0f72-4e31-adf3-764f32555719"
+  },
+  {
+    "id": "b15a7a19-5a0e-4038-b0e5-9979ceda1e09",
+    "name": "Toadsworth",
+    "team": "Wet Blankets",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "d9e6343b-0f72-4e31-adf3-764f32555719"
+  },
+  {
+    "id": "7b9f6775-e877-4c14-8397-e7a03c818a86",
+    "name": "Luigi",
+    "team": "Wet Blankets",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "d9e6343b-0f72-4e31-adf3-764f32555719"
+  },
+  {
+    "id": "f9425033-269e-4ccf-84cf-e5018c8c746e",
+    "name": "Noki(G)",
+    "team": "Wet Blankets",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "d9e6343b-0f72-4e31-adf3-764f32555719"
+  },
+  {
+    "id": "6f4c516f-4619-4ac7-823e-d6cea8cd6e95",
+    "name": "Pianta(R)",
+    "team": "Wet Blankets",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "d9e6343b-0f72-4e31-adf3-764f32555719"
+  },
+  {
+    "id": "b9804709-6496-419b-83c8-13fa7fba6f96",
+    "name": "Pianta(R)",
+    "team": "Wet Blankets",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "d9e6343b-0f72-4e31-adf3-764f32555719"
+  },
+  {
+    "id": "fc2ec421-9662-4a90-a0df-20372a40b98d",
+    "name": "Peach",
+    "team": "Wet Blankets",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "d9e6343b-0f72-4e31-adf3-764f32555719"
+  },
+  {
+    "id": "91a5c3b8-9def-46f3-a6d0-b40469af44ee",
+    "name": "Toadette",
+    "team": "Wet Blankets",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "d9e6343b-0f72-4e31-adf3-764f32555719"
+  },
+  {
+    "id": "62f4f2c1-a198-43b1-b6cf-11c65bf2f86f",
+    "name": "Noki(R)",
+    "team": "Wet Blankets",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "d9e6343b-0f72-4e31-adf3-764f32555719"
+  },
+  {
+    "id": "c914fccd-c7e2-4dd9-8973-4887f2d7f2ce",
+    "name": "Toad(G)",
+    "team": "Andy's Fandys",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "e69658bc-d195-4d81-939b-7eb3de5f9c1a"
+  },
+  {
+    "id": "7750b67e-d945-4103-8fe0-54ed632983c3",
+    "name": "Petey",
+    "team": "DGR Dingers",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "0a2f4148-c85d-4b81-86d1-07950de1ce1f"
+  },
+  {
+    "id": "1920c54f-b3d7-4692-85c2-9618e90f6bb4",
+    "name": "Birdo",
+    "team": "FIR Golf Rules",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "76736766-b56f-4532-878c-8851ddd1fd0c"
+  },
+  {
+    "id": "1f1cf8b3-560e-44a1-a288-7c60b6d19814",
+    "name": "Birdo",
+    "team": "FIR Golf Rules",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "76736766-b56f-4532-878c-8851ddd1fd0c"
+  },
+  {
+    "id": "ce468adf-ea5a-4d13-85fd-9b2e7cfee80b",
+    "name": "King Boo",
+    "team": "FIR Golf Rules",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "76736766-b56f-4532-878c-8851ddd1fd0c"
+  },
+  {
+    "id": "133ac391-b847-4165-897a-2b707a80e5f4",
+    "name": "Waluigi",
+    "team": "FIR Golf Rules",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "76736766-b56f-4532-878c-8851ddd1fd0c"
+  },
+  {
+    "id": "60adf7e2-8e42-4394-8e33-fe2ce9e836d9",
+    "name": "Pianta(B)",
+    "team": "FIR Golf Rules",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "76736766-b56f-4532-878c-8851ddd1fd0c"
+  },
+  {
+    "id": "846bb3d8-8994-4dd2-bbe2-d27c798b02d7",
+    "name": "Pianta(Y)",
+    "team": "FIR Golf Rules",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "76736766-b56f-4532-878c-8851ddd1fd0c"
+  },
+  {
+    "id": "02948c88-ecee-44e5-86a5-3cc0e30a8180",
+    "name": "Shy Guy(Bk)",
+    "team": "FIR Golf Rules",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "76736766-b56f-4532-878c-8851ddd1fd0c"
+  },
+  {
+    "id": "57f72202-4627-4a0a-b7e5-1b76dce7f510",
+    "name": "Noki(B)",
+    "team": "FIR Golf Rules",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "76736766-b56f-4532-878c-8851ddd1fd0c"
+  },
+  {
+    "id": "b1645067-f28e-4c7e-9d76-f2ea2a3576f6",
+    "name": "Baby Mario",
+    "team": "FIR Golf Rules",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "76736766-b56f-4532-878c-8851ddd1fd0c"
+  },
+  {
+    "id": "5b13b642-7dd1-4ba1-ae71-b75e14390b57",
+    "name": "Bro(H)",
+    "team": "DGR Dingers",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "0a2f4148-c85d-4b81-86d1-07950de1ce1f"
+  },
+  {
+    "id": "1ca092d7-d255-4123-bf87-e467c0c59b0a",
+    "name": "Bro(F)",
+    "team": "Lightorious Swingers",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "fe58bf16-07b6-470b-b3cf-39f6d8ad448c"
+  },
+  {
+    "id": "6c418523-d35c-4407-af49-f1a7262a010e",
+    "name": "Dry Bones(Gy)",
+    "team": "Lightorious Swingers",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "fe58bf16-07b6-470b-b3cf-39f6d8ad448c"
+  },
+  {
+    "id": "85f841ef-e9bf-4cfd-8bcb-beff1ca6780f",
+    "name": "Toad(P)",
+    "team": "Lightorious Swingers",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "fe58bf16-07b6-470b-b3cf-39f6d8ad448c"
+  },
+  {
+    "id": "5ca941cc-df9d-4e82-9239-5ed96f0c3841",
+    "name": "Bro(B)",
+    "team": "Phillie Cheesesteaks",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "039efa95-cf20-4aab-9952-f0e2e3526fad"
+  },
+  {
+    "id": "1a522cdb-64bf-4e20-9ec7-e95fa04151ae",
+    "name": "King Boo",
+    "team": "Phillie Cheesesteaks",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "039efa95-cf20-4aab-9952-f0e2e3526fad"
+  },
+  {
+    "id": "46f04d77-dc63-417c-94e8-d832818b6ca2",
+    "name": "Yoshi",
+    "team": "Phillie Cheesesteaks",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "039efa95-cf20-4aab-9952-f0e2e3526fad"
+  },
+  {
+    "id": "df01a6c3-50c1-4b38-9d37-a5d2ed3bf8a1",
+    "name": "Boo",
+    "team": "Phillie Cheesesteaks",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "039efa95-cf20-4aab-9952-f0e2e3526fad"
+  },
+  {
+    "id": "ac26d786-80df-44e2-b957-cdf971cdff8f",
+    "name": "DK",
+    "team": "CJYA Monkeys",
+    "updated_at": "2025-11-05 05:22:35.083739",
+    "team_id": "4cffac55-fd2c-4d10-8e1c-220d08595d70"
+  },
+  {
+    "id": "4f436f86-805a-44f3-a309-75963564cabd",
+    "name": "Daisy",
+    "team": "CJYA Monkeys",
+    "updated_at": "2025-11-05 05:22:43.80044",
+    "team_id": "4cffac55-fd2c-4d10-8e1c-220d08595d70"
+  },
+  {
+    "id": "79b7e393-13c8-4001-bcce-1b532bd85320",
+    "name": "Toadsworth",
+    "team": "CJYA Monkeys",
+    "updated_at": "2025-11-05 05:22:46.908291",
+    "team_id": "4cffac55-fd2c-4d10-8e1c-220d08595d70"
+  },
+  {
+    "id": "8ce62993-2a79-4550-b9c6-f275d8f2a055",
+    "name": "Mario",
+    "team": "CJYA Monkeys",
+    "updated_at": "2025-11-05 05:22:49.959544",
+    "team_id": "4cffac55-fd2c-4d10-8e1c-220d08595d70"
+  },
+  {
+    "id": "308c5bed-be26-4dc1-9a8f-36daa32293ad",
+    "name": "Bro(H)",
+    "team": "Vswed Bombers",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "5abfc3f5-c63d-4e54-a89a-558d66652010"
+  },
+  {
+    "id": "3bc18a8d-c6fb-47fc-b311-2060d1c45a61",
+    "name": "Magikoopa(B)",
+    "team": "Vswed Bombers",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "5abfc3f5-c63d-4e54-a89a-558d66652010"
+  },
+  {
+    "id": "b3edfc3d-7227-41b9-a093-7fd7f3b6f370",
+    "name": "Toadsworth",
+    "team": "Vswed Bombers",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "5abfc3f5-c63d-4e54-a89a-558d66652010"
+  },
+  {
+    "id": "44bb48af-d487-4397-aad7-0d66155e80fe",
+    "name": "Pianta(Y)",
+    "team": "Vswed Bombers",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "5abfc3f5-c63d-4e54-a89a-558d66652010"
+  },
+  {
+    "id": "1bd42b83-441c-42e6-bc4f-18e7a818ad9f",
+    "name": "Paratroopa(G)",
+    "team": "Vswed Bombers",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "5abfc3f5-c63d-4e54-a89a-558d66652010"
+  },
+  {
+    "id": "a9e95159-464f-498c-bcc6-7edaa2ab3151",
+    "name": "Koopa(G)",
+    "team": "Vswed Bombers",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "5abfc3f5-c63d-4e54-a89a-558d66652010"
+  },
+  {
+    "id": "2c988b55-5173-4472-bcdc-d7dd422148bb",
+    "name": "Bowser Jr.",
+    "team": "Vswed Bombers",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "5abfc3f5-c63d-4e54-a89a-558d66652010"
+  },
+  {
+    "id": "8496d9a1-0063-467f-8d0d-2f20cefb8164",
+    "name": "Shy Guy(G)",
+    "team": "Vswed Bombers",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "5abfc3f5-c63d-4e54-a89a-558d66652010"
+  },
+  {
+    "id": "d4c1c996-4917-43e9-b056-2fa96500add7",
+    "name": "Paragoomba",
+    "team": "CJYA Monkeys",
+    "updated_at": "2025-11-05 05:22:27.937809",
+    "team_id": "4cffac55-fd2c-4d10-8e1c-220d08595d70"
+  },
+  {
+    "id": "74cf2f88-5129-4fb8-8916-3e8f708567d5",
+    "name": "Dixie",
+    "team": "CJYA Monkeys",
+    "updated_at": "2025-11-05 05:22:31.97716",
+    "team_id": "4cffac55-fd2c-4d10-8e1c-220d08595d70"
+  },
+  {
+    "id": "0f555a2d-b119-46c5-abcc-a8d9457ffbff",
+    "name": "Goomba",
+    "team": "CJYA Monkeys",
+    "updated_at": "2025-11-05 05:22:53.072888",
+    "team_id": "4cffac55-fd2c-4d10-8e1c-220d08595d70"
+  },
+  {
+    "id": "d8dc0fd5-e25b-47a6-80b6-0247cccaff69",
+    "name": "Bowser Jr.",
+    "team": "CJYA Monkeys",
+    "updated_at": "2025-11-05 05:22:56.039654",
+    "team_id": "4cffac55-fd2c-4d10-8e1c-220d08595d70"
+  },
+  {
+    "id": "153ff346-e9af-4f18-af8b-b3d58077a29b",
+    "name": "Paratroopa(R)",
+    "team": "CJYA Monkeys",
+    "updated_at": "2025-11-05 05:23:00.12836",
+    "team_id": "4cffac55-fd2c-4d10-8e1c-220d08595d70"
+  },
+  {
+    "id": "7169f0ca-503d-4234-8a5f-f430579b8685",
+    "name": "Dry Bones(G)",
+    "team": "Oogy Gooners",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "e8dae15e-f3f6-4160-ace6-91c1ef5074af"
+  },
+  {
+    "id": "340192f3-761c-4b26-ab1f-07b4e8c9b47b",
+    "name": "Noki(G)",
+    "team": "Oogy Gooners",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "e8dae15e-f3f6-4160-ace6-91c1ef5074af"
+  },
+  {
+    "id": "071e49a5-90d9-4758-8107-3957f11b5f5e",
+    "name": "Noki(G)",
+    "team": "Oogy Gooners",
+    "updated_at": "2025-11-05 05:21:57.222365",
+    "team_id": "e8dae15e-f3f6-4160-ace6-91c1ef5074af"
+  }
+]
