@@ -3,9 +3,22 @@ import { TABLES } from "@/lib/database/tables";
 import { Result, success, failure } from "@/lib/types";
 import { Draft } from "@/lib/types/database_types";
 
-// ==========================================
-// DRAFT QUERIES
-// ==========================================
+// Emojis for logging : ❌ ✅ ⚠️ 💾
+// ============== FIND ==============
+
+export async function find(draftId: string) : Promise<Result<Draft>> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from(TABLES.DRAFTS)
+    .select("*")
+    .eq("id", draftId)
+    .single();
+
+  if (error || !data) {
+    return failure(error?.message || "❌ Failed to fetch draft");
+  }
+  return success(data);
+}
 
 export async function create(draft: Draft) {
   const supabase = await createClient();

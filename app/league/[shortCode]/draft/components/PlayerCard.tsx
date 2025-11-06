@@ -1,17 +1,34 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { getPlayerIcon } from "@/lib/assets";
+import { DraftQueue, Player } from "@/lib/types/database_types";
+import { fetchPlayerData } from "@/lib/server_actions/draft_actions";
+import { getCharacterData } from "@/lib/character-data";
 
 interface PlayerCardProps {
-  name: string;
-  team: string;
+  queueItem: DraftQueue;
 }
 
-const PlayerCard = ({ name, team }: PlayerCardProps) => {
-  const playerIcon = getPlayerIcon(name);
+const PlayerCard = ({ queueItem }: PlayerCardProps) => {
+  const [player, setPlayer] = useState<Player | null>(null);
+  const playerId = queueItem.player_id;
 
-  if (!playerIcon) {
-    return null;
+  useEffect(() => {
+    if (!playerId) return;
+    fetchPlayer(playerId);
+  }, [playerId]);
+
+  const fetchPlayer = async (playerId: string) => {
+    try {
+      const player = await fetchPlayerData(playerId);
+      setPlayer(player);
+    } catch (error) {
+      console.error("❌ Error fetching player data:", error);
+      setPlayer(null);
+    }
   }
+
+  const characterData = getCharacterData(player?.name || "");
+  if (!characterData) return null;
 
   // Handler functions ready for implementation
   const handleMoveUp = () => {
@@ -34,14 +51,13 @@ const PlayerCard = ({ name, team }: PlayerCardProps) => {
       <div className="flex items-center gap-2 flex-shrink-0">
         <div className="avatar">
           <div className="w-14">
-            <img src={playerIcon} alt={name} />
+            <img src={getPlayerIcon(player?.name || "") || ""} alt={player?.name || ""} />
           </div>
         </div>
       </div>
 
       <div className="flex flex-col items-start flex-1 min-w-0">
-        <div className="text-lg font-bold truncate w-full">{name}</div>
-        <div className="text-md truncate w-full">{team}</div>
+        <div className="text-lg font-bold truncate w-full">{player?.name || ""}</div>
       </div>
 
       <div className="actions flex flex-row items-center gap-2 flex-shrink-0">
@@ -58,7 +74,11 @@ const PlayerCard = ({ name, team }: PlayerCardProps) => {
             stroke="currentColor"
             className="w-5 h-5"
           >
-            <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M4.5 15.75l7.5-7.5 7.5 7.5"
+            />
           </svg>
         </button>
         <button
@@ -74,7 +94,11 @@ const PlayerCard = ({ name, team }: PlayerCardProps) => {
             stroke="currentColor"
             className="w-5 h-5"
           >
-            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M6 18L18 6M6 6l12 12"
+            />
           </svg>
         </button>
         <button
@@ -90,7 +114,11 @@ const PlayerCard = ({ name, team }: PlayerCardProps) => {
             stroke="currentColor"
             className="w-5 h-5"
           >
-            <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M19.5 8.25l-7.5 7.5-7.5-7.5"
+            />
           </svg>
         </button>
       </div>

@@ -1,10 +1,23 @@
 import { createClient } from "@/lib/database/server";
 import { TABLES } from "@/lib/database/tables";
+import { Result, success, failure } from "@/lib/types";
 import { DraftQueue } from "@/lib/types/database_types";
 
-// ==========================================
-// DRAFT QUEUE QUERIES
-// ==========================================
+// Emojis for logging : ❌ ✅ ⚠️ 💾
+// ============== FIND ==============
+export async function find(draftId: string): Promise<Result<DraftQueue[]>> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from(TABLES.DRAFT_QUEUES)
+    .select("*")
+    .eq("draft_id", draftId)
+    .order("rank", { ascending: true });
+
+  if (error || !data) {
+    return failure(error?.message || "❌ Failed to fetch draft queues");
+  }
+  return success(data);
+}
 
 export async function add(queue: DraftQueue) {
   const supabase = await createClient();
@@ -61,7 +74,11 @@ export async function removeById(queueId: string) {
   return { error };
 }
 
-export async function removeByPlayer(draftId: string, userId: string, playerId: string) {
+export async function removeByPlayer(
+  draftId: string,
+  userId: string,
+  playerId: string
+) {
   const supabase = await createClient();
   const { error } = await supabase
     .from(TABLES.DRAFT_QUEUES)
@@ -100,17 +117,17 @@ export async function clearByUser(draftId: string, userId: string) {
 }
 
 export async function removePlayerFromAll(draftId: string, playerId: string) {
-    const supabase = await createClient();
+  const supabase = await createClient();
 
-    const { error } = await supabase
-      .from(TABLES.DRAFT_QUEUES)
-      .delete()
-      .eq('draft_id', draftId)
-      .eq('player_id', playerId);
+  const { error } = await supabase
+    .from(TABLES.DRAFT_QUEUES)
+    .delete()
+    .eq("draft_id", draftId)
+    .eq("player_id", playerId);
 
-      if (error) {
-        return { error: error.message };
-      }
-
-      return { success: true, error: null } 
+  if (error) {
+    return { error: error.message };
   }
+
+  return { success: true, error: null };
+}

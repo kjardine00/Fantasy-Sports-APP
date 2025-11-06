@@ -5,8 +5,10 @@ import { createClient } from "@/lib/database/client";
 import { useDraft } from "../context/DraftContext";
 import { Player, RealTeams } from "@/lib/types/database_types";
 import { fetchDraftablePlayersAction } from "@/lib/server_actions/draft_actions";
+import { useDraftChannel } from "./useDraftChannel";
 
 export function useDraftablePlayers() {
+    const { draftData, draftPicks, draftQueues } = useDraftChannel();
     const { draft, isLoading: draftIsLoading, error: draftError, currentUserId } = useDraft();
     const [realTeams, setRealTeams] = useState<RealTeams[]>([]);
     const [realTeamsError, setRealTeamsError] = useState<string | null>(null);

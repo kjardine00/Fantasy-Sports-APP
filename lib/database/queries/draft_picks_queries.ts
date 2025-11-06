@@ -3,9 +3,22 @@ import { TABLES } from "@/lib/database/tables";
 import { Result, success, failure } from "@/lib/types";
 import { DraftPick } from "@/lib/types/database_types";
 
-// ==========================================
-// DRAFT PICKS QUERIES
-// ==========================================
+// Emojis for logging : ❌ ✅ ⚠️ 💾
+// ============== FIND ==============
+
+export async function find(draftId: string) : Promise<Result<DraftPick[]>> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from(TABLES.DRAFT_PICKS)
+    .select("*")
+    .eq("draft_id", draftId)
+    .order("pick_number", { ascending: true });
+
+  if (error || !data) {
+    return failure(error?.message || "❌ Failed to fetch draft picks");
+  }
+  return success(data);
+}
 
 export async function create(pick: DraftPick) {
   const supabase = await createClient();
@@ -16,20 +29,6 @@ export async function create(pick: DraftPick) {
     .single();
 
   return { data, error };
-}
-
-export async function findManyById(draftId: string) : Promise<Result<DraftPick[]>> {
-  const supabase = await createClient();
-  const { data, error } = await supabase
-    .from(TABLES.DRAFT_PICKS)
-    .select("*")
-    .eq("draft_id", draftId)
-    .order("pick_number", { ascending: true });
-
-  if (error) {
-    return failure(error.message);
-  }
-  return success(data);
 }
 
 // TODO: Consider consolidating with findMany using optional include parameter

@@ -3,6 +3,7 @@ import { Draft, DraftPick, DraftQueue } from "@/lib/types/database_types";
 import { Player } from "@/lib/types/database_types";
 import { Result, success, failure } from "@/lib/types";
 import {
+  find as findDraft,
   create,
   findById,
   findByLeagueId,
@@ -12,13 +13,14 @@ import {
   end as endDraftQuery,
 } from "@/lib/database/queries/draft_queries";
 import {
+  find as findDraftPicks,
   create as createDraftPick,
   findManyWithPlayers as getDraftPicksWithPlayers,
   draftedExists as isPlayerDrafted,
   findDraftedPlayerIds as getDraftedPlayerIds,
-  findManyById as findDraftPicksById,
 } from "@/lib/database/queries/draft_picks_queries";
 import {
+  find as findDraftQueues,
   add as addToQueue,
   findByUser as getUserQueue,
   findByUserWithPlayers as getUserQueueWithPlayers,
@@ -26,11 +28,46 @@ import {
   updateRank as updateQueueRank,
   removePlayerFromAll as removePlayerFromAllQueues,
 } from "@/lib/database/queries/draft_queue_queries";
-import { countTeams, findPickOrderByUser } from "@/lib/database/queries/leagues_members_queries";
+import {
+  countTeams,
+  findPickOrderByUser,
+} from "@/lib/database/queries/leagues_members_queries";
 import { findAll as findAllPlayers } from "@/lib/database/queries/players_queries";
 import { findAll as findAllRealTeams } from "@/lib/database/queries/real_teams_queries";
 
+// Emojis for logging : ❌ ✅ ⚠️ 💾
+
 export class DraftService {
+  // ==========================================
+  // DRAFT REALTIME MANAGEMENT
+  // ==========================================
+  static async getDraftData(draftId: string) {
+    const { data, error } = await findDraft(draftId);
+    if (error) {
+      console.error("❌ Failed to fetch draft data: " + error);
+      return failure(error || "Failed to fetch draft data");
+    }
+    return success(data);
+  }
+
+  static async getDraftPicksData(draftId: string) {
+    const { data, error } = await findDraftPicks(draftId);
+    if (error) {
+      console.error("❌ Failed to fetch draft picks data: " + error);
+      return failure(error || "Failed to fetch draft picks data");
+    }
+    return success(data);
+  }
+
+  static async getDraftQueuesData(draftId: string) {
+    const { data, error } = await findDraftQueues(draftId);
+    if (error) {
+      console.error("❌ Failed to fetch draft queues data: " + error);
+      return failure(error || "Failed to fetch draft queues data");
+    }
+    return success(data);
+  }
+
   // ==========================================
   // DRAFT MANAGEMENT
   // ==========================================
@@ -98,7 +135,11 @@ export class DraftService {
       Date.now() + draft.pick_time_limit_seconds * 1000
     ).toISOString();
 
-    const { data, error } = await startDraftQuery(draftId, firstUserId, deadline);
+    const { data, error } = await startDraftQuery(
+      draftId,
+      firstUserId,
+      deadline
+    );
 
     if (error) {
       return { data: null, error: error.message };
@@ -130,25 +171,25 @@ export class DraftService {
   // ==========================================
   // DRAFT PICK LOGIC
   // ==========================================
-  static async getDraftablePlayers(draftId: string) : Promise<Result<Player[]>> {
+  static async getDraftablePlayers(draftId: string): Promise<Result<Player[]>> {
     const { data: allPlayers, error: playersError } = await findAllPlayers();
-    const { data: draftPicks, error: draftPicksError } = await findDraftPicksById(draftId);
+    const { data: draftPicks, error: draftPicksError } =
+      await findDraftPicks(draftId);
 
-    if ( playersError || !allPlayers) {
+    if (playersError || !allPlayers) {
       return failure(playersError || "Failed to fetch players");
     }
-    
-    if ( draftPicksError || !draftPicks) {
+
+    if (draftPicksError || !draftPicks) {
       return failure(draftPicksError || "Failed to fetch draft picks");
     }
 
     const draftablePlayers = allPlayers.filter((player) => {
-      return !draftPicks.some((pick) => pick.player_id === player.id)
-    })
+      return !draftPicks.some((pick) => pick.player_id === player.id);
+    });
 
     return success(draftablePlayers);
   }
-
 
   static async makePick(draftId: string, userId: string, playerId: string) {
     const { data: draft, error: draftError } = await findById(draftId);
@@ -242,8 +283,8 @@ export class DraftService {
       league_id: leagueId,
       user_id: userId,
       player_id: playerId,
-      rank: rank
-    }
+      rank: rank,
+    };
 
     const { data, error } = await addToQueue(queueItem);
 
@@ -264,7 +305,11 @@ export class DraftService {
     return { data, error: null };
   }
 
-  static async removeFromQueue(draftId: string, userId: string, playerId: string) {
+  static async removeFromQueue(
+    draftId: string,
+    userId: string,
+    playerId: string
+  ) {
     const { error } = await removePlayerFromQueue(draftId, userId, playerId);
 
     if (error) {
@@ -316,7 +361,8 @@ export class DraftService {
     pickNumber: number,
     draftOrderType: "snake" | "auction"
   ) {
-    const { data: members, error: orderError } = await findPickOrderByUser(leagueId);
+    const { data: members, error: orderError } =
+      await findPickOrderByUser(leagueId);
 
     if (!members || members.length === 0) return null;
 
@@ -361,12 +407,18 @@ export class DraftService {
       current_pick: nextPickNumber,
       current_round: nextRound,
       current_user_id: nextUserId,
-      pick_deadline: nextDeadline
+      pick_deadline: nextDeadline,
     });
   }
 
-  private static async removePlayerFromAllQueues(draftId: string, playerId: string) {
-    const { success, error } = await removePlayerFromAllQueues(draftId, playerId);
+  private static async removePlayerFromAllQueues(
+    draftId: string,
+    playerId: string
+  ) {
+    const { success, error } = await removePlayerFromAllQueues(
+      draftId,
+      playerId
+    );
     if (error) {
       return { success: false, error: error };
     }

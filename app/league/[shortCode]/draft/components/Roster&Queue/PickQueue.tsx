@@ -2,32 +2,17 @@ import React, { useState } from "react";
 import PlayerCard from "../PlayerCard";
 import { usePickQueue } from "../../hooks/usePickQueue";
 import { DraftQueue } from "@/lib/types/database_types";
-
-interface PickQueueProps {
-  // picks: Picks[]
-}
+import { useDraftChannel } from "../../hooks/useDraftChannel";
+import { useDraft } from "../../context/DraftContext";
+import { getCharacterData } from "@/lib/character-data";
 
 const PickQueue = () => {
-  const {
-    queue,
-    autoPick,
-    setAutoPick,
-    isLoading,
-    error,
-  } = usePickQueue();
-
-  const [showAll, setShowAll] = useState(false);
-  const visibleQueue = showAll ? queue : queue.slice(0, 3);
-
+  const { isLoading } = useDraft();
+  const { queue, autoPick, setAutoPick } = usePickQueue();
 
   if (isLoading) {
-    return <div>Loading queue...</div>
+    return <div>Loading queue...</div>;
   }
-
-  if (error) {
-    return <div>Error: {error}</div>
-  }
-
 
   return (
     <div>
@@ -52,30 +37,17 @@ const PickQueue = () => {
       ) : (
         <>
           <div>
-            {visibleQueue.map((queueItem) => {
-              // Type assertion: queue items from getUserQueueAction include player data
-              const queueItemWithPlayer = queueItem as DraftQueue & { players?: { name: string; team: string } };
-              const player = queueItemWithPlayer.players;
-              if (!player) return null; // Skip if player data missing
-
-              return (
-                <PlayerCard
-                  key={queueItem.id || queueItem.player_id}
-                  name={player.name}
-                  team={player.team}
-                />
-              );
+            {queue.map((queueItem) => {
+              // Queue items from getUserQueueAction include player data
+              return <PlayerCard key={queueItem.id || queueItem.player_id} queueItem={queueItem} />;
             })}
           </div>
 
-          {queue.length > 3 && !showAll && (
-            <div 
-              className="text-center text-sm font-semibold cursor-pointer hover:text-primary transition-colors py-2"
-              onClick={() => setShowAll(true)}
-            >
+          {/* {queue.length > 3 && (
+            <div className="text-center text-sm font-semibold cursor-pointer hover:text-primary transition-colors py-2">
               Show More...
             </div>
-          )}
+          )} */}
         </>
       )}
     </div>

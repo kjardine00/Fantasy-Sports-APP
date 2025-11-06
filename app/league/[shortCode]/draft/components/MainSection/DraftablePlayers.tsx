@@ -4,20 +4,21 @@ import React from "react";
 import PlayerTable from "./PlayerTable";
 import { useDraftablePlayers } from "../../hooks/useDraftablePlayers";
 import { useDraft } from "../../context/DraftContext";
-import { usePickQueue } from "../../hooks/usePickQueue";
 import { getCharacterData } from "@/lib/character-data";
 import { makeDraftPickAction, addToQueueAction } from "@/lib/server_actions/draft_actions";
 
 const DraftablePlayers = () => {
   const { draftablePlayers, realTeams, draftablePlayersError, refreshDraftablePlayers } = useDraftablePlayers();
   const { draft, currentUserId, leagueId } = useDraft();
-  const { queue, refreshQueue } = usePickQueue();
 
   if (draftablePlayersError) {
     return <div>Error: {draftablePlayersError}</div>;
   }
 
   const handleButtonSubmit = async (playerId: string, onTheClock: boolean) => {
+
+
+    
     if (!draft?.id || !leagueId) return;
 
     try {
@@ -73,7 +74,6 @@ const DraftablePlayers = () => {
   if (playerRows.length === 0) {
     return <div>No player rows found</div>;
   }
-
 
   return (
     <div>
