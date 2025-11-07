@@ -20,7 +20,7 @@ export async function find(draftId: string) : Promise<Result<DraftPick[]>> {
   return success(data);
 }
 
-export async function create(pick: DraftPick) {
+export async function create(pick: DraftPick) : Promise<Result<DraftPick>> {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from(TABLES.DRAFT_PICKS)
@@ -28,7 +28,10 @@ export async function create(pick: DraftPick) {
     .select()
     .single();
 
-  return { data, error };
+  if (error || !data) {
+    return failure(error?.message || "❌ Failed to create draft pick");
+  }
+  return success(data);
 }
 
 // TODO: Consider consolidating with findMany using optional include parameter

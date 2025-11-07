@@ -191,14 +191,16 @@ export class DraftService {
     return success(draftablePlayers);
   }
 
-  static async makePick(draftId: string, userId: string, playerId: string) {
+  static async makePick(draftId: string, userId: string, playerId: string) : Promise<Result<DraftPick>> {
     const { data: draft, error: draftError } = await findById(draftId);
     if (draftError || !draft) {
-      return { data: null, error: "Draft not found" };
+      console.error("❌ Draft not found");
+      return failure("Draft not found");
     }
 
     if (draft.current_user_id !== userId) {
-      return { data: null, error: "It's not your turn to pick" };
+      console.error("❌ It's not your turn to pick");
+      return failure("It's not your turn to pick");
     }
 
     const { exists, error: checkError } = await isPlayerDrafted(
@@ -206,10 +208,12 @@ export class DraftService {
       playerId
     );
     if (checkError) {
-      return { data: null, error: checkError.message };
+      console.error("❌ Error checking if player is drafted:", checkError);
+      return failure(checkError.message);
     }
     if (exists) {
-      return { data: null, error: "This player has already been drafted" };
+      console.error("❌ Player already drafted");
+      return failure("Player already drafted");
     }
 
     const { data: teamCount, error: countError } = await countTeams(
@@ -217,7 +221,8 @@ export class DraftService {
     );
 
     if (countError || !teamCount) {
-      return { data: null, error: "Could not determine team count" };
+      console.error("❌ Could not determine team count");
+      return failure("Could not determine team count");
     }
 
     const pickOrder = ((draft.current_round - 1) % teamCount) + 1;
@@ -232,15 +237,21 @@ export class DraftService {
       pick_order: pickOrder,
     };
 
-    const { data: pickData, error: pickError } = await createDraftPick(pick);
-    if (pickError) {
-      return { data: null, error: pickError.message };
+    const result = await createDraftPick(pick);
+    if (result.error) {
+      console.error("❌ Error creating draft pick:", result.error);
+      return failure(result.error);
+    }
+
+    if (!result.data) {
+      console.error("❌ Draft pick creation returned no data");
+      return failure("Failed to create draft pick");
     }
 
     await this.removePlayerFromAllQueues(draftId, playerId);
     await this.advancePick(draft, teamCount);
 
-    return { data: pickData, error: null };
+    return success(result.data);
   }
 
   static async autoPick(draftId: string) {
@@ -270,29 +281,44 @@ export class DraftService {
     draftId: string,
     leagueId: string,
     userId: string,
-    playerId: string,
-    rank: number
-  ) {
+    playerId: string
+  ) : Promise<Result<DraftQueue>> {
+
     const { exists } = await isPlayerDrafted(draftId, playerId);
     if (exists) {
-      return { data: null, error: "This player has already been drafted" };
+      console.error("❌ Player already drafted");
+      return failure("This player has already been drafted");
     }
+
+    const queue = await getUserQueue(draftId, userId);
+    if (queue.error) {
+      console.error("❌ Could not get user queue", queue.error);
+      return failure(queue.error);
+    }
+
+    const nextRank = (queue.data?.length ?? 0) + 1;
 
     const queueItem: DraftQueue = {
       draft_id: draftId,
       league_id: leagueId,
       user_id: userId,
       player_id: playerId,
-      rank: rank,
+      rank: nextRank,
     };
 
-    const { data, error } = await addToQueue(queueItem);
+    const result = await addToQueue(queueItem);
 
-    if (error) {
-      return { data: null, error: error.message };
+    if (result.error) {
+      console.error("❌ Error adding player to queue", result.error);
+      return failure(result.error);
     }
 
-    return { data, error: null };
+    if (!result.data) {
+      console.error("❌ Queue addition returned no data");
+      return failure("Failed to add player to queue");
+    }
+
+    return success(result.data);
   }
 
   static async getUserQueue(draftId: string, userId: string) {

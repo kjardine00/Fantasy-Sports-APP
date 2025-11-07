@@ -13,10 +13,9 @@ export function usePickQueue() {
 
     // Fetch the existing queue on mount
     useEffect(() => {
-        console.log(draftQueues, currentUserId);
+        // console.log(draftQueues, currentUserId);
         setQueue((draftQueues) => draftQueues.filter((queue) => queue.user_id === currentUserId));
     }, [draftQueues]);
-
 
     return {
         queue,

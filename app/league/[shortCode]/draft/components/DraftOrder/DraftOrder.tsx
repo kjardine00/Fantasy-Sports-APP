@@ -32,12 +32,16 @@ const DraftOrder = () => {
         return <div>No Active Drafter</div>
     }
 
+    const timeOut = () => {
+        // console.log("Time is up")
+    }
+
     return (
         <div className="navbar bg-base-300 text-primary-content flex flex-row justify-start items-center min-h-16 py-2">
             <div className="flex flex-col items-center p-2 mx-2 text-2xl">
                 <RoundNumber roundNumber={currentRound} totalRounds={totalRounds} />
                 {/** TODO: Add Timeout function when the time is up a player is automatically picked */}
-                <DraftOrderTimer timeRemaining={timeRemaining} timeOut={() => { console.log("Time is up") }} />
+                <DraftOrderTimer timeRemaining={timeRemaining} timeOut={timeOut} />
             </div>
 
             <CurrentDrafter

@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { Result } from "@/lib/types";
 import { Draft } from "@/lib/types/database_types";
+import { requireAuth } from "@/lib/contexts/UserContext";
 import { createClient } from "@/lib/database/server";
 import { DraftService } from "@/lib/services/draft/draft_service";
 import { MembersService } from "@/lib/services/league/members_service";
@@ -13,6 +14,7 @@ import {
   updateScheduledStart,
   findByLeagueId,
 } from "@/lib/database/queries/draft_queries";
+import { LeagueActionError } from "../types/error_types";
 
 export async function fetchAllDraftData(draftId: string) {
   const draft = await DraftService.getDraftData(draftId);
@@ -236,13 +238,10 @@ export async function updateScheduledStartAction(
 // TODO Revisit this generated code to see if it is correct
 
 export async function makeDraftPickAction(draftId: string, playerId: string) {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
+  const { user } = await requireAuth();
   if (!user) {
-    return { data: null, error: "You must be logged in to draft a player" };
+    console.error("User not logged in");
+    throw new Error("User not logged in");
   }
 
   const { data, error } = await DraftService.makePick(
@@ -252,11 +251,11 @@ export async function makeDraftPickAction(draftId: string, playerId: string) {
   );
 
   if (error) {
-    return { data: null, error };
+    console.error("❌ Error making draft pick:", error);
+    throw new Error(error);
   }
 
-  // Don't revalidate - let Realtime handle UI updates
-  return { data, error: null };
+  return data;
 }
 
 /**
@@ -331,24 +330,19 @@ export async function endDraftAction(draftId: string) {
 export async function addToQueueAction(
   draftId: string,
   leagueId: string,
-  playerId: string,
-  rank: number
+  playerId: string
 ) {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
+  const { user } = await requireAuth();
   if (!user) {
-    return { data: null, error: "You must be logged in" };
+    console.error("User not logged in");
+    throw new Error("User not logged in");
   }
 
   const { data, error } = await DraftService.addToQueue(
     draftId,
     leagueId,
     user.id,
-    playerId,
-    rank
+    playerId
   );
 
   if (error) {

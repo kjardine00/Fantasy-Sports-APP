@@ -25,67 +25,88 @@ export function useDraftChannel() {
   }, [draftId, isLoading]);
 
   const setupRealtimeSubscriptions = (draftId: string) => {
-    console.log("🔄 Setting up real-time subscriptions");
+    console.log("🔄 Setting up real-time subscriptions for draft:", draftId);
 
     const supabase = createClient();
-    const subscription = supabase
-      .channel(`draft-${draftId}`)
-      .on(
-        "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "drafts",
-        },
-        (payload) => {
-          console.log("📋 Draft updated in real-time:", payload);
-          fetchData(draftId);
+    const channel = supabase.channel(`draft-${draftId}`);
+
+    // Subscribe to draft_picks first (we know this works)
+    channel.on(
+      "postgres_changes",
+      {
+        event: "*",
+        schema: "public",
+        table: "draft_picks",
+        filter: `draft_id=eq.${draftId}`,
+      },
+      (payload) => {
+        console.log("📝 Draft_Picks updated in real-time:", payload);
+        fetchData(draftId);
+      }
+    );
+
+    // Subscribe to draft_queues
+    channel.on(
+      "postgres_changes",
+      {
+        event: "*",
+        schema: "public",
+        table: "draft_queues",
+        filter: `draft_id=eq.${draftId}`,
+      },
+      (payload) => {
+        console.log("🎴 Draft_Queues updated in real-time:", payload);
+        fetchData(draftId);
+      }
+    );
+
+    // Subscribe to drafts table (UPDATE only, not INSERT/DELETE)
+    // NOTE: If channel closes, this table might not have Realtime enabled in Supabase
+    channel.on(
+      "postgres_changes",
+      {
+        event: "UPDATE",
+        schema: "public",
+        table: "drafts",
+        filter: `id=eq.${draftId}`,
+      },
+      (payload) => {
+        console.log("📋 Draft updated in real-time:", payload);
+        fetchData(draftId);
+      }
+    );
+
+    channel.subscribe((status, err) => {
+      console.log('📡 Channel subscription status:', status);
+      if (err) {
+        console.error('❌ Channel subscription error:', err);
+      }
+      
+      if (status === 'SUBSCRIBED') {
+        console.log('✅ Connected to draft channel');
+      } else if (status === 'CHANNEL_ERROR') {
+        console.warn('⚠️ Draft channel connection issue (will retry)');
+      } else if (status === 'CLOSED') {
+        console.warn('❌ Draft channel closed');
+        if (err) {
+          console.error('Error details:', err);
         }
-      )
-      .on(
-        "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "draft_picks",
-        },
-        (payload) => {
-          console.log("📝 Draft_Picks updated in real-time:", payload);
-          fetchData(draftId);
-        }
-      )
-      .on(
-        "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "draft_queues",
-        },
-        (payload) => {
-          console.log("🎴 Draft_Queues updated in real-time:", payload);
-          fetchData(draftId);
-        }
-      )
-      .subscribe((status) => {
-        if (status === "SUBSCRIBED") {
-          console.log("✅ Connected to draft channel");
-        } else if (status === "CHANNEL_ERROR") {
-          // Don't log as error - this is often transient and will retry
-          // Supabase will automatically retry the connection
-          console.warn("⚠️ Draft channel connection issue (will retry)");
-        }
-      });
+      } else if (status === 'TIMED_OUT') {
+        console.warn('⏱️ Draft channel subscription timed out');
+      } else {
+        console.warn('Unknown status:', status);
+      }
+    });
 
     // Cleanup function - runs when component unmounts or dependencies change
     return () => {
       console.log("🧹 Cleaning up real-time subscriptions");
-      subscription.unsubscribe();
+      supabase.removeChannel(channel);
     };
   };
 
   const fetchData = async (draftId: string) => {
     try {
-      console.log('📥 Fetching all draft data...')
 
       const { draft, draftPicks, draftQueues } =
         await fetchAllDraftData(draftId);

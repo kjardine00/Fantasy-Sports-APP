@@ -19,7 +19,7 @@ export async function find(draftId: string): Promise<Result<DraftQueue[]>> {
   return success(data);
 }
 
-export async function add(queue: DraftQueue) {
+export async function add(queue: DraftQueue) : Promise<Result<DraftQueue>> {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from(TABLES.DRAFT_QUEUES)
@@ -27,10 +27,13 @@ export async function add(queue: DraftQueue) {
     .select()
     .single();
 
-  return { data, error };
+  if (error || !data) {
+    return failure(error?.message || "❌ Failed to add player to queue");
+  }
+  return success(data);
 }
 
-export async function findByUser(draftId: string, userId: string) {
+export async function findByUser(draftId: string, userId: string) : Promise<Result<DraftQueue[]>> {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from(TABLES.DRAFT_QUEUES)
@@ -39,7 +42,11 @@ export async function findByUser(draftId: string, userId: string) {
     .eq("user_id", userId)
     .order("rank", { ascending: true });
 
-  return { data, error };
+    if (error) {
+      return failure(error.message);
+    }
+
+    return success(data);
 }
 
 // TODO: Consider consolidating with findByUser using optional include parameter

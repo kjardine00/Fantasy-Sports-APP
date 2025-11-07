@@ -79,7 +79,7 @@ export function useDraftablePlayers() {
         })
         .subscribe((status) => {
             if (status === 'SUBSCRIBED') {
-                console.log('✅ Connected to draft picks channel');
+                // console.log('✅ Connected to draft picks channel');
             } else if (status === 'CHANNEL_ERROR') {
                 console.warn('⚠️ Draft picks channel connection issue (will retry)');
             }
