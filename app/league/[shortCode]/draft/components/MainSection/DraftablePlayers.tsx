@@ -1,69 +1,83 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import PlayerTable from "./PlayerTable";
 import { useDraftablePlayers } from "../../hooks/useDraftablePlayers";
 import { useDraft } from "../../context/DraftContext";
 import { getCharacterData } from "@/lib/character-data";
 import { makeDraftPickAction, addToQueueAction } from "@/lib/server_actions/draft_actions";
-import { usePickQueue } from "../../hooks/usePickQueue";
-
-// Emojis for logging : ❌ ✅ ⚠️ 💾
 
 const DraftablePlayers = () => {
-  const { draftablePlayers, realTeams, draftablePlayersError, refreshDraftablePlayers } = useDraftablePlayers();
-  const { queue } = usePickQueue();
+  const { draftablePlayers, realTeams, error, isLoading, refresh } = useDraftablePlayers();
   const { draft, currentUserId, leagueId } = useDraft();
+  const [pickingPlayerId, setPickingPlayerId] = useState<string | null>(null);
 
-  if (draftablePlayersError) {
-    return <div>Error: {draftablePlayersError}</div>;
-  }
+  const isOnTheClock = draft?.current_user_id === currentUserId;
 
-  const handleButtonSubmit = async (playerId: string, onTheClock: boolean) => {
-    if (!draft?.id || leagueId) return;
+  const handlePlayerAction = async (playerId: string) => {
+    if (!draft?.id || !leagueId || !playerId) {
+      console.error("❌ Missing required data for player action");
+      return;
+    }
+
+    setPickingPlayerId(playerId);
 
     try {
-      if (onTheClock) {
-        const pick = await makeDraftPickAction(draft.id, playerId);
+      if (isOnTheClock) {
+        await makeDraftPickAction(draft.id, playerId);
+        console.log("✅ Player picked successfully");
       } else {
-        const queue = await addToQueueAction(draft.id, leagueId, playerId);
+        await addToQueueAction(draft.id, leagueId, playerId)
+        console.log("✅ Player queued successfully");
       }
     } catch (err) {
-      console.error("❌ Error in handleButtonSubmit:", err);
+      console.error("❌ Error in player action:", err);
+    } finally {
+      setPickingPlayerId(null);
     }
   }
 
-const isOnTheClock = draft?.current_user_id === currentUserId;
+  // Loading/Error states
+  if (error) {
+    return <div className="text-error">Error: {error}</div>;
+  }
 
-const playerRows = draftablePlayers
-  .map((player) => {
-    const characterData = getCharacterData(player.name);
-    if (!characterData || !player.id) {
-      return null;
-    }
+  if (isLoading || !draftablePlayers) {
+    return <div>Loading players...</div>;
+  }
 
-    return {
-      name: player.name,
-      team: realTeams.find((team) => team.id === player.team_id)?.name || '',
-      type: String(characterData.character_class),
-      bat: String(characterData.batting_stat_bar),
-      pitch: String(characterData.pitching_stat_bar),
-      field: String(characterData.fielding_stat_bar),
-      run: String(characterData.running_stat_bar),
-      chem: [],
-      onTheClock: isOnTheClock,
-      buttonSubmit: () => handleButtonSubmit(player.id!, isOnTheClock),
-    };
-  })
-  .filter((row): row is NonNullable<typeof row> => row !== null);
+  const playerRows = (draftablePlayers || [])
+    .map((player) => {
+      const characterData = getCharacterData(player.name);
+      if (!characterData || !player.id) {
+        return null;
+      }
 
-if (playerRows.length === 0) {
-  return <div>No player rows found</div>;
-}
+      const isPicking = pickingPlayerId === player.id;
 
-return (
-  <div>
-    {/* 
+      return {
+        name: player.name,
+        team: realTeams.find((team) => team.id === player.team_id)?.name || '',
+        type: String(characterData.character_class),
+        bat: String(characterData.batting_stat_bar),
+        pitch: String(characterData.pitching_stat_bar),
+        field: String(characterData.fielding_stat_bar),
+        run: String(characterData.running_stat_bar),
+        chem: [],
+        onTheClock: isOnTheClock,
+        buttonSubmit: () => handlePlayerAction(player.id!),
+        isPicking,
+      };
+    })
+    .filter((row): row is NonNullable<typeof row> => row !== null);
+
+  if (playerRows.length === 0) {
+    return <div>No player rows found</div>;
+  }
+
+  return (
+    <div>
+      {/* 
         League Management
         Pause/Resume Draft
         Allow managers that have disconnected to remain off autopick until the time allowed for their pick has expired
@@ -71,11 +85,11 @@ return (
         Make draft picks for other players
          */}
 
-    <div>
-      <PlayerTable playerRows={playerRows} />
+      <div>
+        <PlayerTable playerRows={playerRows} />
+      </div>
     </div>
-  </div>
-);
+  );
 };
 
 export default DraftablePlayers;

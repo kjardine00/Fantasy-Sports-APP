@@ -1,25 +1,19 @@
 "use client";
 
-import { useState, useEffect, useCallback } from 'react';
-import { useDraft } from '../context/DraftContext';
-import { DraftQueue, Player } from '@/lib/types/database_types';
-import { useDraftChannel } from './useDraftChannel';
+import { useState } from "react";
+import { DraftQueue } from "@/lib/types/database_types";
 
+/**
+ * Placeholder hook for PickQueue component
+ * TODO: Implement actual queue functionality
+ */
 export function usePickQueue() {
-    const { draftQueues } = useDraftChannel();
-    const { currentUserId } = useDraft();
-    const [queue, setQueue] = useState<DraftQueue[]>([]);
-    const [autoPick, setAutoPick] = useState<boolean>(false);
+  const [autoPick, setAutoPick] = useState(false);
+  const queue: DraftQueue[] = []; // Empty queue for now
 
-    // Fetch the existing queue on mount
-    useEffect(() => {
-        // console.log(draftQueues, currentUserId);
-        setQueue((draftQueues) => draftQueues.filter((queue) => queue.user_id === currentUserId));
-    }, [draftQueues]);
-
-    return {
-        queue,
-        autoPick,
-        setAutoPick,
-    };
+  return {
+    queue,
+    autoPick,
+    setAutoPick,
+  };
 }

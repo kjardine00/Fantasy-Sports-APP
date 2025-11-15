@@ -13,7 +13,8 @@ interface PlayerRowProps {
   run: string;
   chem: string[];
   onTheClock: boolean;
-  buttonSubmit: () => void; // Queue Button/Draft Button
+  buttonSubmit: () => void;
+  isPicking?: boolean;
 }
 
 const PlayerRow = ({
@@ -27,12 +28,15 @@ const PlayerRow = ({
   chem,
   onTheClock,
   buttonSubmit,
+  isPicking = false,
 }: PlayerRowProps) => {
   const playerIcon = getPlayerIcon(name);
 
   if (!playerIcon) {
     return null;
   }
+  const buttonText = onTheClock ? "Pick" : "Queue";
+  const buttonDisabled = isPicking;
 
   return (
     <tr>
@@ -66,11 +70,16 @@ const PlayerRow = ({
       </td>
       <td>
         <div className="flex gap-1 flex-wrap">
-        🎵
+          🎵
         </div>
       </td>
       <td>
-        <button className="btn btn-accent btn-md rounded-full" onClick={buttonSubmit}>{onTheClock ? "Draft" : "Queue"}</button>
+        <button
+          className="btn btn-accent btn-md rounded-full"
+          onClick={buttonSubmit}
+          disabled={buttonDisabled}>
+            {isPicking ? "..." : buttonText}
+        </button>
       </td>
     </tr>
   );

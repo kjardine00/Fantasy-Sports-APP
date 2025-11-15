@@ -24,7 +24,7 @@ const Banner = ({
     return (
         <div className="navbar bg-primary text-primary-content flex flex-row justify-between items-center min-h-0 py-2">
             <div className="flex flex-row items-center gap-2 px-4">
-                <h1 className="text-md font-bold">{draftAppName} - Draft for {league?.name}</h1>
+                <h1 className="text-md font-bold">Draft for {league?.name}</h1>
             </div>
 
             <div className="flex flex-row items-center align-end gap-2 px-4">

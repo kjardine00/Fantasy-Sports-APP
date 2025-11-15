@@ -1,3 +1,5 @@
+// Emojis for logging : ❌ ✅ ⚠️ 💾
+
 10/8/2025
 [] AuthModal - CSS and Styling
 [x] AuthModal - When clicking outside the window page reloads because it is 

@@ -12,6 +12,7 @@ type PlayerRowProps = {
   chem: string[];
   onTheClock: boolean;
   buttonSubmit: () => void;
+  isPicking?: boolean;
 };
 
 const PlayerTable = ({ playerRows }: { playerRows: PlayerRowProps[] }) => {

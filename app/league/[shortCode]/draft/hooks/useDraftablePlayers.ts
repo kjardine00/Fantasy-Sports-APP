@@ -1,103 +1,63 @@
-"use client"
+"use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { createClient } from "@/lib/database/client";
 import { useDraft } from "../context/DraftContext";
-import { Player, RealTeams } from "@/lib/types/database_types";
 import { fetchDraftablePlayersAction } from "@/lib/server_actions/draft_actions";
-import { useDraftChannel } from "./useDraftChannel";
+import { Player, RealTeams } from "@/lib/types/database_types";
 
 export function useDraftablePlayers() {
-    const { draftData, draftPicks, draftQueues } = useDraftChannel();
-    const { draft, isLoading: draftIsLoading, error: draftError, currentUserId } = useDraft();
-    const [realTeams, setRealTeams] = useState<RealTeams[]>([]);
-    const [realTeamsError, setRealTeamsError] = useState<string | null>(null);
+    const { draft, isLoading: draftIsLoading } = useDraft();
     const [draftablePlayers, setDraftablePlayers] = useState<Player[]>([]);
-    const [draftablePlayersError, setDraftablePlayersError] = useState<string | null>(null);
-    const [filteredPlayers, setFilteredPlayers] = useState<Player[]>([]);
-    // const [searchTerm, setSearchTerm] = useState<>()
+    const [realTeams, setRealTeams] = useState<RealTeams[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
-    const refreshDraftablePlayers = useCallback(async () => {
-        if (!draft?.id) return;
+    const refresh = useCallback(async () => {
+        if (!draft?.id) {
+            setDraftablePlayers([]);
+            return;
+        }
+
+        setIsLoading(true);
+        setError(null)
 
         try {
             const result = await fetchDraftablePlayersAction(draft.id);
-
             setDraftablePlayers(result.players);
             setRealTeams(result.realTeams);
-            setRealTeamsError(null);
-            setDraftablePlayersError(null);
+            setError(null);
         } catch (err) {
             const errorMessage = err instanceof Error ? err.message : "Failed to fetch draftable players";
-            setDraftablePlayersError(errorMessage);
-            setRealTeamsError(errorMessage);
+            console.error("❌ Error fetching draftable players:", err);
+            setError(errorMessage);
             setDraftablePlayers([]);
             setRealTeams([]);
+        } finally {
+            setIsLoading(false);
         }
     }, [draft?.id]);
 
-    const handleSearch = useCallback(async (search: Player) => {
-// filters players by search term
-    }, [])
-
-    // const draftPlayer = useCallback(async (playerId: string) => {
-        
-    //     try {
-    //         const result = await makeDraftPickAction(draft?.id, playerId);
-    //     }
-    // }, [])
-
-
-    // const addToQueue = useCallback(async () => {
-    //     try {
-    //         const result = await addToQueueAction(draft?.id, leagueId, playerId, rank);
-    //     }
-
-    // }, [])
-
-    // On mount, fetch draftable players
     useEffect(() => {
-        if (!draft?.id || draftIsLoading) return;
-        refreshDraftablePlayers();
-    }, [draft?.id, draftIsLoading, refreshDraftablePlayers]);
+        const isLoading = draftIsLoading || false;
 
-    // Setup realtime subscription for draft picks
-    useEffect(() => {
-        if (draftIsLoading || !draft?.id || !currentUserId) return;
-
-        const supabase = createClient()
-        const channelName = `draft-picks-${draft.id}-${currentUserId}`
-        const channel = supabase.channel(channelName)
-        .on('postgres_changes', {
-            event: '*',
-            schema: 'public',
-            table: 'draft_picks',
-            filter: `draft_id=eq.${draft.id}`
-        }, (payload) => {
-            console.log('New pick made: ', payload.new)
-            refreshDraftablePlayers();
-        })
-        .subscribe((status) => {
-            if (status === 'SUBSCRIBED') {
-                // console.log('✅ Connected to draft picks channel');
-            } else if (status === 'CHANNEL_ERROR') {
-                console.warn('⚠️ Draft picks channel connection issue (will retry)');
-            }
-        });
-
-        return () => {
-            supabase.removeChannel(channel);
+        if (isLoading) {
+            setIsLoading(true);
+            return;
         }
-    }, [draft?.id, refreshDraftablePlayers, draftIsLoading, currentUserId])
+
+        if (draft?.id) {
+            refresh();
+        } else {
+            setIsLoading(false);
+            setDraftablePlayers([]);
+        }
+    }, [draft?.id, draftIsLoading ?? false, refresh]);
 
     return {
         draftablePlayers,
         realTeams,
-        draftablePlayersError,
-        realTeamsError,
-        refreshDraftablePlayers,
-        handleSearch,
-        // draftPlayer,
-        // addToQueue,
-    }
+        isLoading: isLoading || draftIsLoading,
+        error,
+        refresh
+    };
 }

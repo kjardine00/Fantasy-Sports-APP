@@ -34,6 +34,7 @@ import {
 } from "@/lib/database/queries/leagues_members_queries";
 import { findAll as findAllPlayers } from "@/lib/database/queries/players_queries";
 import { findAll as findAllRealTeams } from "@/lib/database/queries/real_teams_queries";
+import { TABLES } from "@/lib/database/tables";
 
 // Emojis for logging : ❌ ✅ ⚠️ 💾
 
@@ -121,7 +122,9 @@ export class DraftService {
       return { data: null, error: "Draft already started" };
     }
 
-    const firstUserId = await this.calculatePickingUser(
+    await this.assignPickOrder(draft.league_id);
+
+    const firstUserId = await this.getPickingUserByPickNumber(
       draft.league_id,
       1,
       draft.draft_order_type
@@ -146,6 +149,52 @@ export class DraftService {
     }
 
     return { data, error: null };
+  }
+
+  private static async assignPickOrder(leagueId: string) {
+    const { data: members } = await findPickOrderByUser(leagueId);
+
+    if (!members || members.length === 0) return;
+
+    const hasOrder = members.some(m => m.draft_pick_order !== null);
+    if (hasOrder) return;
+
+    const shuffled = [...members].sort(() => Math.random() - 0.5)
+
+    const supabase = await createClient();
+    for (let i = 0; i < shuffled.length; i++) {
+      await supabase
+        .from(TABLES.LEAGUES_MEMBERS)
+        .update({ draft_pick_order: i + 1 })
+        .eq('user_id', shuffled[i].user_id)
+        .eq('league_id', leagueId);
+    }
+  }
+
+  private static async getPickingUserByPickNumber(
+    leagueId: string,
+    pickNumber: number,
+    draftOrderType: "snake" | "auction"
+  ) {
+    const { data: members } = await findPickOrderByUser(leagueId);
+
+    if (!members || members.length === 0) return null;
+
+    const teamCount = members.length;
+    const round = Math.ceil(pickNumber / teamCount);
+    const pickInRound = ((pickNumber - 1) % teamCount) + 1;
+
+    let orderIndex: number;
+
+    if (draftOrderType === "snake" && round % 2 === 0) {
+      // Even rounds: reverse order (N, N-1, ..., 1)
+      orderIndex = teamCount - pickInRound;
+    } else {
+      // Odd rounds: normal order (1, 2, ..., N)
+      orderIndex = pickInRound - 1;
+    }
+
+    return members[orderIndex]?.user_id || null;
   }
 
   static async endDraft(draftId: string) {
@@ -191,7 +240,7 @@ export class DraftService {
     return success(draftablePlayers);
   }
 
-  static async makePick(draftId: string, userId: string, playerId: string) : Promise<Result<DraftPick>> {
+  static async makePick(draftId: string, userId: string, playerId: string): Promise<Result<DraftPick>> {
     const { data: draft, error: draftError } = await findById(draftId);
     if (draftError || !draft) {
       console.error("❌ Draft not found");
@@ -203,24 +252,14 @@ export class DraftService {
       return failure("It's not your turn to pick");
     }
 
-    const { exists, error: checkError } = await isPlayerDrafted(
-      draftId,
-      playerId
-    );
-    if (checkError) {
-      console.error("❌ Error checking if player is drafted:", checkError);
-      return failure(checkError.message);
-    }
+    const { exists } = await isPlayerDrafted(draftId, playerId);
     if (exists) {
       console.error("❌ Player already drafted");
       return failure("Player already drafted");
     }
 
-    const { data: teamCount, error: countError } = await countTeams(
-      draft.league_id
-    );
-
-    if (countError || !teamCount) {
+    const { data: teamCount } = await countTeams(draft.league_id);
+    if (!teamCount) {
       console.error("❌ Could not determine team count");
       return failure("Could not determine team count");
     }
@@ -238,14 +277,9 @@ export class DraftService {
     };
 
     const result = await createDraftPick(pick);
-    if (result.error) {
+    if (result.error || !result.data) {
       console.error("❌ Error creating draft pick:", result.error);
-      return failure(result.error);
-    }
-
-    if (!result.data) {
-      console.error("❌ Draft pick creation returned no data");
-      return failure("Failed to create draft pick");
+      return failure(result.error || "Failed to create draft pick");
     }
 
     await this.removePlayerFromAllQueues(draftId, playerId);
@@ -282,7 +316,7 @@ export class DraftService {
     leagueId: string,
     userId: string,
     playerId: string
-  ) : Promise<Result<DraftQueue>> {
+  ): Promise<Result<DraftQueue>> {
 
     const { exists } = await isPlayerDrafted(draftId, playerId);
     if (exists) {
@@ -382,33 +416,6 @@ export class DraftService {
     return null;
   }
 
-  static async calculatePickingUser(
-    leagueId: string,
-    pickNumber: number,
-    draftOrderType: "snake" | "auction"
-  ) {
-    const { data: members, error: orderError } =
-      await findPickOrderByUser(leagueId);
-
-    if (!members || members.length === 0) return null;
-
-    const teamCount = members.length;
-    const round = Math.ceil(pickNumber / teamCount);
-    const pickInRound = ((pickNumber - 1) % teamCount) + 1;
-
-    let pickIndex: number;
-
-    if (draftOrderType === "snake" && round % 2 === 0) {
-      // Even rounds go in reverse for snake draft
-      pickIndex = teamCount - pickInRound;
-    } else {
-      // Odd rounds
-      pickIndex = pickInRound - 1;
-    }
-
-    return members[pickIndex].user_id || null;
-  }
-
   private static async advancePick(draft: Draft, teamCount: number) {
     const nextPickNumber = draft.current_pick + 1;
     const totalPicks = draft.total_rounds * teamCount;
@@ -419,11 +426,16 @@ export class DraftService {
     }
 
     const nextRound = Math.ceil(nextPickNumber / teamCount);
-    const nextUserId = await this.calculatePickingUser(
+    const nextUserId = await this.getPickingUserByPickNumber(
       draft.league_id,
       nextPickNumber,
       draft.draft_order_type
     );
+
+    if (!nextUserId) {
+      console.error("❌ Could not determine next user");
+      return;
+    }
 
     const nextDeadline = new Date(
       Date.now() + draft.pick_time_limit_seconds * 1000
