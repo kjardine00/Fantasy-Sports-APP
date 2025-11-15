@@ -8,7 +8,7 @@ import { getCharacterData } from "@/lib/character-data";
 import { makeDraftPickAction, addToQueueAction } from "@/lib/server_actions/draft_actions";
 
 const DraftablePlayers = () => {
-  const { draftablePlayers, realTeams, error, isLoading, refresh } = useDraftablePlayers();
+  const { draftablePlayers, realTeams, error, isLoading } = useDraftablePlayers();
   const { draft, currentUserId, leagueId } = useDraft();
   const [pickingPlayerId, setPickingPlayerId] = useState<string | null>(null);
 

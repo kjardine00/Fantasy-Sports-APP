@@ -17,13 +17,13 @@ export function useDraftChannel(onPickMade?: () => void) {
         if (!draftId) return;
 
         const supabase = createClient();
-        const channel = supabase.channel(`drafts:draft_picks:${draftId}`, {
+        const channel = supabase.channel(`drafts:${draftId}:draft_picks`, {
             config: { private: true }
         });
 
         channel.on(
             'broadcast',
-            { event: 'INSERT' }, // or event: '*' to listen to all broadcasted events
+            { event: '*' },
             (payload) => {
                 console.log('🔔 broadcast payload', payload);
                 refreshMyRoster();
@@ -33,7 +33,7 @@ export function useDraftChannel(onPickMade?: () => void) {
 
         channel.subscribe((status) => {
             if (status === 'SUBSCRIBED') console.log('✅ subscribed to picks broadcasts');
-            if (status === 'CHANNEL_ERROR') console.warn('⚠ channel error');
+            if (status === 'CHANNEL_ERROR') console.log('⚠️ channel error');
         });
 
         return () => {

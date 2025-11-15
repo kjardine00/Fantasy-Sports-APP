@@ -77,7 +77,7 @@ export const DraftProvider: React.FC<DraftProviderProps> = ({ children }) => {
             const roster = await getDraftPicksAction(draft.id);
 
             if (roster.data) {
-                const myPicks = roster.data.filter((pick) => pick.user_id === currentUserId)
+                const myPicks = roster.data.filter((pick: DraftPick) => pick.user_id === currentUserId)
                 setMyRoster(myPicks)
             } else {
                 setMyRoster([]);
